@@ -33,11 +33,11 @@ function showToast(message, type = 'error') {
 }
 
 // ============================================================
-// FORCE DOWNLOAD FUNCTION
+// FORCE DOWNLOAD FUNCTION (DITERAPKAN KE SEMUA FITUR)
 // ============================================================
 async function forceDownload(url, filename) {
     try {
-        showToast("Sedang mengunduh file, mohon tunggu...", "info");
+        showToast("Sedang mengunduh file ke perangkatmu...", "info");
         
         const response = await fetch(url);
         if (!response.ok) throw new Error("Gagal mengambil file");
@@ -55,11 +55,13 @@ async function forceDownload(url, filename) {
         window.URL.revokeObjectURL(blobUrl);
         document.body.removeChild(a);
         
-        showToast("File berhasil disimpan!", "success");
+        showToast("File berhasil disimpan ke galeri!", "success");
     } catch (error) {
         console.error(error);
+        // Jika server asal (seperti TikTok/IG) memblokir unduhan langsung karena sistem keamanan CORS,
+        // Sistem akan otomatis membuka di tab baru agar file tetap bisa diunduh.
         window.open(url, '_blank');
-        showToast("Membuka di tab baru (Browser memblokir unduhan langsung)", "info");
+        showToast("Membuka tab baru (Server memblokir unduhan instan)", "info");
     }
 }
 
@@ -169,7 +171,7 @@ function copyLirik() { const textToCopy = document.getElementById('lirikText').i
 async function fetchLirik(url) {
     const loading = document.getElementById('loading');
     const loadingText = document.getElementById('loadingText');
-    const menuBtn = document.getElementById('menuBtn'); // Kunci menu
+    const menuBtn = document.getElementById('menuBtn');
     
     if(menuBtn) menuBtn.disabled = true;
     loading.style.display = 'block'; 
@@ -186,7 +188,7 @@ async function fetchLirik(url) {
         } else { showToast("Gagal memuat lirik dari server.", "error"); }
     } catch (error) { showToast("Gangguan jaringan. Periksa koneksi internetmu.", "error"); } finally { 
         loading.style.display = 'none'; 
-        if(menuBtn) menuBtn.disabled = false; // Buka kunci menu
+        if(menuBtn) menuBtn.disabled = false;
     }
 }
 
@@ -194,7 +196,7 @@ async function processAction() {
     if (!checkCooldown()) return;
 
     const mainBtn = document.getElementById('mainBtn');
-    const menuBtn = document.getElementById('menuBtn'); // Ambil elemen menu
+    const menuBtn = document.getElementById('menuBtn');
     const loading = document.getElementById('loading');
     const loadingText = document.getElementById('loadingText');
     const resultCard = document.getElementById('resultCard');
@@ -262,7 +264,7 @@ async function processAction() {
 
     setCooldown();
     mainBtn.disabled = true; mainBtn.innerHTML = "Memproses...";
-    if(menuBtn) menuBtn.disabled = true; // MENGUNCI TOMBOL MENU DI SINI
+    if(menuBtn) menuBtn.disabled = true;
     
     loading.style.display = 'block'; loadingText.innerText = "Memproses permintaan...";
     resultCard.style.display = 'none'; downloaderResult.style.display = 'none'; aiResult.style.display = 'none'; ssWebResult.style.display = 'none'; iqcResult.style.display = 'none'; nulisResult.style.display = 'none'; ytTranscriptResult.style.display = 'none'; invoiceResult.style.display = 'none'; hdFotoResult.style.display = 'none'; audioResult.style.display = 'none'; removeBgResult.style.display = 'none'; lirikResult.style.display = 'none'; stalkResult.style.display = 'none';
@@ -486,6 +488,9 @@ async function processAction() {
                     listContainer.innerHTML += `<button class="btn-secondary" onclick="fetchLirik('${item.url}')" style="text-align:left; justify-content:flex-start;"><i class="fas fa-music" style="color:var(--primary);"></i> ${item.title}</button>`;
                 });
             }
+            // =========================================================================
+            // TOMBOL DOWNLOADER YANG SUDAH DIUBAH KE forceDownload() SEMUANYA
+            // =========================================================================
             else if (currentPlatform === 'photo-editor') {
                 photoEditorResult.style.display = 'block';
                 document.getElementById('photoEditorInfo').innerText = `Ukuran File: ${data.size}`;
@@ -553,14 +558,14 @@ async function processAction() {
 
                 if (currentPlatform === 'facebook') {
                     profileSec.style.display = 'none'; captionText.style.display = 'none'; thumbCon.style.display = 'none';
-                    data.forEach((item) => { actionBtns.innerHTML += `<a href="${item.url}" class="btn-primary btn-fb" target="_blank"><i class="fas fa-video"></i> Download Video (${item.quality})</a>`; });
+                    data.forEach((item) => { actionBtns.innerHTML += `<button class="btn-primary btn-fb" onclick="forceDownload('${item.url}', 'Moonlight_Facebook.mp4')"><i class="fas fa-video"></i> Download Video (${item.quality})</button>`; });
                 }
                 else if (currentPlatform === 'twitter') {
                     profileSec.style.display = 'none'; captionText.style.display = 'none'; thumbCon.style.display = 'none';
                     data.forEach((item, index) => {
                         let typeText = item.type === "mp4" ? "Video" : "Gambar";
                         let icon = item.type === "mp4" ? "fa-video" : "fa-image";
-                        actionBtns.innerHTML += `<a href="${item.url}" class="btn-primary btn-tw" target="_blank"><i class="fas ${icon}"></i> Download ${typeText} ${index + 1}</a>`;
+                        actionBtns.innerHTML += `<button class="btn-primary btn-tw" onclick="forceDownload('${item.url}', 'Moonlight_Twitter_${index+1}.${item.type}')"><i class="fas ${icon}"></i> Download ${typeText} ${index + 1}</button>`;
                     });
                 }
                 else if (currentPlatform === 'terabox') {
@@ -569,43 +574,43 @@ async function processAction() {
                     captionText.innerHTML = `<div style="margin-bottom: 8px;"><strong>Nama File:</strong> ${teraItem.server_filename}</div><div><strong>Ukuran:</strong> ${teraItem.size}</div>`;
                     thumbCon.style.display = 'flex';
                     if (teraItem.thumbs && teraItem.thumbs.url3) { thumbImg.src = teraItem.thumbs.url3; thumbImg.onload = () => { thumbImg.style.display = "block"; thumbFallback.style.display = "none"; }; thumbImg.onerror = () => { thumbImg.style.display = "none"; thumbFallback.style.display = "flex"; }; } else { thumbImg.style.display = "none"; thumbFallback.style.display = "flex"; }
-                    actionBtns.innerHTML = `<a href="${teraItem.dlink}" class="btn-primary" target="_blank"><i class="fas fa-cloud-download-alt"></i> Download File</a>`;
+                    actionBtns.innerHTML = `<button class="btn-primary" onclick="forceDownload('${teraItem.dlink}', '${teraItem.server_filename}')"><i class="fas fa-cloud-download-alt"></i> Download File</button>`;
                 }
                 else if (currentPlatform === 'youtube') {
                     profileSec.style.display = 'none'; captionText.style.display = 'block';
                     captionText.innerHTML = `<div style="margin-bottom: 8px;"><strong>Judul:</strong> ${json.title}</div><div style="margin-bottom: 8px;"><strong>Channel:</strong> ${json.channel}</div><div style="margin-bottom: 8px;"><strong>Durasi:</strong> ${json.fduration}</div><div style="margin-bottom: 8px;"><strong>Kualitas:</strong> ${data.quality}</div><div><strong>Ukuran File:</strong> ${data.size}</div>`;
                     thumbCon.style.display = 'flex'; thumbImg.src = json.thumbnail;
                     thumbImg.onload = () => { thumbImg.style.display = "block"; thumbFallback.style.display = "none"; }; thumbImg.onerror = () => { thumbImg.style.display = "none"; thumbFallback.style.display = "flex"; };
-                    actionBtns.innerHTML = `<a href="${data.url}" class="btn-yt" target="_blank"><i class="fas fa-download"></i> Download ${data.extension.toUpperCase()}</a>`;
+                    actionBtns.innerHTML = `<button class="btn-yt" onclick="forceDownload('${data.url}', 'Moonlight_YT.${data.extension}')"><i class="fas fa-download"></i> Download ${data.extension.toUpperCase()}</button>`;
                 }
                 else if (currentPlatform === 'spotify') {
                     profileSec.style.display = 'none'; captionText.style.display = 'block';
                     captionText.innerHTML = `<strong>Judul:</strong> ${data.title}<br><strong>Artis:</strong> ${data.artist.name}<br><strong>Durasi:</strong> ${data.duration}`;
                     thumbCon.style.display = 'flex'; thumbImg.src = data.thumbnail;
                     thumbImg.onload = () => { thumbImg.style.display = "block"; thumbFallback.style.display = "none"; }; thumbImg.onerror = () => { thumbImg.style.display = "none"; thumbFallback.style.display = "flex"; };
-                    actionBtns.innerHTML = `<a href="${data.url}" class="btn-primary" style="background:#1db954;" target="_blank"><i class="fab fa-spotify"></i> Download MP3</a>`;
+                    actionBtns.innerHTML = `<button class="btn-primary" style="background:#1db954;" onclick="forceDownload('${data.url}', 'Moonlight_Spotify.mp3')"><i class="fab fa-spotify"></i> Download MP3</button>`;
                 }
                 else if (currentPlatform === 'tiktok') {
                     profileSec.style.display = 'none'; captionText.style.display = 'none';
                     if (data.photo && data.photo.length > 0) {
                         thumbCon.style.display = 'flex'; thumbImg.src = data.photo[0];
                         thumbImg.onload = () => { thumbImg.style.display = "block"; thumbFallback.style.display = "none"; }; thumbImg.onerror = () => { thumbImg.style.display = "none"; thumbFallback.style.display = "flex"; };
-                        data.photo.forEach((imgUrl, index) => { actionBtns.innerHTML += `<a href="${imgUrl}" class="btn-primary" target="_blank"><i class="fas fa-image"></i> Download Foto ${index + 1}</a>`; });
-                        if (data.audio) { actionBtns.innerHTML += `<a href="${data.audio}" class="btn-secondary" target="_blank"><i class="fas fa-music"></i> Download Audio</a>`; }
+                        data.photo.forEach((imgUrl, index) => { actionBtns.innerHTML += `<button class="btn-primary" onclick="forceDownload('${imgUrl}', 'Moonlight_TikTok_${index+1}.jpg')"><i class="fas fa-image"></i> Download Foto ${index + 1}</button>`; });
+                        if (data.audio) { actionBtns.innerHTML += `<button class="btn-secondary" onclick="forceDownload('${data.audio}', 'Moonlight_TikTok_Audio.mp3')"><i class="fas fa-music"></i> Download Audio</button>`; }
                     } else {
                         thumbCon.style.display = 'none';
-                        if (data.video) { actionBtns.innerHTML += `<a href="${data.video}" class="btn-primary" target="_blank"><i class="fas fa-video"></i> Download Video</a>`; }
-                        if (data.videoHD) { actionBtns.innerHTML += `<a href="${data.videoHD}" class="btn-primary" target="_blank"><i class="fas fa-video"></i> Download Video (HD)</a>`; }
-                        if (data.audio) { actionBtns.innerHTML += `<a href="${data.audio}" class="btn-secondary" target="_blank"><i class="fas fa-music"></i> Download Audio</a>`; }
+                        if (data.video) { actionBtns.innerHTML += `<button class="btn-primary" onclick="forceDownload('${data.video}', 'Moonlight_TikTok.mp4')"><i class="fas fa-video"></i> Download Video</button>`; }
+                        if (data.videoHD) { actionBtns.innerHTML += `<button class="btn-primary" onclick="forceDownload('${data.videoHD}', 'Moonlight_TikTok_HD.mp4')"><i class="fas fa-video"></i> Download Video (HD)</button>`; }
+                        if (data.audio) { actionBtns.innerHTML += `<button class="btn-secondary" onclick="forceDownload('${data.audio}', 'Moonlight_TikTok_Audio.mp3')"><i class="fas fa-music"></i> Download Audio</button>`; }
                     }
                 }
                 else if (currentPlatform === 'ig') {
                     profileSec.style.display = 'none'; captionText.style.display = 'none'; thumbCon.style.display = 'none';
-                    data.forEach((item, index) => { let typeText = item.type === "mp4" ? "Video" : "Gambar"; actionBtns.innerHTML += `<a href="${item.url}" class="btn-primary" target="_blank">Download ${typeText} ${index + 1}</a>`; });
+                    data.forEach((item, index) => { let typeText = item.type === "mp4" ? "Video" : "Gambar"; actionBtns.innerHTML += `<button class="btn-primary" onclick="forceDownload('${item.url}', 'Moonlight_IG_${index+1}.${item.type}')">Download ${typeText} ${index + 1}</button>`; });
                 }
                 else if (currentPlatform === 'pin') {
                     profileSec.style.display = 'none'; captionText.style.display = 'none'; thumbCon.style.display = 'none';
-                    actionBtns.innerHTML = `<a href="${data.url}" class="btn-primary" target="_blank">Download Media (${data.size})</a>`;
+                    actionBtns.innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Moonlight_Pinterest_Media')">Download Media (${data.size})</button>`;
                 }
             }
             resultCard.style.display = 'block';
@@ -620,7 +625,7 @@ async function processAction() {
     } finally {
         loading.style.display = 'none';
         mainBtn.disabled = false;
-        if(menuBtn) menuBtn.disabled = false; // BUKA KUNCI MENU DI SINI
+        if(menuBtn) menuBtn.disabled = false;
         
         if (currentPlatform === 'pulsa' || currentPlatform === 'topup') mainBtn.innerHTML = "Buat Tagihan Pembayaran";
         else if (currentPlatform === 'ss-web') mainBtn.innerHTML = "Ambil Screenshot";
