@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     try {
         let finalParams = { ...params, apikey: apiKey };
 
-        // VERCEL MENGUNGGAH FILE KE TMPFILES (BUKAN CATBOX)
+        // VERCEL MENGUNGGAH FILE KE TMPFILES
         if (fileData && fileData.base64) {
             const base64Data = fileData.base64.split(',')[1];
             const buffer = Buffer.from(base64Data, 'base64');
@@ -34,10 +34,11 @@ export default async function handler(req, res) {
                 throw new Error('File ditolak oleh server CDN sementara.');
             }
 
-            // Ubah link web tmpfiles menjadi Direct Link (tambah /dl/) agar bisa dibaca API
+            // Ubah link web tmpfiles menjadi Direct Link (tambah /dl/)
             const uploadedUrl = uploadJson.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
 
-            if (action === 'upscale' || action === 'nobg') finalParams.image = uploadedUrl;
+            // Tambahkan photo-editor ke daftar yang butuh link gambar
+            if (action === 'upscale' || action === 'nobg' || action === 'photo-editor') finalParams.image = uploadedUrl;
             if (action === 'noice-reducer') finalParams.file = uploadedUrl;
         }
 
