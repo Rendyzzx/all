@@ -66,12 +66,10 @@ function setPlatform(platform) {
     else if (platform === 'iqc') { title.innerHTML = "iPhone Quoted"; document.getElementById('textContent').placeholder = "Ketik atau tempel teks pesan di sini..."; textContainer.style.display = 'flex'; timeInputsContainer.style.display = 'flex'; btn.innerHTML = 'Buat Kutipan iPhone'; }
     else if (platform === 'nulis') { title.innerHTML = "Nulis Otomatis"; document.getElementById('textContent').placeholder = "Ketik atau tempel teks yang ingin ditulis tangan..."; textContainer.style.display = 'flex'; btn.innerHTML = 'Mulai Nulis'; }
     
-    // Fitur dengan Upload File Otomatis
     else if (platform === 'hd-foto') { title.innerHTML = "HD Foto (Upscaler)"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari galerimu. Sistem akan mengunggah dan memprosesnya secara otomatis.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Tingkatkan Kualitas Foto'; }
     else if (platform === 'remove-bg') { title.innerHTML = "Hapus Background"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari galerimu. Sistem akan mengunggah dan memprosesnya secara otomatis.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Hapus Background Gambar'; }
     else if (platform === 'noise-reduce') { title.innerHTML = "Audio Noise Reduce"; fileContainer.style.display = 'flex'; mediaFile.accept = "audio/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih file audio (MP3/WAV) dari perangkatmu. Sistem akan membersihkannya otomatis.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Bersihkan Suara Audio'; }
     
-    // Fitur Stalkers
     else if (platform === 'roblox-stalk') { title.innerHTML = "Roblox Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan username Roblox..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari Player'; }
     else if (platform === 'dc-stalk') { title.innerHTML = "Discord Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan ID Discord (angka)..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari User'; }
     else if (platform === 'tt-stalk') { title.innerHTML = "TikTok Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan username TikTok (tanpa @)..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari Akun'; }
@@ -94,31 +92,17 @@ function copyLirik() { const textToCopy = document.getElementById('lirikText').i
 async function fetchLirik(url) {
     const loading = document.getElementById('loading');
     const loadingText = document.getElementById('loadingText');
-
-    loading.style.display = 'block';
-    loadingText.innerText = "Mengambil teks lirik...";
-
+    loading.style.display = 'block'; loadingText.innerText = "Mengambil teks lirik...";
     try {
-        const res = await fetch(`/api/proses`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'lyric', params: { q: url } })
-        });
+        const res = await fetch(`/api/proses`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'lyric', params: { q: url } }) });
         const json = await res.json();
-
         if (json.status === true) {
             document.getElementById('lirikList').style.display = 'none';
             document.getElementById('lirikTitle').innerText = json.data.title;
             document.getElementById('lirikText').innerText = json.data.lyric;
             document.getElementById('lirikContentWrapper').style.display = 'block';
-        } else {
-            alert("Gagal memuat lirik dari server.");
-        }
-    } catch (error) {
-        alert("Gangguan jaringan. Periksa koneksi internetmu.");
-    } finally {
-        loading.style.display = 'none';
-    }
+        } else { alert("Gagal memuat lirik dari server."); }
+    } catch (error) { alert("Gangguan jaringan. Periksa koneksi internetmu."); } finally { loading.style.display = 'none'; }
 }
 
 async function processAction() {
@@ -150,7 +134,6 @@ async function processAction() {
     let ytType = "";
     let ytQuality = "";
 
-    // VALIDASI INPUT SEBELUM LOADING
     if (currentPlatform === 'ai-detector' || currentPlatform === 'iqc' || currentPlatform === 'nulis') {
         inputData = document.getElementById('textContent').value.trim();
         if (!inputData) return alert("Harap isi teks terlebih dahulu.");
@@ -189,7 +172,7 @@ async function processAction() {
     try {
         let finalInputData = inputData;
 
-        // PROSES AUTO-UPLOAD FILE UNTUK FITUR AI GAMBAR/AUDIO
+        // PROSES AUTO-UPLOAD MENGGUNAKAN PROXY VERCEL
         if (['hd-foto', 'remove-bg', 'noise-reduce'].includes(currentPlatform)) {
             const fileInput = document.getElementById('mediaFile');
             loadingText.innerText = "Mengunggah file ke server (Mohon tunggu)...";
@@ -198,14 +181,14 @@ async function processAction() {
             formData.append('reqtype', 'fileupload');
             formData.append('fileToUpload', fileInput.files[0]);
 
-            const uploadRes = await fetch('https://catbox.moe/user/api.php', {
+            // Memanggil Rewrite Vercel, BUKAN memanggil URL catbox langsung
+            const uploadRes = await fetch('/catbox-proxy', {
                 method: 'POST',
                 body: formData
             });
 
             if (!uploadRes.ok) throw new Error("Gagal mengunggah file ke server sementara.");
             finalInputData = await uploadRes.text(); 
-            // Setelah ini finalInputData akan berisi link Catbox.
         }
 
         let action = '';
