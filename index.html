@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moonlight - ABOUT YOU?</title>
+    <title>Moonlight - Super App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <style>
@@ -290,7 +290,6 @@
             -webkit-backdrop-filter: blur(12px);
         }
 
-        /* --- RESPONSIVE MOBILE --- */
         @media (max-width: 600px) {
             .hero { padding: 40px 16px; }
             .form-group { gap: 12px; }
@@ -301,19 +300,15 @@
             .feature-list li { padding: 12px; }
         }
 
-        /* --- RESPONSIVE DESKTOP (PC/LAPTOP) --- */
         @media (min-width: 768px) {
-            /* Melebarkan area Form Input dan Kartu Hasil */
             .form-group { max-width: 650px; }
             #resultCard { max-width: 650px; }
             
-            /* Melebarkan Modal Fitur */
             .modal-content { 
                 max-width: 800px; 
                 padding: 32px;
             }
             
-            /* Mengubah daftar fitur menjadi 2 kolom menyamping di PC */
             .feature-list {
                 background: transparent;
                 border: none;
@@ -326,7 +321,6 @@
                 border: 1px solid var(--border-color);
                 border-radius: 16px;
             }
-            /* Menghapus garis bawah khusus mode PC karena sudah pakai kotak border */
             .feature-list li, .feature-list li:last-child {
                 border-bottom: 1px solid var(--border-color); 
             }
@@ -368,6 +362,14 @@
                 <li onclick="setPlatform('yt-transcript')"><i class="fab fa-youtube" style="color: #ef4444;"></i><div><h4>YouTube Transcript</h4></div></li>
                 <li onclick="setPlatform('iqc')"><i class="fab fa-apple" style="color: #a8a29e;"></i><div><h4>iPhone Quoted</h4></div></li>
                 <li onclick="setPlatform('nulis')"><i class="fas fa-pen-nib" style="color: #f59e0b;"></i><div><h4>Nulis Otomatis</h4></div></li>
+            </ul>
+
+            <p class="modal-category">Stalker / Checker</p>
+            <ul class="feature-list">
+                <li onclick="setPlatform('roblox-stalk')"><i class="fas fa-gamepad" style="color: #10b981;"></i><div><h4>Roblox Stalk</h4></div></li>
+                <li onclick="setPlatform('dc-stalk')"><i class="fab fa-discord" style="color: #5865F2;"></i><div><h4>Discord Stalk</h4></div></li>
+                <li onclick="setPlatform('tt-stalk')"><i class="fab fa-tiktok" style="color: #cbd5e1;"></i><div><h4>TikTok Stalk</h4></div></li>
+                <li onclick="setPlatform('tw-stalk')"><i class="fa-brands fa-x-twitter" style="color: #f8fafc;"></i><div><h4>Twitter (X) Stalk</h4></div></li>
             </ul>
 
             <p class="modal-category">Produk Digital</p>
@@ -540,6 +542,19 @@
                 <div class="transcript-box" id="ytTranscriptText"></div>
                 <div class="action-btns">
                     <button class="btn-primary" onclick="copyTranscript()" id="copyTranscriptBtn"><i class="fas fa-copy"></i> Salin Teks ke Clipboard</button>
+                </div>
+            </div>
+
+            <div id="stalkResult" style="display: none; text-align: center;">
+                <img id="stalkAvatar" src="" alt="Avatar" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); margin-bottom: 12px; object-fit: cover; background: #1e293b;">
+                <h3 id="stalkName" style="color: #fff; margin: 0 0 4px 0; font-size: 20px; font-weight: 700;">Name</h3>
+                <p id="stalkUsername" style="color: var(--text-muted); margin: 0 0 16px 0; font-size: 14px; font-weight: 500;">@username</p>
+                <p id="stalkBio" style="color: #e2e8f0; font-size: 14px; margin-bottom: 24px; font-style: italic;"></p>
+                
+                <div id="stalkStatsGrid" class="ai-stats-grid">
+                </div>
+                
+                <div id="stalkExtra" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); text-align: left; font-size: 13px; line-height: 1.6; color: var(--text-muted);">
                 </div>
             </div>
 
