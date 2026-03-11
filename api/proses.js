@@ -3,9 +3,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ status: false, message: 'Metode tidak diizinkan.' });
     }
 
-    // Sekarang kita juga menerima fileData dari frontend
     const { action, params, fileData } = req.body; 
-    
     const apiKey = process.env.API_KEY; 
     const baseUrl = 'https://api.neoxr.eu/api';
 
@@ -16,31 +14,33 @@ export default async function handler(req, res) {
     try {
         let finalParams = { ...params, apikey: apiKey };
 
-        // JIKA ADA FILE, VERCEL YANG AKAN MENGUNGGAHNYA KE CATBOX
+        // VERCEL MENGUNGGAH FILE KE TMPFILES (BUKAN CATBOX)
         if (fileData && fileData.base64) {
-            // Ubah Base64 kembali menjadi file fisik (Buffer)
             const base64Data = fileData.base64.split(',')[1];
             const buffer = Buffer.from(base64Data, 'base64');
             
             const formData = new FormData();
-            formData.append('reqtype', 'fileupload');
-            formData.append('fileToUpload', new Blob([buffer], { type: fileData.mimeType }), fileData.fileName);
+            formData.append('file', new Blob([buffer], { type: fileData.mimeType }), fileData.fileName);
 
-            // Vercel (bukan HP kamu) yang melakukan upload, dijamin tidak kena blokir ISP!
-            const uploadRes = await fetch('https://catbox.moe/user/api.php', {
+            const uploadRes = await fetch('https://tmpfiles.org/api/v1/upload', {
                 method: 'POST',
                 body: formData
             });
 
-            if (!uploadRes.ok) throw new Error('Gagal mengunggah file di sisi server.');
-            const uploadedUrl = await uploadRes.text();
+            if (!uploadRes.ok) throw new Error('Gagal mengunggah file ke server CDN sementara.');
+            const uploadJson = await uploadRes.json();
+            
+            if (uploadJson.status !== 'success') {
+                throw new Error('File ditolak oleh server CDN sementara.');
+            }
 
-            // Masukkan URL catbox yang berhasil dibuat ke dalam parameter API NeoXR
+            // Ubah link web tmpfiles menjadi Direct Link (tambah /dl/) agar bisa dibaca API
+            const uploadedUrl = uploadJson.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+
             if (action === 'upscale' || action === 'nobg') finalParams.image = uploadedUrl;
             if (action === 'noice-reducer') finalParams.file = uploadedUrl;
         }
 
-        // Lanjut panggil API NeoXR seperti biasa
         const query = new URLSearchParams(finalParams).toString();
         const apiUrl = `${baseUrl}/${action}?${query}`;
         
