@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/tmpfiles-proxy",
-      "destination": "https://tmpfiles.org/api/v1/upload"
-    }
-  ]
-}
