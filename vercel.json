@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/catbox-proxy",
-      "destination": "https://catbox.moe/user/api.php"
+      "source": "/tmpfiles-proxy",
+      "destination": "https://tmpfiles.org/api/v1/upload"
     }
   ]
 }
