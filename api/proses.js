@@ -34,10 +34,8 @@ export default async function handler(req, res) {
                 throw new Error('File ditolak oleh server CDN sementara.');
             }
 
-            // Ubah link web tmpfiles menjadi Direct Link (tambah /dl/)
             const uploadedUrl = uploadJson.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
 
-            // Tambahkan photo-editor ke daftar yang butuh link gambar
             if (action === 'upscale' || action === 'nobg' || action === 'photo-editor') finalParams.image = uploadedUrl;
             if (action === 'noice-reducer') finalParams.file = uploadedUrl;
         }
@@ -46,9 +44,22 @@ export default async function handler(req, res) {
         const apiUrl = `${baseUrl}/${action}?${query}`;
         
         const response = await fetch(apiUrl);
-        const data = await response.json();
+        
+        // --- PERBAIKAN ERROR HANDLING DI SINI ---
+        // Cek dulu apakah responsenya benar-benar JSON
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            // Kalau bukan JSON (misal HTML error karena input aneh), beri tahu user baik-baik
+            return res.status(500).json({ 
+                status: false, 
+                message: 'Input tidak valid atau server tujuan menolak permintaan (Bukan JSON).' 
+            });
+        }
+        // ----------------------------------------
 
+        const data = await response.json();
         res.status(200).json(data);
+        
     } catch (error) {
         console.error("Error API:", error);
         res.status(500).json({ status: false, message: error.message || 'Gagal terhubung ke server utama.' });
