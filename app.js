@@ -17,7 +17,7 @@ function checkCooldown() {
         const diff = now - parseInt(lastAction);
         if (diff < COOLDOWN_TIME) {
             const sisa = Math.ceil((COOLDOWN_TIME - diff) / 1000);
-            alert(`Jangan spam Bro tunggu ${sisa} detik dulu sebelum menggunakan layanan ini lagi.`);
+            alert(`Sistem Anti-Spam: Harap tunggu ${sisa} detik sebelum menggunakan layanan ini lagi.`);
             return false;
         }
     }
@@ -66,6 +66,11 @@ function setPlatform(platform) {
     else if (platform === 'hd-foto') { title.innerHTML = "HD Foto (Upscaler)"; document.getElementById('mediaUrl').placeholder = "Tempel link gambar dari catbox di sini..."; urlContainer.style.display = 'flex'; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Upload gambarmu ke <a href="https://catbox.moe" target="_blank">catbox.moe</a> terlebih dahulu. Salin link gambar tersebut dan tempel di kolom atas.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Tingkatkan Kualitas Foto'; }
     else if (platform === 'remove-bg') { title.innerHTML = "Hapus Background"; document.getElementById('mediaUrl').placeholder = "Tempel link gambar dari catbox di sini..."; urlContainer.style.display = 'flex'; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Upload gambarmu ke <a href="https://catbox.moe" target="_blank">catbox.moe</a> terlebih dahulu. Salin link gambar tersebut dan tempel di kolom atas.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Hapus Background Gambar'; }
     else if (platform === 'noise-reduce') { title.innerHTML = "Audio Noise Reduce"; document.getElementById('mediaUrl').placeholder = "Tempel link audio dari catbox di sini..."; urlContainer.style.display = 'flex'; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Upload file suaramu (MP3/WAV) ke <a href="https://catbox.moe" target="_blank">catbox.moe</a> terlebih dahulu. Salin link tersebut dan tempel di kolom atas.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Bersihkan Suara Audio'; }
+    // --- FITUR BARU: STALKER ---
+    else if (platform === 'roblox-stalk') { title.innerHTML = "Roblox Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan username Roblox..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari Player'; }
+    else if (platform === 'dc-stalk') { title.innerHTML = "Discord Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan ID Discord (angka)..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari User'; }
+    else if (platform === 'tt-stalk') { title.innerHTML = "TikTok Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan username TikTok (tanpa @)..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari Akun'; }
+    else if (platform === 'tw-stalk') { title.innerHTML = "Twitter Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan username Twitter (tanpa @)..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari Akun'; }
 
     document.getElementById('mediaUrl').value = '';
     document.getElementById('textContent').value = '';
@@ -125,6 +130,7 @@ async function processAction() {
     const audioResult = document.getElementById('audioResult');
     const removeBgResult = document.getElementById('removeBgResult');
     const lirikResult = document.getElementById('lirikResult');
+    const stalkResult = document.getElementById('stalkResult');
     const actionBtns = document.getElementById('actionBtns');
 
     let inputData = "";
@@ -161,14 +167,15 @@ async function processAction() {
         inputData = document.getElementById('mediaUrl').value.trim();
         if (!inputData) return alert("Harap masukkan judul lagu terlebih dahulu.");
     } else {
+        // Ini termasuk form Stalkers
         inputData = document.getElementById('mediaUrl').value.trim();
-        if (!inputData) return alert("Harap isi kolom input URL terlebih dahulu.");
+        if (!inputData) return alert("Harap isi kolom input terlebih dahulu.");
     }
 
     setCooldown();
     mainBtn.disabled = true; mainBtn.innerHTML = "Memproses...";
     loading.style.display = 'block'; loadingText.innerText = "Memproses permintaan...";
-    resultCard.style.display = 'none'; downloaderResult.style.display = 'none'; aiResult.style.display = 'none'; ssWebResult.style.display = 'none'; iqcResult.style.display = 'none'; nulisResult.style.display = 'none'; ytTranscriptResult.style.display = 'none'; invoiceResult.style.display = 'none'; hdFotoResult.style.display = 'none'; audioResult.style.display = 'none'; removeBgResult.style.display = 'none'; lirikResult.style.display = 'none';
+    resultCard.style.display = 'none'; downloaderResult.style.display = 'none'; aiResult.style.display = 'none'; ssWebResult.style.display = 'none'; iqcResult.style.display = 'none'; nulisResult.style.display = 'none'; ytTranscriptResult.style.display = 'none'; invoiceResult.style.display = 'none'; hdFotoResult.style.display = 'none'; audioResult.style.display = 'none'; removeBgResult.style.display = 'none'; lirikResult.style.display = 'none'; stalkResult.style.display = 'none';
 
     try {
         let action = '';
@@ -192,6 +199,11 @@ async function processAction() {
         else if (currentPlatform === 'noise-reduce') { action = 'noice-reducer'; params = { file: inputData }; }
         else if (currentPlatform === 'remove-bg') { action = 'nobg'; params = { image: inputData }; }
         else if (currentPlatform === 'lirik') { action = 'lyric'; params = { q: inputData }; }
+        // --- API STALK ---
+        else if (currentPlatform === 'roblox-stalk') { action = 'roblox-stalk'; params = { username: inputData }; }
+        else if (currentPlatform === 'dc-stalk') { action = 'dcstalk'; params = { id: inputData }; }
+        else if (currentPlatform === 'tt-stalk') { action = 'ttstalk'; params = { username: inputData }; }
+        else if (currentPlatform === 'tw-stalk') { action = 'twstalk'; params = { username: inputData }; }
 
         let waitPromise = null;
         if (currentPlatform === 'hd-foto' || currentPlatform === 'remove-bg') {
@@ -230,6 +242,70 @@ async function processAction() {
                 let qrData = data.qr_image;
                 if (!qrData.startsWith('data:image')) qrData = `data:image/png;base64,${qrData}`;
                 document.getElementById('invQrImage').src = qrData;
+            }
+            else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk'].includes(currentPlatform)) {
+                stalkResult.style.display = 'block';
+                const avatarImg = document.getElementById('stalkAvatar');
+                const nameEl = document.getElementById('stalkName');
+                const userEl = document.getElementById('stalkUsername');
+                const bioEl = document.getElementById('stalkBio');
+                const gridEl = document.getElementById('stalkStatsGrid');
+                const extraEl = document.getElementById('stalkExtra');
+                
+                gridEl.innerHTML = ''; extraEl.innerHTML = ''; bioEl.innerText = '';
+                
+                if (currentPlatform === 'roblox-stalk') {
+                    avatarImg.src = data.avatar;
+                    nameEl.innerText = data.displayName || data.name;
+                    userEl.innerText = `@${data.name}`;
+                    if(data.description) bioEl.innerText = data.description;
+                    
+                    gridEl.innerHTML = `
+                        <div class="ai-stat-box"><h4>${data.friends}</h4><p>Teman</p></div>
+                        <div class="ai-stat-box"><h4>${data.followers}</h4><p>Followers</p></div>
+                        <div class="ai-stat-box"><h4>${data.followings}</h4><p>Followings</p></div>
+                        <div class="ai-stat-box"><h4>${data.badges ? data.badges.length : 0}</h4><p>Badges</p></div>
+                    `;
+                    extraEl.innerHTML = `<strong>ID:</strong> ${data.id}<br><strong>Dibuat:</strong> ${new Date(data.created).toLocaleDateString()}<br><strong>Banned:</strong> ${data.isBanned ? 'Ya' : 'Tidak'}`;
+                }
+                else if (currentPlatform === 'dc-stalk') {
+                    avatarImg.src = data.avatar_url;
+                    nameEl.innerText = data.global_name || data.username;
+                    userEl.innerText = `@${data.username}`;
+                    
+                    gridEl.innerHTML = `
+                        <div class="ai-stat-box" style="grid-column: span 2;"><h4>${data.id}</h4><p>User ID</p></div>
+                        <div class="ai-stat-box"><h4>${data.discriminator}</h4><p>Discriminator</p></div>
+                    `;
+                    extraEl.innerHTML = `<strong>Dibuat:</strong> ${new Date(data.created_at).toLocaleString()}`;
+                }
+                else if (currentPlatform === 'tt-stalk') {
+                    avatarImg.src = data.photo;
+                    nameEl.innerText = data.name;
+                    userEl.innerText = `@${data.username}`;
+                    if(data.bio) bioEl.innerText = data.bio;
+                    
+                    gridEl.innerHTML = `
+                        <div class="ai-stat-box"><h4>${data.followers}</h4><p>Followers</p></div>
+                        <div class="ai-stat-box"><h4>${data.following}</h4><p>Following</p></div>
+                        <div class="ai-stat-box"><h4>${data.likes}</h4><p>Likes</p></div>
+                        <div class="ai-stat-box"><h4>${data.posts}</h4><p>Posts</p></div>
+                    `;
+                    extraEl.innerHTML = `<strong>ID:</strong> ${data.id}<br><strong>Verified:</strong> ${data.verified ? 'Ya' : 'Tidak'}<br><strong>Private:</strong> ${data.private ? 'Ya' : 'Tidak'}`;
+                }
+                else if (currentPlatform === 'tw-stalk') {
+                    avatarImg.src = data.photo;
+                    nameEl.innerText = data.name;
+                    userEl.innerText = data.username; // Sudah termasuk '@'
+                    
+                    gridEl.innerHTML = `
+                        <div class="ai-stat-box"><h4>${data.followers}</h4><p>Followers</p></div>
+                        <div class="ai-stat-box"><h4>${data.followings}</h4><p>Following</p></div>
+                        <div class="ai-stat-box"><h4>${data.likes}</h4><p>Likes</p></div>
+                        <div class="ai-stat-box"><h4>${data.tweets}</h4><p>Tweets</p></div>
+                    `;
+                    extraEl.innerHTML = `<strong>Status:</strong> ${data.joined}<br><strong>Private:</strong> ${data.private ? 'Ya' : 'Tidak'}`;
+                }
             }
             else if (currentPlatform === 'lirik') {
                 lirikResult.style.display = 'block';
@@ -382,6 +458,7 @@ async function processAction() {
         else if (currentPlatform === 'noise-reduce') mainBtn.innerHTML = "Bersihkan Suara Audio";
         else if (currentPlatform === 'lirik') mainBtn.innerHTML = "Cari Lirik Sekarang";
         else if (currentPlatform === 'terabox') mainBtn.innerHTML = "Buka File TeraBox";
+        else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk'].includes(currentPlatform)) mainBtn.innerHTML = "Cari Sekarang";
         else mainBtn.innerHTML = "Download Sekarang";
     }
 }
