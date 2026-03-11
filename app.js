@@ -66,6 +66,7 @@ function setPlatform(platform) {
     else if (platform === 'iqc') { title.innerHTML = "iPhone Quoted"; document.getElementById('textContent').placeholder = "Ketik atau tempel teks pesan di sini..."; textContainer.style.display = 'flex'; timeInputsContainer.style.display = 'flex'; btn.innerHTML = 'Buat Kutipan iPhone'; }
     else if (platform === 'nulis') { title.innerHTML = "Nulis Otomatis"; document.getElementById('textContent').placeholder = "Ketik atau tempel teks yang ingin ditulis tangan..."; textContainer.style.display = 'flex'; btn.innerHTML = 'Mulai Nulis'; }
     
+    // Fitur Upload File
     else if (platform === 'hd-foto') { title.innerHTML = "HD Foto (Upscaler)"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari galerimu. Sistem akan mengunggah dan memprosesnya secara otomatis.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Tingkatkan Kualitas Foto'; }
     else if (platform === 'remove-bg') { title.innerHTML = "Hapus Background"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari galerimu. Sistem akan mengunggah dan memprosesnya secara otomatis.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Hapus Background Gambar'; }
     else if (platform === 'noise-reduce') { title.innerHTML = "Audio Noise Reduce"; fileContainer.style.display = 'flex'; mediaFile.accept = "audio/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih file audio (MP3/WAV) dari perangkatmu. Sistem akan membersihkannya otomatis.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Bersihkan Suara Audio'; }
@@ -172,23 +173,29 @@ async function processAction() {
     try {
         let finalInputData = inputData;
 
-        // PROSES AUTO-UPLOAD MENGGUNAKAN PROXY VERCEL
+        // UPLOAD KE TMPFILES VIA VERCEL PROXY
         if (['hd-foto', 'remove-bg', 'noise-reduce'].includes(currentPlatform)) {
             const fileInput = document.getElementById('mediaFile');
-            loadingText.innerText = "Mengunggah file ke server (Mohon tunggu)...";
+            loadingText.innerText = "Mengunggah file sementara (Mohon tunggu)...";
             
             const formData = new FormData();
-            formData.append('reqtype', 'fileupload');
-            formData.append('fileToUpload', fileInput.files[0]);
+            formData.append('file', fileInput.files[0]); // tmpfiles.org menggunakan parameter 'file'
 
-            // Memanggil Rewrite Vercel, BUKAN memanggil URL catbox langsung
-            const uploadRes = await fetch('/catbox-proxy', {
+            const uploadRes = await fetch('/tmpfiles-proxy', {
                 method: 'POST',
                 body: formData
             });
 
-            if (!uploadRes.ok) throw new Error("Gagal mengunggah file ke server sementara.");
-            finalInputData = await uploadRes.text(); 
+            if (!uploadRes.ok) throw new Error("Gagal mengunggah file. Server Vercel belum siap (404) atau ditolak.");
+            
+            const uploadJson = await uploadRes.json();
+            if (uploadJson.status !== 'success') {
+                throw new Error("Ditolak oleh server penyimpanan sementara.");
+            }
+
+            // Mengubah URL halaman tmpfiles menjadi Direct Link (menambahkan /dl/)
+            let rawUrl = uploadJson.data.url;
+            finalInputData = rawUrl.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
         }
 
         let action = '';
@@ -523,7 +530,7 @@ async function processAction() {
         }
     } catch (error) {
         console.error(error);
-        alert("Gangguan jaringan. Periksa koneksi internetmu.");
+        alert("Pesan Sistem:\n" + error.message);
     } finally {
         loading.style.display = 'none';
         mainBtn.disabled = false;
