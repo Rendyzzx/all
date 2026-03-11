@@ -54,6 +54,8 @@
             transition: all 0.2s ease; display: flex; justify-content: center; align-items: center;
         }
         .nav-btn:hover { background: rgba(255, 255, 255, 0.1); }
+        /* Tampilan saat tombol menu dikunci (sedang loading) */
+        .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
         
         .logo {
             font-size: 20px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px;
@@ -73,8 +75,7 @@
             border: 1px solid var(--border-color);
             border-radius: 24px; padding: 24px; width: 100%; max-width: 440px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            max-height: 85vh; 
-            overflow-y: auto; 
+            max-height: 85vh; overflow-y: auto; 
             
             /* KODE ANTI LAG SCROLL */
             -webkit-overflow-scrolling: touch; 
@@ -391,7 +392,7 @@
 
     <nav class="navbar">
         <div class="logo"><i class="fas fa-moon"></i> Moonlight</div>
-        <button class="nav-btn" onclick="openModal()"><i class="fas fa-bars"></i></button>
+        <button id="menuBtn" class="nav-btn" onclick="openModal()"><i class="fas fa-bars"></i></button>
     </nav>
 
     <div id="featuresModal" class="modal">
