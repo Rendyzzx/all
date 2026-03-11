@@ -14,7 +14,7 @@ window.onload = function () {
         }
     }, 1500);
 
-    // 2. Set menu default ke YouTube
+    // 2. Set menu default
     setPlatform('youtube');
     
     // 3. Set status aktif pada Navigasi Bawah (Semua)
@@ -31,21 +31,17 @@ function showToast(message, type = 'error') {
     const toastIcon = document.getElementById("toastIcon");
     const toastMessage = document.getElementById("toastMessage");
 
-    // Reset kelas
     toast.className = "toast";
     toastIcon.className = "";
-
-    // Sesuaikan warna dan ikon berdasarkan tipe
     toast.classList.add(type);
+    
     if (type === 'error') toastIcon.className = 'fas fa-exclamation-circle';
     else if (type === 'success') toastIcon.className = 'fas fa-check-circle';
     else if (type === 'info') toastIcon.className = 'fas fa-info-circle';
 
-    // Tampilkan
     toastMessage.innerText = message;
     toast.classList.add("show");
 
-    // Sembunyikan setelah 3 detik
     clearTimeout(toastTimeout);
     toastTimeout = setTimeout(function(){
         toast.classList.remove("show");
@@ -56,9 +52,7 @@ function showToast(message, type = 'error') {
 // FITUR RIWAYAT (HISTORY) - LOCAL STORAGE
 // ==========================================
 function saveToHistory(title, link) {
-    // Jangan simpan kalau link kosong
     if(!link || typeof link !== 'string' || link.trim() === '') return;
-    
     let history = JSON.parse(localStorage.getItem('moonlightHistory')) || [];
     
     const newItem = {
@@ -68,12 +62,8 @@ function saveToHistory(title, link) {
         date: new Date().toLocaleString('id-ID', {day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit'})
     };
     
-    // Masukkan ke urutan paling atas
     history.unshift(newItem);
-    
-    // Maksimal simpan 10 riwayat
     if (history.length > 10) history.pop(); 
-    
     localStorage.setItem('moonlightHistory', JSON.stringify(history));
 }
 
@@ -120,7 +110,6 @@ function openHistory() {
     renderHistory();
     document.getElementById('historyModal').style.display = 'flex';
 }
-
 function closeHistory() { 
     document.getElementById('historyModal').style.display = 'none'; 
 }
@@ -149,7 +138,6 @@ async function forceDownload(url, filename) {
         
         showToast("Disimpan ke galeri!", "success");
     } catch (error) {
-        // Fallback jika server kena limit CORS
         window.open(url, '_blank');
         showToast("Membuka di tab baru (Server memblokir unduhan instan)", "info");
     }
@@ -159,7 +147,6 @@ async function forceDownload(url, filename) {
 // MODAL & NAVIGATION CONTROL
 // ==========================================
 function openCategory(catId, btnId) {
-    // Reset Navigasi Bawah
     document.querySelectorAll('.bnav-item').forEach(btn => btn.classList.remove('active'));
     if (btnId) {
         const activeBtn = document.getElementById(btnId);
@@ -169,7 +156,6 @@ function openCategory(catId, btnId) {
     const modal = document.getElementById('featuresModal');
     modal.style.display = 'flex';
 
-    // Auto-scroll ke kategori yang dipilih
     if (catId !== 'all') {
         setTimeout(() => {
             const catEl = document.getElementById(catId);
@@ -220,10 +206,60 @@ function setCooldown() {
 }
 
 // ==========================================
+// EFEK WARNA BUNGLON (DYNAMIC THEME)
+// ==========================================
+function applyDynamicTheme(platform) {
+    const root = document.documentElement;
+    let primary = '#2563eb'; // Biru Moonlight Default
+    let hover = '#1d4ed8';
+
+    const aiTools = ['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor', 'ai-detector'];
+    
+    if (platform === 'youtube' || platform === 'yt-transcript' || platform === 'pin') { 
+        primary = '#ef4444'; hover = '#dc2626'; // Merah
+    } 
+    else if (platform === 'tiktok' || platform === 'tt-stalk') { 
+        primary = '#06b6d4'; hover = '#0891b2'; // Sian (Cyan)
+    } 
+    else if (platform === 'ig' || platform === 'ig-stalk') { 
+        primary = '#d946ef'; hover = '#c026d3'; // Pink/Magenta
+    } 
+    else if (platform === 'facebook') { 
+        primary = '#1877f2'; hover = '#1462cb'; // Biru FB
+    } 
+    else if (platform === 'twitter' || platform === 'tw-stalk' || platform === 'th-stalk') { 
+        primary = '#475569'; hover = '#334155'; // Abu-abu Gelap (Slate)
+    } 
+    else if (platform === 'spotify' || platform === 'lirik') { 
+        primary = '#1db954'; hover = '#1aa34a'; // Hijau Spotify
+    } 
+    else if (platform === 'terabox') { 
+        primary = '#eab308'; hover = '#ca8a04'; // Kuning
+    } 
+    else if (aiTools.includes(platform)) { 
+        primary = '#8b5cf6'; hover = '#7c3aed'; // Ungu Magis AI
+    } 
+    else if (platform === 'pulsa' || platform === 'topup' || platform === 'roblox-stalk') { 
+        primary = '#10b981'; hover = '#059669'; // Hijau Emerald
+    } 
+    else if (platform === 'nulis' || platform === 'iqc' || platform === 'ss-web') { 
+        primary = '#f59e0b'; hover = '#d97706'; // Kuning Amber
+    }
+
+    // Suntikkan warna baru ke CSS secara instan
+    root.style.setProperty('--primary', primary);
+    root.style.setProperty('--primary-hover', hover);
+}
+
+// ==========================================
 // SETTING TAMPILAN BERDASARKAN FITUR
 // ==========================================
 function setPlatform(platform) {
     currentPlatform = platform;
+    
+    // Ganti Warna Tema Terlebih Dahulu
+    applyDynamicTheme(platform);
+
     const title = document.getElementById('mainTitle');
     const urlCont = document.getElementById('urlInputContainer');
     const textCont = document.getElementById('textInputContainer');
@@ -263,7 +299,7 @@ function setPlatform(platform) {
         urlCont.style.display = 'flex'; 
         providerCont.style.display = 'flex'; 
         nominalCont.style.display = 'flex'; 
-        btn.innerHTML = 'Buat Tagihan Pembayaran'; 
+        btn.innerHTML = 'Buat Tagihan'; 
     }
     else if (platform === 'topup') { 
         title.innerHTML = "Topup E-Wallet"; 
@@ -272,7 +308,7 @@ function setPlatform(platform) {
         urlCont.style.display = 'flex'; 
         providerCont.style.display = 'flex'; 
         customAmountCont.style.display = 'flex'; 
-        btn.innerHTML = 'Buat Tagihan Pembayaran'; 
+        btn.innerHTML = 'Buat Tagihan'; 
     }
     else if (platform === 'youtube') { 
         title.innerHTML = "Unduh YouTube"; 
@@ -437,13 +473,12 @@ function setPlatform(platform) {
         btn.innerHTML = 'Cari Akun Threads'; 
     }
 
-    // Reset input data
     document.getElementById('mediaUrl').value = '';
     document.getElementById('textContent').value = '';
     document.getElementById('mediaFile').value = '';
     if (document.getElementById('customAmount')) document.getElementById('customAmount').value = '';
     
-    // Animasi transisi yang smooth saat ganti form
+    // Animasi transisi yang smooth
     const formGroup = document.querySelector('.form-group');
     const mainTitleEl = document.getElementById('mainTitle');
     formGroup.style.animation = 'none';
@@ -598,7 +633,6 @@ async function processAction() {
 
     setCooldown();
     
-    // Kunci tombol selama loading
     mainBtn.disabled = true; 
     mainBtn.innerHTML = "Memproses...";
     if(menuBtn) menuBtn.disabled = true;
@@ -638,7 +672,7 @@ async function processAction() {
         let action = '';
         let params = {};
 
-        // Pengaturan Parameter sesuai Endpoint API NeoXR
+        // Pengaturan Parameter sesuai Endpoint API
         if (currentPlatform === 'pulsa' || currentPlatform === 'topup') { action = providerData; params = { number: finalInputData, amount: amountData }; }
         else if (currentPlatform === 'youtube') { action = 'youtube'; params = { url: finalInputData, type: ytType, quality: ytQuality }; }
         else if (currentPlatform === 'tiktok') { action = 'snaptik-v2'; params = { url: finalInputData }; }
@@ -670,7 +704,7 @@ async function processAction() {
             loadingText.innerHTML = `Sedang diproses oleh AI, harap tunggu... <i class="fas fa-sparkles" style="color: #fbbf24;"></i>`;
         }
 
-        // Panggil API Backend (Vercel)
+        // Panggil API Backend
         const response = await fetch('/api/proses', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -684,7 +718,6 @@ async function processAction() {
             const data = json.data;
             resultCard.style.display = 'block';
 
-            // Menampilkan Hasil + Simpan History
             if (currentPlatform === 'pulsa' || currentPlatform === 'topup') {
                 document.getElementById('invoiceResult').style.display = 'block';
                 document.getElementById('invoiceId').innerText = `Order ID: ${data.code}`;
@@ -842,8 +875,6 @@ async function processAction() {
                 document.getElementById('photoEditorInfo').innerText = `Ukuran File: ${data.size}`;
                 document.getElementById('photoEditorImage').src = data.url;
                 document.getElementById('photoEditorActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Moonlight_EditAI.jpg')"><i class="fas fa-download"></i> Simpan Hasil Edit</button>`;
-                
-                // Simpan ke Riwayat
                 saveToHistory(`Edit AI: ${finalInputData}`, data.url);
             }
             else if (currentPlatform === 'hd-foto') {
@@ -851,24 +882,18 @@ async function processAction() {
                 document.getElementById('hdFotoInfo').innerText = `Ukuran File Baru: ${data.size}`;
                 document.getElementById('hdImageResult').src = data.url;
                 document.getElementById('hdActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Moonlight_HDFoto.jpg')"><i class="fas fa-download"></i> Simpan Foto HD</button>`;
-                
-                // Simpan ke Riwayat
                 saveToHistory(`Hasil HD Foto`, data.url);
             }
             else if (currentPlatform === 'remove-bg') {
                 document.getElementById('removeBgResult').style.display = 'block';
                 document.getElementById('removeBgImage').src = data.no_background;
                 document.getElementById('removeBgActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.no_background}', 'Moonlight_Transparan.png')"><i class="fas fa-download"></i> Simpan Gambar Transparan</button>`;
-                
-                // Simpan ke Riwayat
                 saveToHistory(`Hasil Hapus BG`, data.no_background);
             }
             else if (currentPlatform === 'noise-reduce') {
                 document.getElementById('audioResult').style.display = 'block';
                 document.getElementById('audioPlayer').src = data.url;
                 document.getElementById('audioActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Moonlight_CleanAudio.mp3')"><i class="fas fa-download"></i> Simpan Audio Bersih</button>`;
-                
-                // Simpan ke Riwayat
                 saveToHistory(`Hasil Bersih Audio`, data.url);
             }
             else if (currentPlatform === 'ss-web') {
@@ -918,7 +943,7 @@ async function processAction() {
                 if (currentPlatform === 'facebook') {
                     profileSec.style.display = 'none'; captionText.style.display = 'none'; thumbCon.style.display = 'none';
                     data.forEach((item) => { 
-                        actionBtns.innerHTML += `<button class="btn-primary btn-fb" onclick="forceDownload('${item.url}', 'Moonlight_Facebook.mp4')"><i class="fas fa-video"></i> Download Video (${item.quality})</button>`; 
+                        actionBtns.innerHTML += `<button class="btn-primary" onclick="forceDownload('${item.url}', 'Moonlight_Facebook.mp4')"><i class="fas fa-video"></i> Download Video (${item.quality})</button>`; 
                     });
                 }
                 else if (currentPlatform === 'twitter') {
@@ -926,7 +951,7 @@ async function processAction() {
                     data.forEach((item, index) => {
                         let typeText = item.type === "mp4" ? "Video" : "Gambar";
                         let icon = item.type === "mp4" ? "fa-video" : "fa-image";
-                        actionBtns.innerHTML += `<button class="btn-primary btn-tw" onclick="forceDownload('${item.url}', 'Moonlight_Twitter_${index+1}.${item.type}')"><i class="fas ${icon}"></i> Download ${typeText} ${index + 1}</button>`;
+                        actionBtns.innerHTML += `<button class="btn-primary" onclick="forceDownload('${item.url}', 'Moonlight_Twitter_${index+1}.${item.type}')"><i class="fas ${icon}"></i> Download ${typeText} ${index + 1}</button>`;
                     });
                 }
                 else if (currentPlatform === 'terabox') {
@@ -942,9 +967,9 @@ async function processAction() {
                     captionText.innerHTML = `<div style="margin-bottom: 8px;"><strong>Judul:</strong> ${json.title}</div><div style="margin-bottom: 8px;"><strong>Channel:</strong> ${json.channel}</div><div style="margin-bottom: 8px;"><strong>Durasi:</strong> ${json.fduration}</div><div style="margin-bottom: 8px;"><strong>Kualitas:</strong> ${data.quality}</div><div><strong>Ukuran File:</strong> ${data.size}</div>`;
                     thumbCon.style.display = 'flex'; thumbImg.src = json.thumbnail;
                     thumbImg.onload = () => { thumbImg.style.display = "block"; thumbFallback.style.display = "none"; }; thumbImg.onerror = () => { thumbImg.style.display = "none"; thumbFallback.style.display = "flex"; };
-                    actionBtns.innerHTML = `<button class="btn-yt" onclick="forceDownload('${data.url}', 'Moonlight_YT.${data.extension}')"><i class="fas fa-download"></i> Download ${data.extension.toUpperCase()}</button>`;
                     
-                    // Simpan ke Riwayat
+                    // Semuanya sekarang pakai class btn-primary karena warna diatur otomatis oleh Tema Bunglon
+                    actionBtns.innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Moonlight_YT.${data.extension}')"><i class="fas fa-download"></i> Download ${data.extension.toUpperCase()}</button>`;
                     saveToHistory(`YouTube: ${json.title}`, data.url);
                 }
                 else if (currentPlatform === 'spotify') {
@@ -952,9 +977,9 @@ async function processAction() {
                     captionText.innerHTML = `<strong>Judul:</strong> ${data.title}<br><strong>Artis:</strong> ${data.artist.name}<br><strong>Durasi:</strong> ${data.duration}`;
                     thumbCon.style.display = 'flex'; thumbImg.src = data.thumbnail;
                     thumbImg.onload = () => { thumbImg.style.display = "block"; thumbFallback.style.display = "none"; }; thumbImg.onerror = () => { thumbImg.style.display = "none"; thumbFallback.style.display = "flex"; };
-                    actionBtns.innerHTML = `<button class="btn-primary" style="background:#1db954;" onclick="forceDownload('${data.url}', 'Moonlight_Spotify.mp3')"><i class="fab fa-spotify"></i> Download MP3</button>`;
                     
-                    // Simpan ke Riwayat
+                    // Pakai btn-primary, warna hijaunya disetting dari Tema Bunglon
+                    actionBtns.innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Moonlight_Spotify.mp3')"><i class="fab fa-spotify"></i> Download MP3</button>`;
                     saveToHistory(`Spotify: ${data.title}`, data.url);
                 }
                 else if (currentPlatform === 'tiktok') {
@@ -968,10 +993,7 @@ async function processAction() {
                         if (data.audio) { 
                             actionBtns.innerHTML += `<button class="btn-secondary" onclick="forceDownload('${data.audio}', 'Moonlight_TikTok_Audio.mp3')"><i class="fas fa-music"></i> Download Audio</button>`; 
                         }
-                        
-                        // Simpan ke Riwayat
                         saveToHistory(`TikTok Slide (Foto)`, data.photo[0]);
-                        
                     } else {
                         thumbCon.style.display = 'none';
                         if (data.video) { 
@@ -983,8 +1005,6 @@ async function processAction() {
                         if (data.audio) { 
                             actionBtns.innerHTML += `<button class="btn-secondary" onclick="forceDownload('${data.audio}', 'Moonlight_TikTok_Audio.mp3')"><i class="fas fa-music"></i> Download Audio</button>`; 
                         }
-                        
-                        // Simpan ke Riwayat
                         if (data.video || data.videoHD) {
                             saveToHistory(`Video TikTok`, data.video || data.videoHD);
                         }
@@ -996,15 +1016,11 @@ async function processAction() {
                         let typeText = item.type === "mp4" ? "Video" : "Gambar"; 
                         actionBtns.innerHTML += `<button class="btn-primary" onclick="forceDownload('${item.url}', 'Moonlight_IG_${index+1}.${item.type}')">Download ${typeText} ${index + 1}</button>`; 
                     });
-                    
-                    // Simpan ke Riwayat
                     if(data.length > 0) saveToHistory(`Media Instagram`, data[0].url);
                 }
                 else if (currentPlatform === 'pin') {
                     profileSec.style.display = 'none'; captionText.style.display = 'none'; thumbCon.style.display = 'none';
                     actionBtns.innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Moonlight_Pinterest_Media')">Download Media (${data.size})</button>`;
-                    
-                    // Simpan ke Riwayat
                     saveToHistory(`Pinterest Media`, data.url);
                 }
             }
