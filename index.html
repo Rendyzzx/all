@@ -37,6 +37,7 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             line-height: 1.5;
+            padding-bottom: 70px; /* Ruang untuk bottom nav di mobile */
         }
 
         .navbar {
@@ -172,7 +173,6 @@
         #catboxHelper a { color: #60a5fa; text-decoration: none; font-weight: 600; }
         #catboxHelper a:hover { text-decoration: underline; }
 
-        /* DESAIN BARU TOMBOL TEMPEL (MINIMALIS ICON ONLY) */
         .paste-btn {
             background: rgba(255,255,255,0.08); 
             color: var(--text-muted); 
@@ -305,66 +305,6 @@
         .qr-container img { width: 100%; height: auto; display: block; }
         .qr-note { text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 0; line-height: 1.5; }
 
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-hover); }
-        .btn-secondary { background: #334155; color: var(--text-main); }
-        .btn-secondary:hover { background: #475569; }
-        .btn-yt { background: #ef4444; color: white; } 
-        .btn-yt:hover { background: #dc2626; }
-        .btn-fb { background: #1877f2; color: white; } 
-        .btn-fb:hover { background: #1462cb; }
-        .btn-tw { background: #0f1419; color: white; border: 1px solid rgba(255,255,255,0.2);} 
-        .btn-tw:hover { background: #272c30; }
-
-        footer {
-            margin-top: auto; 
-            padding: 30px 20px;
-            text-align: center;
-            font-size: 13px;
-            color: var(--text-muted);
-            background-color: rgba(15, 23, 42, 0.85);
-            border-top: 1px solid var(--border-color);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-
-        @media (max-width: 600px) {
-            .hero { padding: 40px 16px; }
-            .form-group { gap: 12px; }
-            .input-wrapper, .select-wrapper, .text-wrapper, .time-col { padding: 12px; }
-            .input-wrapper input { font-size: 16px; padding-left: 8px; } 
-            #resultCard { padding: 20px; }
-            .ai-stats-grid { grid-template-columns: 1fr; gap: 12px;} 
-            .feature-list li { padding: 12px; }
-        }
-
-        @media (min-width: 768px) {
-            .form-group { max-width: 650px; }
-            #resultCard { max-width: 650px; }
-            
-            .modal-content { 
-                max-width: 800px; 
-                padding: 32px;
-            }
-            
-            .feature-list {
-                background: transparent;
-                border: none;
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 16px;
-            }
-            .feature-list li {
-                background: #1e293b;
-                border: 1px solid var(--border-color);
-                border-radius: 16px;
-            }
-            .feature-list li, .feature-list li:last-child {
-                border-bottom: 1px solid var(--border-color); 
-            }
-        }
-
-        /* --- TOAST NOTIFICATION --- */
         .toast {
             visibility: hidden;
             min-width: 280px;
@@ -378,7 +318,7 @@
             position: fixed;
             z-index: 9999;
             left: 50%;
-            bottom: 20px; 
+            bottom: 90px; 
             transform: translateX(-50%);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
             display: flex;
@@ -389,24 +329,86 @@
             opacity: 0;
             transition: opacity 0.3s, bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
         }
-        .toast.show {
-            visibility: visible;
-            opacity: 1;
-            bottom: 40px; 
-        }
+        .toast.show { visibility: visible; opacity: 1; bottom: 100px; }
         .toast-icon { font-size: 22px; display: flex; align-items: center; justify-content: center; }
         .toast-message { font-size: 14px; font-weight: 500; line-height: 1.4; font-family: var(--font-family-system); }
-        
         .toast.error .toast-icon { color: #ef4444; }
         .toast.success .toast-icon { color: #10b981; }
         .toast.info .toast-icon { color: #3b82f6; }
+
+        /* KODE UNTUK BOTTOM NAVIGATION */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(15, 23, 42, 0.90);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 10px calc(12px + env(safe-area-inset-bottom));
+            z-index: 90;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .bnav-item {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            width: 25%;
+            font-family: var(--font-family-system);
+        }
+        .bnav-item i {
+            font-size: 20px;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+        .bnav-item:hover, .bnav-item.active { color: var(--primary); }
+        .bnav-item.active i { transform: translateY(-3px); }
+
+        footer {
+            margin-top: auto; 
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            background-color: transparent;
+        }
+
+        @media (max-width: 600px) {
+            .hero { padding: 40px 16px; }
+            .form-group { gap: 12px; }
+            .input-wrapper, .select-wrapper, .text-wrapper, .time-col { padding: 12px; }
+            .input-wrapper input { font-size: 16px; padding-left: 8px; } 
+            #resultCard { padding: 20px; }
+            .ai-stats-grid { grid-template-columns: 1fr; gap: 12px;} 
+            .feature-list li { padding: 12px; }
+        }
+
+        @media (min-width: 768px) {
+            .bottom-nav { display: none; } /* Sembunyikan bottom nav di desktop */
+            body { padding-bottom: 0; }
+            .form-group { max-width: 650px; }
+            #resultCard { max-width: 650px; }
+            .modal-content { max-width: 800px; padding: 32px; }
+            .feature-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; background: transparent; border: none; }
+            .feature-list li { background: #1e293b; border: 1px solid var(--border-color); border-radius: 16px; }
+            .feature-list li, .feature-list li:last-child { border-bottom: 1px solid var(--border-color); }
+        }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
         <div class="logo"><i class="fas fa-moon"></i> Moonlight</div>
-        <button id="menuBtn" class="nav-btn" onclick="openModal()"><i class="fas fa-bars"></i></button>
+        <button id="menuBtn" class="nav-btn" onclick="openCategory('all', 'bnav-all')"><i class="fas fa-bars"></i></button>
     </nav>
 
     <div id="featuresModal" class="modal">
@@ -414,7 +416,7 @@
             <span class="close-modal" onclick="closeModal()">&times;</span>
             <h2>Pilih Layanan</h2>
             
-            <p class="modal-category">Downloader Media</p>
+            <p class="modal-category" id="cat-downloader">Downloader Media</p>
             <ul class="feature-list">
                 <li onclick="setPlatform('youtube')"><i class="fab fa-youtube" style="color: #ef4444;"></i><div><h4>YouTube Downloader</h4></div></li>
                 <li onclick="setPlatform('tiktok')"><i class="fab fa-tiktok" style="color: #cbd5e1;"></i><div><h4>TikTok Downloader</h4></div></li>
@@ -426,7 +428,7 @@
                 <li onclick="setPlatform('spotify')"><i class="fab fa-spotify" style="color: #1db954;"></i><div><h4>Spotify Downloader</h4></div></li>
             </ul>
 
-            <p class="modal-category">AI & Tools</p>
+            <p class="modal-category" id="cat-ai">AI & Tools</p>
             <ul class="feature-list">
                 <li onclick="setPlatform('hd-foto')"><i class="fas fa-image" style="color: #8b5cf6;"></i><div><h4>HD Foto (Upscaler)</h4></div></li>
                 <li onclick="setPlatform('remove-bg')"><i class="fas fa-eraser" style="color: #ec4899;"></i><div><h4>Hapus Background</h4></div></li>
@@ -440,7 +442,7 @@
                 <li onclick="setPlatform('nulis')"><i class="fas fa-pen-nib" style="color: #f59e0b;"></i><div><h4>Nulis Otomatis</h4></div></li>
             </ul>
 
-            <p class="modal-category">Stalker / Checker</p>
+            <p class="modal-category" id="cat-stalker">Stalker / Checker</p>
             <ul class="feature-list">
                 <li onclick="setPlatform('roblox-stalk')"><i class="fas fa-gamepad" style="color: #10b981;"></i><div><h4>Roblox Stalk</h4></div></li>
                 <li onclick="setPlatform('dc-stalk')"><i class="fab fa-discord" style="color: #5865F2;"></i><div><h4>Discord Stalk</h4></div></li>
@@ -695,6 +697,25 @@
     <footer>
         &copy; Created by RendyZ
     </footer>
+
+    <nav class="bottom-nav">
+        <button id="bnav-all" class="bnav-item active" onclick="openCategory('all', 'bnav-all')">
+            <i class="fas fa-layer-group"></i>
+            <span>Semua</span>
+        </button>
+        <button id="bnav-dl" class="bnav-item" onclick="openCategory('cat-downloader', 'bnav-dl')">
+            <i class="fas fa-download"></i>
+            <span>Media</span>
+        </button>
+        <button id="bnav-ai" class="bnav-item" onclick="openCategory('cat-ai', 'bnav-ai')">
+            <i class="fas fa-magic"></i>
+            <span>AI Tools</span>
+        </button>
+        <button id="bnav-stalk" class="bnav-item" onclick="openCategory('cat-stalker', 'bnav-stalk')">
+            <i class="fas fa-search"></i>
+            <span>Stalker</span>
+        </button>
+    </nav>
 
     <script src="app.js"></script>
 </body>
