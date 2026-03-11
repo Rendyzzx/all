@@ -158,7 +158,6 @@ async function processAction() {
         const fileInput = document.getElementById('mediaFile');
         if (fileInput.files.length === 0) return alert("Harap pilih file terlebih dahulu dari perangkatmu.");
         
-        // Peringatan Batas Ukuran Vercel Serverless Function (Maks 4.5MB per payload)
         if (fileInput.files[0].size > 4 * 1024 * 1024) {
             return alert("Ukuran file terlalu besar! Demi stabilitas server, maksimal ukuran file adalah 4MB.");
         }
@@ -179,7 +178,6 @@ async function processAction() {
         let finalInputData = inputData;
         let fileBase64Obj = null;
 
-        // UBAH FILE FISIK MENJADI BASE64 UNTUK DIKIRIM KE BACKEND KITA
         if (['hd-foto', 'remove-bg', 'noise-reduce'].includes(currentPlatform)) {
             const fileInput = document.getElementById('mediaFile');
             loadingText.innerText = "Menyiapkan file untuk diproses (Mohon tunggu)...";
@@ -198,7 +196,7 @@ async function processAction() {
                 mimeType: file.type
             };
             
-            finalInputData = ""; // Akan diisi oleh backend secara otomatis
+            finalInputData = ""; 
         }
 
         let action = '';
@@ -230,18 +228,9 @@ async function processAction() {
         else if (currentPlatform === 'ig-stalk') { action = 'igstalk'; params = { username: finalInputData }; }
         else if (currentPlatform === 'th-stalk') { action = 'thstalk'; params = { username: finalInputData }; }
 
-        let waitPromise = null;
-        if (['hd-foto', 'remove-bg'].includes(currentPlatform)) {
-            let timeLeft = 60;
-            loadingText.innerHTML = `Sedang memproses AI... <span id="timerCount" class="timer-highlight">60</span>s`;
-            waitPromise = new Promise((resolve) => {
-                const timerInterval = setInterval(() => {
-                    timeLeft--;
-                    const timerEl = document.getElementById('timerCount');
-                    if (timerEl) timerEl.innerText = timeLeft;
-                    if (timeLeft <= 0) { clearInterval(timerInterval); loadingText.innerHTML = `Menyelesaikan hasil akhir...`; resolve(); }
-                }, 1000);
-            });
+        // Ganti teks loading khusus AI tanpa Timer
+        if (['hd-foto', 'remove-bg', 'noise-reduce'].includes(currentPlatform)) {
+            loadingText.innerHTML = `Sedang diproses oleh AI, harap tunggu... <i class="fas fa-sparkles" style="color: #fbbf24;"></i>`;
         }
 
         const response = await fetch('/api/proses', {
@@ -251,8 +240,6 @@ async function processAction() {
         });
         
         const json = await response.json();
-
-        if (waitPromise) await waitPromise;
 
         if (json.status === true) {
             const data = json.data;
