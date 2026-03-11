@@ -42,9 +42,11 @@ function setPlatform(platform) {
     const providerSelect = document.getElementById('pulsaProvider');
     const catboxHelper = document.getElementById('catboxHelper');
     const contactContainer = document.getElementById('contactContainer');
+    const fileContainer = document.getElementById('fileInputContainer');
+    const mediaFile = document.getElementById('mediaFile');
     const btn = document.getElementById('mainBtn');
 
-    urlContainer.style.display = 'none'; textContainer.style.display = 'none'; nominalContainer.style.display = 'none'; customAmountContainer.style.display = 'none'; providerContainer.style.display = 'none'; ytFormatContainer.style.display = 'none'; timeInputsContainer.style.display = 'none'; catboxHelper.style.display = 'none'; contactContainer.style.display = 'none'; document.getElementById('resultCard').style.display = 'none'; btn.style.display = 'flex';
+    urlContainer.style.display = 'none'; textContainer.style.display = 'none'; nominalContainer.style.display = 'none'; customAmountContainer.style.display = 'none'; providerContainer.style.display = 'none'; ytFormatContainer.style.display = 'none'; timeInputsContainer.style.display = 'none'; catboxHelper.style.display = 'none'; contactContainer.style.display = 'none'; document.getElementById('resultCard').style.display = 'none'; fileContainer.style.display = 'none'; btn.style.display = 'flex';
 
     if (platform === 'kontak') { title.innerHTML = "Hubungi Owner"; contactContainer.style.display = 'flex'; btn.style.display = 'none'; }
     else if (platform === 'pulsa') { title.innerHTML = "Isi Ulang Pulsa"; document.getElementById('mediaUrl').placeholder = "Masukkan Nomor HP (0812...)"; providerSelect.innerHTML = `<option value="pulsa-axis">AXIS</option><option value="pulsa-indosat">INDOSAT (IM3)</option><option value="pulsa-telkomsel">TELKOMSEL</option><option value="pulsa-tri">TRI (3)</option><option value="pulsa-xl">XL AXIATA</option>`; urlContainer.style.display = 'flex'; providerContainer.style.display = 'flex'; nominalContainer.style.display = 'flex'; btn.innerHTML = 'Buat Tagihan Pembayaran'; }
@@ -63,9 +65,11 @@ function setPlatform(platform) {
     else if (platform === 'ai-detector') { title.innerHTML = "AI Text Detector"; document.getElementById('textContent').placeholder = "Tempel artikel atau teks di sini..."; textContainer.style.display = 'flex'; btn.innerHTML = 'Deteksi Teks Sekarang'; }
     else if (platform === 'iqc') { title.innerHTML = "iPhone Quoted"; document.getElementById('textContent').placeholder = "Ketik atau tempel teks pesan di sini..."; textContainer.style.display = 'flex'; timeInputsContainer.style.display = 'flex'; btn.innerHTML = 'Buat Kutipan iPhone'; }
     else if (platform === 'nulis') { title.innerHTML = "Nulis Otomatis"; document.getElementById('textContent').placeholder = "Ketik atau tempel teks yang ingin ditulis tangan..."; textContainer.style.display = 'flex'; btn.innerHTML = 'Mulai Nulis'; }
-    else if (platform === 'hd-foto') { title.innerHTML = "HD Foto (Upscaler)"; document.getElementById('mediaUrl').placeholder = "Tempel link gambar dari catbox di sini..."; urlContainer.style.display = 'flex'; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Upload gambarmu ke <a href="https://catbox.moe" target="_blank">catbox.moe</a> terlebih dahulu. Salin link gambar tersebut dan tempel di kolom atas.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Tingkatkan Kualitas Foto'; }
-    else if (platform === 'remove-bg') { title.innerHTML = "Hapus Background"; document.getElementById('mediaUrl').placeholder = "Tempel link gambar dari catbox di sini..."; urlContainer.style.display = 'flex'; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Upload gambarmu ke <a href="https://catbox.moe" target="_blank">catbox.moe</a> terlebih dahulu. Salin link gambar tersebut dan tempel di kolom atas.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Hapus Background Gambar'; }
-    else if (platform === 'noise-reduce') { title.innerHTML = "Audio Noise Reduce"; document.getElementById('mediaUrl').placeholder = "Tempel link audio dari catbox di sini..."; urlContainer.style.display = 'flex'; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Upload file suaramu (MP3/WAV) ke <a href="https://catbox.moe" target="_blank">catbox.moe</a> terlebih dahulu. Salin link tersebut dan tempel di kolom atas.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Bersihkan Suara Audio'; }
+    
+    // Fitur dengan Upload File Otomatis
+    else if (platform === 'hd-foto') { title.innerHTML = "HD Foto (Upscaler)"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari galerimu. Sistem akan mengunggah dan memprosesnya secara otomatis.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Tingkatkan Kualitas Foto'; }
+    else if (platform === 'remove-bg') { title.innerHTML = "Hapus Background"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari galerimu. Sistem akan mengunggah dan memprosesnya secara otomatis.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Hapus Background Gambar'; }
+    else if (platform === 'noise-reduce') { title.innerHTML = "Audio Noise Reduce"; fileContainer.style.display = 'flex'; mediaFile.accept = "audio/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih file audio (MP3/WAV) dari perangkatmu. Sistem akan membersihkannya otomatis.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Bersihkan Suara Audio'; }
     
     // Fitur Stalkers
     else if (platform === 'roblox-stalk') { title.innerHTML = "Roblox Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan username Roblox..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari Player'; }
@@ -78,6 +82,7 @@ function setPlatform(platform) {
 
     document.getElementById('mediaUrl').value = '';
     document.getElementById('textContent').value = '';
+    document.getElementById('mediaFile').value = '';
     if (document.getElementById('customAmount')) document.getElementById('customAmount').value = '';
     closeModal();
 }
@@ -145,6 +150,7 @@ async function processAction() {
     let ytType = "";
     let ytQuality = "";
 
+    // VALIDASI INPUT SEBELUM LOADING
     if (currentPlatform === 'ai-detector' || currentPlatform === 'iqc' || currentPlatform === 'nulis') {
         inputData = document.getElementById('textContent').value.trim();
         if (!inputData) return alert("Harap isi teks terlebih dahulu.");
@@ -164,9 +170,9 @@ async function processAction() {
         if (!inputData) return alert("Harap isi kolom input URL terlebih dahulu.");
         const formatVal = document.getElementById('ytFormat').value.split('|');
         ytType = formatVal[0]; ytQuality = formatVal[1];
-    } else if (currentPlatform === 'hd-foto' || currentPlatform === 'noise-reduce' || currentPlatform === 'remove-bg') {
-        inputData = document.getElementById('mediaUrl').value.trim();
-        if (!inputData) return alert("Harap tempel link file (dari catbox.moe) terlebih dahulu.");
+    } else if (['hd-foto', 'noise-reduce', 'remove-bg'].includes(currentPlatform)) {
+        const fileInput = document.getElementById('mediaFile');
+        if (fileInput.files.length === 0) return alert("Harap pilih file terlebih dahulu dari perangkatmu.");
     } else if (currentPlatform === 'lirik') {
         inputData = document.getElementById('mediaUrl').value.trim();
         if (!inputData) return alert("Harap masukkan judul lagu terlebih dahulu.");
@@ -181,37 +187,58 @@ async function processAction() {
     resultCard.style.display = 'none'; downloaderResult.style.display = 'none'; aiResult.style.display = 'none'; ssWebResult.style.display = 'none'; iqcResult.style.display = 'none'; nulisResult.style.display = 'none'; ytTranscriptResult.style.display = 'none'; invoiceResult.style.display = 'none'; hdFotoResult.style.display = 'none'; audioResult.style.display = 'none'; removeBgResult.style.display = 'none'; lirikResult.style.display = 'none'; stalkResult.style.display = 'none';
 
     try {
+        let finalInputData = inputData;
+
+        // PROSES AUTO-UPLOAD FILE UNTUK FITUR AI GAMBAR/AUDIO
+        if (['hd-foto', 'remove-bg', 'noise-reduce'].includes(currentPlatform)) {
+            const fileInput = document.getElementById('mediaFile');
+            loadingText.innerText = "Mengunggah file ke server (Mohon tunggu)...";
+            
+            const formData = new FormData();
+            formData.append('reqtype', 'fileupload');
+            formData.append('fileToUpload', fileInput.files[0]);
+
+            const uploadRes = await fetch('https://catbox.moe/user/api.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!uploadRes.ok) throw new Error("Gagal mengunggah file ke server sementara.");
+            finalInputData = await uploadRes.text(); 
+            // Setelah ini finalInputData akan berisi link Catbox.
+        }
+
         let action = '';
         let params = {};
 
-        if (currentPlatform === 'pulsa' || currentPlatform === 'topup') { action = providerData; params = { number: inputData, amount: amountData }; }
-        else if (currentPlatform === 'youtube') { action = 'youtube'; params = { url: inputData, type: ytType, quality: ytQuality }; }
-        else if (currentPlatform === 'tiktok') { action = 'snaptik-v2'; params = { url: inputData }; }
-        else if (currentPlatform === 'ig') { action = 'ig'; params = { url: inputData }; }
-        else if (currentPlatform === 'facebook') { action = 'fb'; params = { url: inputData }; }
-        else if (currentPlatform === 'twitter') { action = 'twitter'; params = { url: inputData }; }
-        else if (currentPlatform === 'terabox') { action = 'terabox'; params = { url: inputData }; }
-        else if (currentPlatform === 'pin') { action = 'pin'; params = { url: inputData }; }
-        else if (currentPlatform === 'spotify') { action = 'spotify'; params = { url: inputData }; }
-        else if (currentPlatform === 'ss-web') { action = 'ss'; params = { url: inputData, device: 'desktop' }; }
-        else if (currentPlatform === 'yt-transcript') { action = 'transcript'; params = { url: inputData }; }
-        else if (currentPlatform === 'ai-detector') { action = 'ai-detector'; params = { text: inputData }; }
-        else if (currentPlatform === 'iqc') { action = 'iqc'; params = { text: inputData, time: phoneTime, chat_time: chatTime }; }
-        else if (currentPlatform === 'nulis') { action = 'nulis'; params = { text: inputData }; }
-        else if (currentPlatform === 'hd-foto') { action = 'upscale'; params = { image: inputData }; }
-        else if (currentPlatform === 'noise-reduce') { action = 'noice-reducer'; params = { file: inputData }; }
-        else if (currentPlatform === 'remove-bg') { action = 'nobg'; params = { image: inputData }; }
-        else if (currentPlatform === 'lirik') { action = 'lyric'; params = { q: inputData }; }
-        else if (currentPlatform === 'roblox-stalk') { action = 'roblox-stalk'; params = { username: inputData }; }
-        else if (currentPlatform === 'dc-stalk') { action = 'dcstalk'; params = { id: inputData }; }
-        else if (currentPlatform === 'tt-stalk') { action = 'ttstalk'; params = { username: inputData }; }
-        else if (currentPlatform === 'tw-stalk') { action = 'twstalk'; params = { username: inputData }; }
-        else if (currentPlatform === 'gh-stalk') { action = 'ghstalk'; params = { username: inputData }; }
-        else if (currentPlatform === 'ig-stalk') { action = 'igstalk'; params = { username: inputData }; }
-        else if (currentPlatform === 'th-stalk') { action = 'thstalk'; params = { username: inputData }; }
+        if (currentPlatform === 'pulsa' || currentPlatform === 'topup') { action = providerData; params = { number: finalInputData, amount: amountData }; }
+        else if (currentPlatform === 'youtube') { action = 'youtube'; params = { url: finalInputData, type: ytType, quality: ytQuality }; }
+        else if (currentPlatform === 'tiktok') { action = 'snaptik-v2'; params = { url: finalInputData }; }
+        else if (currentPlatform === 'ig') { action = 'ig'; params = { url: finalInputData }; }
+        else if (currentPlatform === 'facebook') { action = 'fb'; params = { url: finalInputData }; }
+        else if (currentPlatform === 'twitter') { action = 'twitter'; params = { url: finalInputData }; }
+        else if (currentPlatform === 'terabox') { action = 'terabox'; params = { url: finalInputData }; }
+        else if (currentPlatform === 'pin') { action = 'pin'; params = { url: finalInputData }; }
+        else if (currentPlatform === 'spotify') { action = 'spotify'; params = { url: finalInputData }; }
+        else if (currentPlatform === 'ss-web') { action = 'ss'; params = { url: finalInputData, device: 'desktop' }; }
+        else if (currentPlatform === 'yt-transcript') { action = 'transcript'; params = { url: finalInputData }; }
+        else if (currentPlatform === 'ai-detector') { action = 'ai-detector'; params = { text: finalInputData }; }
+        else if (currentPlatform === 'iqc') { action = 'iqc'; params = { text: finalInputData, time: phoneTime, chat_time: chatTime }; }
+        else if (currentPlatform === 'nulis') { action = 'nulis'; params = { text: finalInputData }; }
+        else if (currentPlatform === 'hd-foto') { action = 'upscale'; params = { image: finalInputData }; }
+        else if (currentPlatform === 'noise-reduce') { action = 'noice-reducer'; params = { file: finalInputData }; }
+        else if (currentPlatform === 'remove-bg') { action = 'nobg'; params = { image: finalInputData }; }
+        else if (currentPlatform === 'lirik') { action = 'lyric'; params = { q: finalInputData }; }
+        else if (currentPlatform === 'roblox-stalk') { action = 'roblox-stalk'; params = { username: finalInputData }; }
+        else if (currentPlatform === 'dc-stalk') { action = 'dcstalk'; params = { id: finalInputData }; }
+        else if (currentPlatform === 'tt-stalk') { action = 'ttstalk'; params = { username: finalInputData }; }
+        else if (currentPlatform === 'tw-stalk') { action = 'twstalk'; params = { username: finalInputData }; }
+        else if (currentPlatform === 'gh-stalk') { action = 'ghstalk'; params = { username: finalInputData }; }
+        else if (currentPlatform === 'ig-stalk') { action = 'igstalk'; params = { username: finalInputData }; }
+        else if (currentPlatform === 'th-stalk') { action = 'thstalk'; params = { username: finalInputData }; }
 
         let waitPromise = null;
-        if (currentPlatform === 'hd-foto' || currentPlatform === 'remove-bg') {
+        if (['hd-foto', 'remove-bg'].includes(currentPlatform)) {
             let timeLeft = 60;
             loadingText.innerHTML = `Sedang memproses AI... <span id="timerCount" class="timer-highlight">60</span>s`;
             waitPromise = new Promise((resolve) => {
@@ -276,7 +303,6 @@ async function processAction() {
                     `;
                     extraEl.innerHTML = `<strong>ID:</strong> ${data.id}<br><strong>Dibuat:</strong> ${new Date(data.created).toLocaleDateString()}<br><strong>Banned:</strong> ${data.isBanned ? 'Ya' : 'Tidak'}`;
 
-                    // Render Badges
                     if (data.badges && data.badges.length > 0 && badgeCon && badgeList) {
                         badgeCon.style.display = 'block';
                         badgeList.innerHTML = '';
@@ -325,7 +351,6 @@ async function processAction() {
                     extraEl.innerHTML = `<strong>ID:</strong> ${data.id}<br><strong>Private:</strong> ${data.private ? 'Ya' : 'Tidak'}`;
                 }
                 else if (currentPlatform === 'th-stalk') {
-                    // Cek jika profile_pic_url ada atau ambil dari hd_profile_pic_versions
                     let picUrl = data.profile_pic_url;
                     if(!picUrl && data.hd_profile_pic_versions && data.hd_profile_pic_versions.length > 0) {
                         picUrl = data.hd_profile_pic_versions[0].url;
