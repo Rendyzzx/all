@@ -66,11 +66,15 @@ function setPlatform(platform) {
     else if (platform === 'hd-foto') { title.innerHTML = "HD Foto (Upscaler)"; document.getElementById('mediaUrl').placeholder = "Tempel link gambar dari catbox di sini..."; urlContainer.style.display = 'flex'; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Upload gambarmu ke <a href="https://catbox.moe" target="_blank">catbox.moe</a> terlebih dahulu. Salin link gambar tersebut dan tempel di kolom atas.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Tingkatkan Kualitas Foto'; }
     else if (platform === 'remove-bg') { title.innerHTML = "Hapus Background"; document.getElementById('mediaUrl').placeholder = "Tempel link gambar dari catbox di sini..."; urlContainer.style.display = 'flex'; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Upload gambarmu ke <a href="https://catbox.moe" target="_blank">catbox.moe</a> terlebih dahulu. Salin link gambar tersebut dan tempel di kolom atas.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Hapus Background Gambar'; }
     else if (platform === 'noise-reduce') { title.innerHTML = "Audio Noise Reduce"; document.getElementById('mediaUrl').placeholder = "Tempel link audio dari catbox di sini..."; urlContainer.style.display = 'flex'; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Upload file suaramu (MP3/WAV) ke <a href="https://catbox.moe" target="_blank">catbox.moe</a> terlebih dahulu. Salin link tersebut dan tempel di kolom atas.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Bersihkan Suara Audio'; }
-    // --- FITUR BARU: STALKER ---
+    
+    // Fitur Stalkers
     else if (platform === 'roblox-stalk') { title.innerHTML = "Roblox Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan username Roblox..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari Player'; }
     else if (platform === 'dc-stalk') { title.innerHTML = "Discord Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan ID Discord (angka)..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari User'; }
     else if (platform === 'tt-stalk') { title.innerHTML = "TikTok Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan username TikTok (tanpa @)..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari Akun'; }
     else if (platform === 'tw-stalk') { title.innerHTML = "Twitter Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan username Twitter (tanpa @)..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari Akun'; }
+    else if (platform === 'gh-stalk') { title.innerHTML = "GitHub Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan username GitHub..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari Developer'; }
+    else if (platform === 'ig-stalk') { title.innerHTML = "Instagram Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan username Instagram (tanpa @)..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari Akun IG'; }
+    else if (platform === 'th-stalk') { title.innerHTML = "Threads Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan username Threads (tanpa @)..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari Akun Threads'; }
 
     document.getElementById('mediaUrl').value = '';
     document.getElementById('textContent').value = '';
@@ -167,7 +171,6 @@ async function processAction() {
         inputData = document.getElementById('mediaUrl').value.trim();
         if (!inputData) return alert("Harap masukkan judul lagu terlebih dahulu.");
     } else {
-        // Ini termasuk form Stalkers
         inputData = document.getElementById('mediaUrl').value.trim();
         if (!inputData) return alert("Harap isi kolom input terlebih dahulu.");
     }
@@ -199,11 +202,13 @@ async function processAction() {
         else if (currentPlatform === 'noise-reduce') { action = 'noice-reducer'; params = { file: inputData }; }
         else if (currentPlatform === 'remove-bg') { action = 'nobg'; params = { image: inputData }; }
         else if (currentPlatform === 'lirik') { action = 'lyric'; params = { q: inputData }; }
-        // --- API STALK ---
         else if (currentPlatform === 'roblox-stalk') { action = 'roblox-stalk'; params = { username: inputData }; }
         else if (currentPlatform === 'dc-stalk') { action = 'dcstalk'; params = { id: inputData }; }
         else if (currentPlatform === 'tt-stalk') { action = 'ttstalk'; params = { username: inputData }; }
         else if (currentPlatform === 'tw-stalk') { action = 'twstalk'; params = { username: inputData }; }
+        else if (currentPlatform === 'gh-stalk') { action = 'ghstalk'; params = { username: inputData }; }
+        else if (currentPlatform === 'ig-stalk') { action = 'igstalk'; params = { username: inputData }; }
+        else if (currentPlatform === 'th-stalk') { action = 'thstalk'; params = { username: inputData }; }
 
         let waitPromise = null;
         if (currentPlatform === 'hd-foto' || currentPlatform === 'remove-bg') {
@@ -243,7 +248,7 @@ async function processAction() {
                 if (!qrData.startsWith('data:image')) qrData = `data:image/png;base64,${qrData}`;
                 document.getElementById('invQrImage').src = qrData;
             }
-            else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk'].includes(currentPlatform)) {
+            else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) {
                 stalkResult.style.display = 'block';
                 const avatarImg = document.getElementById('stalkAvatar');
                 const nameEl = document.getElementById('stalkName');
@@ -251,8 +256,11 @@ async function processAction() {
                 const bioEl = document.getElementById('stalkBio');
                 const gridEl = document.getElementById('stalkStatsGrid');
                 const extraEl = document.getElementById('stalkExtra');
+                const badgeCon = document.getElementById('stalkBadgeContainer');
+                const badgeList = document.getElementById('stalkBadgeList');
                 
                 gridEl.innerHTML = ''; extraEl.innerHTML = ''; bioEl.innerText = '';
+                if(badgeCon) badgeCon.style.display = 'none';
                 
                 if (currentPlatform === 'roblox-stalk') {
                     avatarImg.src = data.avatar;
@@ -267,6 +275,70 @@ async function processAction() {
                         <div class="ai-stat-box"><h4>${data.badges ? data.badges.length : 0}</h4><p>Badges</p></div>
                     `;
                     extraEl.innerHTML = `<strong>ID:</strong> ${data.id}<br><strong>Dibuat:</strong> ${new Date(data.created).toLocaleDateString()}<br><strong>Banned:</strong> ${data.isBanned ? 'Ya' : 'Tidak'}`;
+
+                    // Render Badges
+                    if (data.badges && data.badges.length > 0 && badgeCon && badgeList) {
+                        badgeCon.style.display = 'block';
+                        badgeList.innerHTML = '';
+                        data.badges.forEach(badge => {
+                            badgeList.innerHTML += `
+                                <div style="display: flex; gap: 12px; align-items: center; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid var(--border-color); text-align: left;">
+                                    <div>
+                                        <div style="color:#fff; font-weight:600; font-size:14px;">${badge.name}</div>
+                                        <div style="color:var(--text-muted); font-size:12px; margin-top:4px;">Game ID: ${badge.awarder.id}</div>
+                                        <div style="color:var(--text-muted); font-size:12px;">Win Rate: ${(badge.statistics.winRatePercentage * 100).toFixed(1)}%</div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    }
+                }
+                else if (currentPlatform === 'gh-stalk') {
+                    avatarImg.src = data.avatar_url;
+                    nameEl.innerText = data.name || data.login;
+                    userEl.innerText = `@${data.login}`;
+                    if(data.bio && data.bio !== '.') bioEl.innerText = data.bio;
+                    
+                    gridEl.innerHTML = `
+                        <div class="ai-stat-box"><h4>${data.followers}</h4><p>Followers</p></div>
+                        <div class="ai-stat-box"><h4>${data.following}</h4><p>Following</p></div>
+                        <div class="ai-stat-box" style="grid-column: span 2;"><h4>${data.public_repos}</h4><p>Public Repositories</p></div>
+                    `;
+                    extraEl.innerHTML = `
+                        <strong>ID:</strong> ${data.id}<br>
+                        <strong>Dibuat:</strong> ${new Date(data.created_at).toLocaleDateString()}<br>
+                        <strong>Tipe:</strong> ${data.type}<br>
+                        ${data.blog ? `<strong>Blog:</strong> <a href="${data.blog}" target="_blank" style="color:var(--primary);">${data.blog}</a>` : ''}
+                    `;
+                }
+                else if (currentPlatform === 'ig-stalk') {
+                    avatarImg.src = data.photo;
+                    nameEl.innerText = data.name;
+                    userEl.innerText = `@${data.username}`;
+                    if(data.about) bioEl.innerText = data.about;
+                    
+                    gridEl.innerHTML = `
+                        <div class="ai-stat-box"><h4>${data.follower.toLocaleString()}</h4><p>Followers</p></div>
+                        <div class="ai-stat-box"><h4>${data.following.toLocaleString()}</h4><p>Following</p></div>
+                        <div class="ai-stat-box" style="grid-column: span 2;"><h4>${data.post.toLocaleString()}</h4><p>Posts</p></div>
+                    `;
+                    extraEl.innerHTML = `<strong>ID:</strong> ${data.id}<br><strong>Private:</strong> ${data.private ? 'Ya' : 'Tidak'}`;
+                }
+                else if (currentPlatform === 'th-stalk') {
+                    // Cek jika profile_pic_url ada atau ambil dari hd_profile_pic_versions
+                    let picUrl = data.profile_pic_url;
+                    if(!picUrl && data.hd_profile_pic_versions && data.hd_profile_pic_versions.length > 0) {
+                        picUrl = data.hd_profile_pic_versions[0].url;
+                    }
+                    avatarImg.src = picUrl || '';
+                    nameEl.innerText = data.full_name;
+                    userEl.innerText = `@${data.username}`;
+                    if(data.biography) bioEl.innerText = data.biography;
+                    
+                    gridEl.innerHTML = `
+                        <div class="ai-stat-box" style="grid-column: span 2;"><h4>${data.follower_count.toLocaleString()}</h4><p>Followers</p></div>
+                    `;
+                    extraEl.innerHTML = `<strong>ID:</strong> ${data.pk}<br><strong>Verified:</strong> ${data.is_verified ? 'Ya' : 'Tidak'}`;
                 }
                 else if (currentPlatform === 'dc-stalk') {
                     avatarImg.src = data.avatar_url;
@@ -286,17 +358,17 @@ async function processAction() {
                     if(data.bio) bioEl.innerText = data.bio;
                     
                     gridEl.innerHTML = `
-                        <div class="ai-stat-box"><h4>${data.followers}</h4><p>Followers</p></div>
-                        <div class="ai-stat-box"><h4>${data.following}</h4><p>Following</p></div>
-                        <div class="ai-stat-box"><h4>${data.likes}</h4><p>Likes</p></div>
-                        <div class="ai-stat-box"><h4>${data.posts}</h4><p>Posts</p></div>
+                        <div class="ai-stat-box"><h4>${data.followers.toLocaleString()}</h4><p>Followers</p></div>
+                        <div class="ai-stat-box"><h4>${data.following.toLocaleString()}</h4><p>Following</p></div>
+                        <div class="ai-stat-box"><h4>${data.likes.toLocaleString()}</h4><p>Likes</p></div>
+                        <div class="ai-stat-box"><h4>${data.posts.toLocaleString()}</h4><p>Posts</p></div>
                     `;
                     extraEl.innerHTML = `<strong>ID:</strong> ${data.id}<br><strong>Verified:</strong> ${data.verified ? 'Ya' : 'Tidak'}<br><strong>Private:</strong> ${data.private ? 'Ya' : 'Tidak'}`;
                 }
                 else if (currentPlatform === 'tw-stalk') {
                     avatarImg.src = data.photo;
                     nameEl.innerText = data.name;
-                    userEl.innerText = data.username; // Sudah termasuk '@'
+                    userEl.innerText = data.username;
                     
                     gridEl.innerHTML = `
                         <div class="ai-stat-box"><h4>${data.followers}</h4><p>Followers</p></div>
@@ -458,7 +530,7 @@ async function processAction() {
         else if (currentPlatform === 'noise-reduce') mainBtn.innerHTML = "Bersihkan Suara Audio";
         else if (currentPlatform === 'lirik') mainBtn.innerHTML = "Cari Lirik Sekarang";
         else if (currentPlatform === 'terabox') mainBtn.innerHTML = "Buka File TeraBox";
-        else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk'].includes(currentPlatform)) mainBtn.innerHTML = "Cari Sekarang";
+        else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) mainBtn.innerHTML = "Cari Sekarang";
         else mainBtn.innerHTML = "Download Sekarang";
     }
 }
