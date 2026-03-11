@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moonlight - Super App</title>
+    <title>Moonlight - ABOUT YOU?</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <style>
-        /* --- DESAIN PREMIUM & NATIVE --- */
         :root {
             --bg-body: #0f172a;       
             --bg-card: rgba(15, 23, 42, 0.95);
@@ -40,7 +39,6 @@
             line-height: 1.5;
         }
 
-        /* --- NAVBAR --- */
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
             padding: 16px 5%; background-color: rgba(15, 23, 42, 0.85);
@@ -63,7 +61,6 @@
         }
         .logo i { color: #60a5fa; }
 
-        /* --- MODAL --- */
         .modal {
             display: none; position: fixed; z-index: 1000; 
             left: 0; top: 0; width: 100%; height: 100%;
@@ -104,11 +101,9 @@
         .feature-list li i { font-size: 20px; width: 24px; text-align: center;}
         .feature-list li h4 { margin: 0; font-size: 15px; font-weight: 500; color: #e2e8f0; }
 
-        /* --- HERO --- */
         .hero { flex: 1; padding: 50px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; }
         .hero h1 { font-size: clamp(24px, 5vw, 32px); margin-bottom: 32px; font-weight: 700; line-height: 1.2; letter-spacing: -0.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);}
 
-        /* --- INPUT --- */
         .form-group {
             width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;
         }
@@ -142,13 +137,11 @@
         .select-wrapper select option { background: #1e293b; color: var(--text-main); }
         .select-wrapper::after { content: '\f107'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
 
-        /* WAKTU (iPhone Quoted) */
         .time-row { display: none; width: 100%; justify-content: space-between; gap: 12px; }
         .time-col { flex: 1; padding: 12px 16px; display: flex; flex-direction: column; text-align: left; }
         .time-col label { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; }
         .time-col input { background: transparent; border: none; color: var(--text-main); font-size: 16px; outline: none; color-scheme: dark; cursor: pointer; }
         
-        /* PANDUAN CATBOX */
         #catboxHelper {
             display: none; background: rgba(30, 41, 59, 0.9); border: 1px solid var(--border-color);
             border-radius: var(--radius); padding: 16px; text-align: left; font-size: 13px; color: #cbd5e1;
@@ -157,7 +150,6 @@
         #catboxHelper a { color: #60a5fa; text-decoration: none; font-weight: 600; }
         #catboxHelper a:hover { text-decoration: underline; }
 
-        /* Tombol Tempel */
         .paste-btn {
             background: rgba(255,255,255,0.1); color: var(--text-main); border: none; border-radius: 10px; 
             padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; 
@@ -165,7 +157,6 @@
         }
         .paste-btn:hover { background: rgba(255,255,255,0.2); }
 
-        /* --- TOMBOL UTAMA --- */
         .main-action-btn {
             display: flex; justify-content: center; align-items: center; gap: 10px;
             width: 100%; background: var(--primary); color: #fff; border: none; 
@@ -179,7 +170,6 @@
         #loading { display: none; margin: 16px 0; font-size: 14px; color: var(--text-main); font-weight: 500; }
         .timer-highlight { color: #fbbf24; font-weight: 700; }
 
-        /* --- KONTAK --- */
         #contactContainer {
             display: none; width: 100%; flex-direction: column; gap: 16px;
         }
@@ -201,7 +191,6 @@
         .btn-email { background: #334155; color: white; border: 1px solid var(--border-color);}
         .btn-email:hover { background: #475569; }
 
-        /* --- KARTU HASIL --- */
         #resultCard {
             display: none; width: 100%; max-width: 500px; margin-top: 16px;
             background: var(--bg-card); border: 1px solid var(--border-color);
@@ -231,7 +220,6 @@
             text-align: left;
         }
         
-        /* AI Detector */
         #aiResult { display: none; }
         .ai-feedback-badge { display: inline-block; padding: 12px 16px; border-radius: 10px; font-weight: 700; font-size: 14px; margin-bottom: 24px; width: 100%; text-align: center; }
         .ai-human { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
@@ -247,17 +235,14 @@
         .ai-bar-human { height: 100%; background: #22c55e; width: 0%; transition: 1s ease-out; }
         .ai-bar-fake { height: 100%; background: #ef4444; width: 0%; transition: 1s ease-out; }
 
-        /* Hasil Gambar */
         #hdFotoResult, #ssWebResult, #iqcResult, #nulisResult, #removeBgResult { display: none; text-align: center; }
         #hdFotoResult h3, #ssWebResult h3, #iqcResult h3, #nulisResult h3, #removeBgResult h3 { margin-bottom: 12px; color: #fff; font-size: 18px; font-weight: 700;}
         #hdFotoInfo { color: var(--text-muted); font-size: 13px; margin-bottom: 16px; }
 
-        /* Audio Noise Reduce */
         #audioResult { display: none; text-align: center; }
         #audioResult h3 { margin-bottom: 16px; color: #fff; font-size: 18px; font-weight: 700;}
         audio { width: 100%; margin-bottom: 16px; border-radius: 12px; outline: none; }
 
-        /* Transcript & Lirik */
         #ytTranscriptResult, #lirikResult { display: none; }
         #ytTranscriptResult h3, #lirikTitle { margin-bottom: 16px; color: #fff; font-size: 18px; text-align: center; font-weight: 700;}
         .transcript-box {
@@ -269,7 +254,6 @@
         .transcript-box::-webkit-scrollbar { width: 6px; }
         .transcript-box::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
 
-        /* Invoice */
         #invoiceResult { display: none; }
         .invoice-header { text-align: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px dashed var(--border-color); }
         .invoice-header h3 { color: #fff; margin: 0 0 8px 0; font-size: 20px; font-weight: 700;}
@@ -283,7 +267,6 @@
         .qr-container img { width: 100%; height: auto; display: block; }
         .qr-note { text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 0; line-height: 1.5; }
 
-        /* Warna Tombol Hasil */
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: var(--primary-hover); }
         .btn-secondary { background: #334155; color: var(--text-main); }
@@ -295,7 +278,6 @@
         .btn-tw { background: #0f1419; color: white; border: 1px solid rgba(255,255,255,0.2);} 
         .btn-tw:hover { background: #272c30; }
 
-        /* --- FOOTER --- */
         footer {
             margin-top: auto; 
             padding: 30px 20px;
@@ -308,6 +290,7 @@
             -webkit-backdrop-filter: blur(12px);
         }
 
+        /* --- RESPONSIVE MOBILE --- */
         @media (max-width: 600px) {
             .hero { padding: 40px 16px; }
             .form-group { gap: 12px; }
@@ -316,6 +299,37 @@
             #resultCard { padding: 20px; }
             .ai-stats-grid { grid-template-columns: 1fr; gap: 12px;} 
             .feature-list li { padding: 12px; }
+        }
+
+        /* --- RESPONSIVE DESKTOP (PC/LAPTOP) --- */
+        @media (min-width: 768px) {
+            /* Melebarkan area Form Input dan Kartu Hasil */
+            .form-group { max-width: 650px; }
+            #resultCard { max-width: 650px; }
+            
+            /* Melebarkan Modal Fitur */
+            .modal-content { 
+                max-width: 800px; 
+                padding: 32px;
+            }
+            
+            /* Mengubah daftar fitur menjadi 2 kolom menyamping di PC */
+            .feature-list {
+                background: transparent;
+                border: none;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+            .feature-list li {
+                background: #1e293b;
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+            }
+            /* Menghapus garis bawah khusus mode PC karena sudah pakai kotak border */
+            .feature-list li, .feature-list li:last-child {
+                border-bottom: 1px solid var(--border-color); 
+            }
         }
     </style>
 </head>
@@ -326,7 +340,6 @@
         <button class="nav-btn" onclick="openModal()"><i class="fas fa-bars"></i></button>
     </nav>
 
-    <!-- MODAL FITUR -->
     <div id="featuresModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal()">&times;</span>
@@ -565,7 +578,6 @@
         &copy; Created by RendyZ
     </footer>
 
-    <!-- JS dipisah agar API key & endpoint tidak terlihat di source HTML -->
     <script src="app.js"></script>
 </body>
 </html>
