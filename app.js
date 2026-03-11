@@ -33,20 +33,18 @@ function showToast(message, type = 'error') {
 }
 
 // ============================================================
-// FORCE DOWNLOAD FUNCTION (Agar tidak pindah halaman)
+// FORCE DOWNLOAD FUNCTION
 // ============================================================
 async function forceDownload(url, filename) {
     try {
         showToast("Sedang mengunduh file, mohon tunggu...", "info");
         
-        // Mengambil data file secara diam-diam di latar belakang
         const response = await fetch(url);
         if (!response.ok) throw new Error("Gagal mengambil file");
         
         const blob = await response.blob();
         const blobUrl = window.URL.createObjectURL(blob);
         
-        // Membuat elemen link sementara untuk memicu unduhan
         const a = document.createElement('a');
         a.style.display = 'none';
         a.href = blobUrl;
@@ -54,14 +52,12 @@ async function forceDownload(url, filename) {
         document.body.appendChild(a);
         a.click();
         
-        // Bersihkan memori
         window.URL.revokeObjectURL(blobUrl);
         document.body.removeChild(a);
         
         showToast("File berhasil disimpan!", "success");
     } catch (error) {
         console.error(error);
-        // Jika server gambar memblokir unduhan langsung (CORS), buka di tab baru sebagai cadangan
         window.open(url, '_blank');
         showToast("Membuka di tab baru (Browser memblokir unduhan langsung)", "info");
     }
@@ -127,6 +123,7 @@ function setPlatform(platform) {
     else if (platform === 'iqc') { title.innerHTML = "iPhone Quoted"; document.getElementById('textContent').placeholder = "Ketik atau tempel teks pesan di sini..."; textContainer.style.display = 'flex'; timeInputsContainer.style.display = 'flex'; btn.innerHTML = 'Buat Kutipan iPhone'; }
     else if (platform === 'nulis') { title.innerHTML = "Nulis Otomatis"; document.getElementById('textContent').placeholder = "Ketik atau tempel teks yang ingin ditulis tangan..."; textContainer.style.display = 'flex'; btn.innerHTML = 'Mulai Nulis'; }
     
+    // Fitur Upload File
     else if (platform === 'hd-foto') { title.innerHTML = "HD Foto (Upscaler)"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari galerimu. Sistem akan memprosesnya secara otomatis. (Maksimal 4MB)`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Tingkatkan Kualitas Foto'; }
     else if (platform === 'remove-bg') { title.innerHTML = "Hapus Background"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari galerimu. Sistem akan memprosesnya secara otomatis. (Maksimal 4MB)`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Hapus Background Gambar'; }
     else if (platform === 'noise-reduce') { title.innerHTML = "Audio Noise Reduce"; fileContainer.style.display = 'flex'; mediaFile.accept = "audio/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih file audio dari perangkatmu. Sistem akan membersihkannya otomatis. (Maksimal 4MB)`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Bersihkan Suara Audio'; }
@@ -172,7 +169,12 @@ function copyLirik() { const textToCopy = document.getElementById('lirikText').i
 async function fetchLirik(url) {
     const loading = document.getElementById('loading');
     const loadingText = document.getElementById('loadingText');
-    loading.style.display = 'block'; loadingText.innerText = "Mengambil teks lirik...";
+    const menuBtn = document.getElementById('menuBtn'); // Kunci menu
+    
+    if(menuBtn) menuBtn.disabled = true;
+    loading.style.display = 'block'; 
+    loadingText.innerText = "Mengambil teks lirik...";
+    
     try {
         const res = await fetch(`/api/proses`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'lyric', params: { q: url } }) });
         const json = await res.json();
@@ -182,13 +184,17 @@ async function fetchLirik(url) {
             document.getElementById('lirikText').innerText = json.data.lyric;
             document.getElementById('lirikContentWrapper').style.display = 'block';
         } else { showToast("Gagal memuat lirik dari server.", "error"); }
-    } catch (error) { showToast("Gangguan jaringan. Periksa koneksi internetmu.", "error"); } finally { loading.style.display = 'none'; }
+    } catch (error) { showToast("Gangguan jaringan. Periksa koneksi internetmu.", "error"); } finally { 
+        loading.style.display = 'none'; 
+        if(menuBtn) menuBtn.disabled = false; // Buka kunci menu
+    }
 }
 
 async function processAction() {
     if (!checkCooldown()) return;
 
     const mainBtn = document.getElementById('mainBtn');
+    const menuBtn = document.getElementById('menuBtn'); // Ambil elemen menu
     const loading = document.getElementById('loading');
     const loadingText = document.getElementById('loadingText');
     const resultCard = document.getElementById('resultCard');
@@ -256,6 +262,8 @@ async function processAction() {
 
     setCooldown();
     mainBtn.disabled = true; mainBtn.innerHTML = "Memproses...";
+    if(menuBtn) menuBtn.disabled = true; // MENGUNCI TOMBOL MENU DI SINI
+    
     loading.style.display = 'block'; loadingText.innerText = "Memproses permintaan...";
     resultCard.style.display = 'none'; downloaderResult.style.display = 'none'; aiResult.style.display = 'none'; ssWebResult.style.display = 'none'; iqcResult.style.display = 'none'; nulisResult.style.display = 'none'; ytTranscriptResult.style.display = 'none'; invoiceResult.style.display = 'none'; hdFotoResult.style.display = 'none'; audioResult.style.display = 'none'; removeBgResult.style.display = 'none'; lirikResult.style.display = 'none'; stalkResult.style.display = 'none';
     if(photoEditorResult) photoEditorResult.style.display = 'none';
@@ -478,9 +486,6 @@ async function processAction() {
                     listContainer.innerHTML += `<button class="btn-secondary" onclick="fetchLirik('${item.url}')" style="text-align:left; justify-content:flex-start;"><i class="fas fa-music" style="color:var(--primary);"></i> ${item.title}</button>`;
                 });
             }
-            // =========================================================
-            // MENGGUNAKAN FUNGSI forceDownload() UNTUK TOMBOL-TOMBOL AI
-            // =========================================================
             else if (currentPlatform === 'photo-editor') {
                 photoEditorResult.style.display = 'block';
                 document.getElementById('photoEditorInfo').innerText = `Ukuran File: ${data.size}`;
@@ -615,6 +620,8 @@ async function processAction() {
     } finally {
         loading.style.display = 'none';
         mainBtn.disabled = false;
+        if(menuBtn) menuBtn.disabled = false; // BUKA KUNCI MENU DI SINI
+        
         if (currentPlatform === 'pulsa' || currentPlatform === 'topup') mainBtn.innerHTML = "Buat Tagihan Pembayaran";
         else if (currentPlatform === 'ss-web') mainBtn.innerHTML = "Ambil Screenshot";
         else if (currentPlatform === 'yt-transcript') mainBtn.innerHTML = "Ekstrak Teks Sekarang";
