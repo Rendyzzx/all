@@ -73,7 +73,14 @@
             border: 1px solid var(--border-color);
             border-radius: 24px; padding: 24px; width: 100%; max-width: 440px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            max-height: 85vh; overflow-y: auto; 
+            max-height: 85vh; 
+            overflow-y: auto; 
+            
+            /* KODE ANTI LAG SCROLL */
+            -webkit-overflow-scrolling: touch; 
+            overscroll-behavior-y: contain; 
+            transform: translateZ(0); 
+
             animation: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .modal-content::-webkit-scrollbar { width: 4px; }
