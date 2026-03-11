@@ -133,7 +133,6 @@
         .select-wrapper select { padding: 14px 0; appearance: none; cursor: pointer; }
         .text-wrapper textarea { resize: vertical; min-height: 120px; margin-bottom: 12px; }
         
-        /* DESAIN UNTUK TOMBOL UPLOAD FILE */
         input[type="file"]::file-selector-button {
             background: rgba(255,255,255,0.1);
             color: var(--text-main);
@@ -374,6 +373,7 @@
                 <li onclick="setPlatform('remove-bg')"><i class="fas fa-eraser" style="color: #ec4899;"></i><div><h4>Hapus Background</h4></div></li>
                 <li onclick="setPlatform('noise-reduce')"><i class="fas fa-microphone-slash" style="color: #6366f1;"></i><div><h4>Audio Noise Reduce</h4></div></li>
                 <li onclick="setPlatform('lirik')"><i class="fas fa-music" style="color: #fbbf24;"></i><div><h4>Pencarian Lirik Lagu</h4></div></li>
+                <li onclick="setPlatform('photo-editor')"><i class="fas fa-magic" style="color: #a855f7;"></i><div><h4>Photo Editor AI</h4></div></li>
                 <li onclick="setPlatform('ai-detector')"><i class="fas fa-robot" style="color: #4ade80;"></i><div><h4>AI Text Detector</h4></div></li>
                 <li onclick="setPlatform('ss-web')"><i class="fas fa-laptop" style="color: #14b8a6;"></i><div><h4>Screenshot Web</h4></div></li>
                 <li onclick="setPlatform('yt-transcript')"><i class="fab fa-youtube" style="color: #ef4444;"></i><div><h4>YouTube Transcript</h4></div></li>
@@ -586,6 +586,15 @@
                     <div id="stalkBadgeList" style="display: flex; flex-direction: column; gap: 12px; max-height: 300px; overflow-y: auto; padding-right: 8px;">
                     </div>
                 </div>
+            </div>
+
+            <div id="photoEditorResult" style="display: none; text-align: center;">
+                <h3 style="margin-bottom: 12px; color: #fff; font-size: 18px; font-weight: 700;">Hasil Edit Foto AI</h3>
+                <p id="photoEditorInfo" style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">Berhasil diproses</p>
+                <div class="thumbnail-container" style="display:flex; max-height: 400px; overflow-y: auto;">
+                    <img id="photoEditorImage" src="" alt="Edit Foto" style="width: 100%; object-fit: contain; display:block;">
+                </div>
+                <div class="action-btns" id="photoEditorActionBtns"></div>
             </div>
 
             <div id="lirikResult">
