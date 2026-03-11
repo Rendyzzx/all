@@ -4,12 +4,12 @@ let toastTimeout;
 
 window.onload = function () {
     setPlatform('youtube');
-    openModal();
+    // Set default menu tanpa membuka modal
+    document.querySelectorAll('.bnav-item').forEach(btn => btn.classList.remove('active'));
+    const defaultBtn = document.getElementById('bnav-all');
+    if(defaultBtn) defaultBtn.classList.add('active');
 };
 
-// ============================================================
-// TOAST NOTIFICATION FUNCTION
-// ============================================================
 function showToast(message, type = 'error') {
     const toast = document.getElementById("toast");
     const toastIcon = document.getElementById("toastIcon");
@@ -32,12 +32,9 @@ function showToast(message, type = 'error') {
     }, 3000);
 }
 
-// ============================================================
-// FORCE DOWNLOAD FUNCTION (DITERAPKAN KE SEMUA FITUR)
-// ============================================================
 async function forceDownload(url, filename) {
     try {
-        showToast("Sedang mengunduh file ke perangkatmu...", "info");
+        showToast("Sedang mengunduh file, mohon tunggu...", "info");
         
         const response = await fetch(url);
         if (!response.ok) throw new Error("Gagal mengambil file");
@@ -55,19 +52,53 @@ async function forceDownload(url, filename) {
         window.URL.revokeObjectURL(blobUrl);
         document.body.removeChild(a);
         
-        showToast("File berhasil disimpan ke galeri!", "success");
+        showToast("File berhasil disimpan!", "success");
     } catch (error) {
         console.error(error);
-        // Jika server asal (seperti TikTok/IG) memblokir unduhan langsung karena sistem keamanan CORS,
-        // Sistem akan otomatis membuka di tab baru agar file tetap bisa diunduh.
         window.open(url, '_blank');
-        showToast("Membuka tab baru (Server memblokir unduhan instan)", "info");
+        showToast("Membuka di tab baru (Browser memblokir unduhan langsung)", "info");
     }
 }
 
-function openModal() { document.getElementById('featuresModal').style.display = 'flex'; }
-function closeModal() { document.getElementById('featuresModal').style.display = 'none'; }
-window.onclick = function (event) { if (event.target == document.getElementById('featuresModal')) closeModal(); };
+// FUNGSI UNTUK MENGONTROL BOTTOM NAVIGATION DAN MODAL
+function openCategory(catId, btnId) {
+    document.querySelectorAll('.bnav-item').forEach(btn => btn.classList.remove('active'));
+    if (btnId) {
+        const activeBtn = document.getElementById(btnId);
+        if(activeBtn) activeBtn.classList.add('active');
+    }
+
+    const modal = document.getElementById('featuresModal');
+    modal.style.display = 'flex';
+
+    if (catId !== 'all') {
+        setTimeout(() => {
+            const catEl = document.getElementById(catId);
+            const modalContent = document.querySelector('.modal-content');
+            if(catEl && modalContent) {
+                modalContent.scrollTo({ top: catEl.offsetTop - 24, behavior: 'smooth' });
+            }
+        }, 50);
+    } else {
+        setTimeout(() => {
+            const modalContent = document.querySelector('.modal-content');
+            if(modalContent) {
+                modalContent.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }, 50);
+    }
+}
+
+function closeModal() { 
+    document.getElementById('featuresModal').style.display = 'none'; 
+    document.querySelectorAll('.bnav-item').forEach(btn => btn.classList.remove('active'));
+    const defaultBtn = document.getElementById('bnav-all');
+    if(defaultBtn) defaultBtn.classList.add('active');
+}
+
+window.onclick = function (event) { 
+    if (event.target == document.getElementById('featuresModal')) closeModal(); 
+};
 
 function checkCooldown() {
     const lastAction = localStorage.getItem('lastMoonlightAction');
@@ -125,16 +156,15 @@ function setPlatform(platform) {
     else if (platform === 'iqc') { title.innerHTML = "iPhone Quoted"; document.getElementById('textContent').placeholder = "Ketik atau tempel teks pesan di sini..."; textContainer.style.display = 'flex'; timeInputsContainer.style.display = 'flex'; btn.innerHTML = 'Buat Kutipan iPhone'; }
     else if (platform === 'nulis') { title.innerHTML = "Nulis Otomatis"; document.getElementById('textContent').placeholder = "Ketik atau tempel teks yang ingin ditulis tangan..."; textContainer.style.display = 'flex'; btn.innerHTML = 'Mulai Nulis'; }
     
-    // Fitur Upload File
-    else if (platform === 'hd-foto') { title.innerHTML = "HD Foto (Upscaler)"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari galerimu. Sistem akan memprosesnya secara otomatis. (Maksimal 4MB)`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Tingkatkan Kualitas Foto'; }
-    else if (platform === 'remove-bg') { title.innerHTML = "Hapus Background"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari galerimu. Sistem akan memprosesnya secara otomatis. (Maksimal 4MB)`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Hapus Background Gambar'; }
-    else if (platform === 'noise-reduce') { title.innerHTML = "Audio Noise Reduce"; fileContainer.style.display = 'flex'; mediaFile.accept = "audio/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih file audio dari perangkatmu. Sistem akan membersihkannya otomatis. (Maksimal 4MB)`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Bersihkan Suara Audio'; }
+    else if (platform === 'hd-foto') { title.innerHTML = "HD Foto (Upscaler)"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari perangkat. Sistem akan memprosesnya otomatis. (Maksimal 4MB)`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Tingkatkan Kualitas Foto'; }
+    else if (platform === 'remove-bg') { title.innerHTML = "Hapus Background"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari perangkat. Sistem akan memprosesnya otomatis. (Maksimal 4MB)`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Hapus Background Gambar'; }
+    else if (platform === 'noise-reduce') { title.innerHTML = "Audio Noise Reduce"; fileContainer.style.display = 'flex'; mediaFile.accept = "audio/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih file audio dari perangkat. Sistem akan membersihkannya otomatis. (Maksimal 4MB)`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Bersihkan Suara Audio'; }
     else if (platform === 'photo-editor') { 
         title.innerHTML = "Photo Editor AI"; 
         fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; 
         urlContainer.style.display = 'flex';
         document.getElementById('mediaUrl').placeholder = "Ketik perintah edit (contoh: ubah baju jadi merah)...";
-        catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto, lalu ketik perintah yang ingin kamu ubah pada foto tersebut.`; 
+        catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto, lalu ketik perintah yang ingin diubah. (Maksimal 4MB)`; 
         catboxHelper.style.display = 'block'; 
         btn.innerHTML = 'Edit Foto Sekarang'; 
     }
@@ -186,7 +216,7 @@ async function fetchLirik(url) {
             document.getElementById('lirikText').innerText = json.data.lyric;
             document.getElementById('lirikContentWrapper').style.display = 'block';
         } else { showToast("Gagal memuat lirik dari server.", "error"); }
-    } catch (error) { showToast("Gangguan jaringan. Periksa koneksi internetmu.", "error"); } finally { 
+    } catch (error) { showToast("Gangguan jaringan. Periksa koneksi internet.", "error"); } finally { 
         loading.style.display = 'none'; 
         if(menuBtn) menuBtn.disabled = false;
     }
@@ -244,15 +274,15 @@ async function processAction() {
         ytType = formatVal[0]; ytQuality = formatVal[1];
     } else if (['hd-foto', 'noise-reduce', 'remove-bg', 'photo-editor'].includes(currentPlatform)) {
         const fileInput = document.getElementById('mediaFile');
-        if (fileInput.files.length === 0) return showToast("Harap pilih file terlebih dahulu dari perangkatmu.", "error");
+        if (fileInput.files.length === 0) return showToast("Harap pilih file terlebih dahulu.", "error");
         
         if (fileInput.files[0].size > 4 * 1024 * 1024) {
-            return showToast("Ukuran file terlalu besar! Maksimal ukuran file adalah 4MB.", "error");
+            return showToast("Ukuran file terlalu besar! Maksimal adalah 4MB.", "error");
         }
         
         if (currentPlatform === 'photo-editor') {
             inputData = document.getElementById('mediaUrl').value.trim();
-            if (!inputData) return showToast("Harap ketik perintah edit (prompt) di kolom teks.", "error");
+            if (!inputData) return showToast("Harap ketik perintah edit di kolom teks.", "error");
         }
     } else if (currentPlatform === 'lirik') {
         inputData = document.getElementById('mediaUrl').value.trim();
@@ -276,13 +306,13 @@ async function processAction() {
 
         if (['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor'].includes(currentPlatform)) {
             const fileInput = document.getElementById('mediaFile');
-            loadingText.innerText = "Menyiapkan file untuk diproses (Mohon tunggu)...";
+            loadingText.innerText = "Menyiapkan file untuk diproses...";
             
             const file = fileInput.files[0];
             const base64String = await new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = () => resolve(reader.result);
-                reader.onerror = () => reject(new Error("Gagal membaca file dari HP-mu."));
+                reader.onerror = () => reject(new Error("Gagal membaca file dari perangkat."));
                 reader.readAsDataURL(file);
             });
             
@@ -321,7 +351,7 @@ async function processAction() {
         else if (currentPlatform === 'th-stalk') { action = 'thstalk'; params = { username: finalInputData }; }
 
         if (['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor'].includes(currentPlatform)) {
-            loadingText.innerHTML = `Sedang diproses oleh AI, harap tunggu... <i class="fas fa-sparkles" style="color: #fbbf24;"></i>`;
+            loadingText.innerHTML = `Menganalisis menggunakan AI, harap tunggu... <i class="fas fa-sparkles" style="color: #fbbf24;"></i>`;
         }
 
         const response = await fetch('/api/proses', {
@@ -333,7 +363,7 @@ async function processAction() {
         const json = await response.json();
 
         if (json.status === true) {
-            showToast("Berhasil memproses permintaan!", "success");
+            showToast("Berhasil memproses data.", "success");
             const data = json.data;
 
             if (currentPlatform === 'pulsa' || currentPlatform === 'topup') {
@@ -488,9 +518,6 @@ async function processAction() {
                     listContainer.innerHTML += `<button class="btn-secondary" onclick="fetchLirik('${item.url}')" style="text-align:left; justify-content:flex-start;"><i class="fas fa-music" style="color:var(--primary);"></i> ${item.title}</button>`;
                 });
             }
-            // =========================================================================
-            // TOMBOL DOWNLOADER YANG SUDAH DIUBAH KE forceDownload() SEMUANYA
-            // =========================================================================
             else if (currentPlatform === 'photo-editor') {
                 photoEditorResult.style.display = 'block';
                 document.getElementById('photoEditorInfo').innerText = `Ukuran File: ${data.size}`;
@@ -545,7 +572,7 @@ async function processAction() {
             }
             else if (currentPlatform === 'yt-transcript') {
                 ytTranscriptResult.style.display = 'block';
-                document.getElementById('ytTranscriptText').innerText = data.text || "Tidak ada transcript.";
+                document.getElementById('ytTranscriptText').innerText = data.text || "Tidak ada data teks.";
             }
             else {
                 downloaderResult.style.display = 'block';
@@ -616,7 +643,7 @@ async function processAction() {
             resultCard.style.display = 'block';
         }
         else {
-            let pesanErrorAPI = json.msg || json.message || "Terjadi kesalahan pada sistem.";
+            let pesanErrorAPI = json.msg || json.message || "Gagal memproses data.";
             showToast("Info sistem: " + pesanErrorAPI, "error");
         }
     } catch (error) {
