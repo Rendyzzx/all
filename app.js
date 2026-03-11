@@ -70,7 +70,17 @@ function setPlatform(platform) {
     else if (platform === 'hd-foto') { title.innerHTML = "HD Foto (Upscaler)"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari galerimu. Sistem akan memprosesnya secara otomatis. (Maksimal 4MB)`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Tingkatkan Kualitas Foto'; }
     else if (platform === 'remove-bg') { title.innerHTML = "Hapus Background"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari galerimu. Sistem akan memprosesnya secara otomatis. (Maksimal 4MB)`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Hapus Background Gambar'; }
     else if (platform === 'noise-reduce') { title.innerHTML = "Audio Noise Reduce"; fileContainer.style.display = 'flex'; mediaFile.accept = "audio/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih file audio dari perangkatmu. Sistem akan membersihkannya otomatis. (Maksimal 4MB)`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Bersihkan Suara Audio'; }
+    else if (platform === 'photo-editor') { 
+        title.innerHTML = "Photo Editor AI"; 
+        fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; 
+        urlContainer.style.display = 'flex'; // Pakai input URL untuk wadah Prompt
+        document.getElementById('mediaUrl').placeholder = "Ketik perintah edit (contoh: ubah baju jadi merah)...";
+        catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto, lalu ketik perintah yang ingin kamu ubah pada foto tersebut.`; 
+        catboxHelper.style.display = 'block'; 
+        btn.innerHTML = 'Edit Foto Sekarang'; 
+    }
     
+    // Fitur Stalkers
     else if (platform === 'roblox-stalk') { title.innerHTML = "Roblox Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan username Roblox..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari Player'; }
     else if (platform === 'dc-stalk') { title.innerHTML = "Discord Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan ID Discord (angka)..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari User'; }
     else if (platform === 'tt-stalk') { title.innerHTML = "TikTok Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan username TikTok (tanpa @)..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari Akun'; }
@@ -125,6 +135,7 @@ async function processAction() {
     const removeBgResult = document.getElementById('removeBgResult');
     const lirikResult = document.getElementById('lirikResult');
     const stalkResult = document.getElementById('stalkResult');
+    const photoEditorResult = document.getElementById('photoEditorResult');
     const actionBtns = document.getElementById('actionBtns');
 
     let inputData = "";
@@ -154,12 +165,18 @@ async function processAction() {
         if (!inputData) return alert("Harap isi kolom input URL terlebih dahulu.");
         const formatVal = document.getElementById('ytFormat').value.split('|');
         ytType = formatVal[0]; ytQuality = formatVal[1];
-    } else if (['hd-foto', 'noise-reduce', 'remove-bg'].includes(currentPlatform)) {
+    } else if (['hd-foto', 'noise-reduce', 'remove-bg', 'photo-editor'].includes(currentPlatform)) {
         const fileInput = document.getElementById('mediaFile');
         if (fileInput.files.length === 0) return alert("Harap pilih file terlebih dahulu dari perangkatmu.");
         
         if (fileInput.files[0].size > 4 * 1024 * 1024) {
             return alert("Ukuran file terlalu besar! Demi stabilitas server, maksimal ukuran file adalah 4MB.");
+        }
+        
+        // Khusus Photo Editor, pastikan prompt teks juga diisi
+        if (currentPlatform === 'photo-editor') {
+            inputData = document.getElementById('mediaUrl').value.trim();
+            if (!inputData) return alert("Harap ketik perintah edit (prompt) di kolom teks.");
         }
     } else if (currentPlatform === 'lirik') {
         inputData = document.getElementById('mediaUrl').value.trim();
@@ -173,12 +190,13 @@ async function processAction() {
     mainBtn.disabled = true; mainBtn.innerHTML = "Memproses...";
     loading.style.display = 'block'; loadingText.innerText = "Memproses permintaan...";
     resultCard.style.display = 'none'; downloaderResult.style.display = 'none'; aiResult.style.display = 'none'; ssWebResult.style.display = 'none'; iqcResult.style.display = 'none'; nulisResult.style.display = 'none'; ytTranscriptResult.style.display = 'none'; invoiceResult.style.display = 'none'; hdFotoResult.style.display = 'none'; audioResult.style.display = 'none'; removeBgResult.style.display = 'none'; lirikResult.style.display = 'none'; stalkResult.style.display = 'none';
+    if(photoEditorResult) photoEditorResult.style.display = 'none';
 
     try {
         let finalInputData = inputData;
         let fileBase64Obj = null;
 
-        if (['hd-foto', 'remove-bg', 'noise-reduce'].includes(currentPlatform)) {
+        if (['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor'].includes(currentPlatform)) {
             const fileInput = document.getElementById('mediaFile');
             loadingText.innerText = "Menyiapkan file untuk diproses (Mohon tunggu)...";
             
@@ -196,7 +214,7 @@ async function processAction() {
                 mimeType: file.type
             };
             
-            finalInputData = ""; 
+            finalInputData = inputData; // Akan tetap terisi teks prompt untuk photo-editor
         }
 
         let action = '';
@@ -216,9 +234,10 @@ async function processAction() {
         else if (currentPlatform === 'ai-detector') { action = 'ai-detector'; params = { text: finalInputData }; }
         else if (currentPlatform === 'iqc') { action = 'iqc'; params = { text: finalInputData, time: phoneTime, chat_time: chatTime }; }
         else if (currentPlatform === 'nulis') { action = 'nulis'; params = { text: finalInputData }; }
-        else if (currentPlatform === 'hd-foto') { action = 'upscale'; params = { image: finalInputData }; }
-        else if (currentPlatform === 'noise-reduce') { action = 'noice-reducer'; params = { file: finalInputData }; }
-        else if (currentPlatform === 'remove-bg') { action = 'nobg'; params = { image: finalInputData }; }
+        else if (currentPlatform === 'hd-foto') { action = 'upscale'; params = { image: "" }; }
+        else if (currentPlatform === 'noise-reduce') { action = 'noice-reducer'; params = { file: "" }; }
+        else if (currentPlatform === 'remove-bg') { action = 'nobg'; params = { image: "" }; }
+        else if (currentPlatform === 'photo-editor') { action = 'photo-editor'; params = { image: "", q: finalInputData }; }
         else if (currentPlatform === 'lirik') { action = 'lyric'; params = { q: finalInputData }; }
         else if (currentPlatform === 'roblox-stalk') { action = 'roblox-stalk'; params = { username: finalInputData }; }
         else if (currentPlatform === 'dc-stalk') { action = 'dcstalk'; params = { id: finalInputData }; }
@@ -229,7 +248,7 @@ async function processAction() {
         else if (currentPlatform === 'th-stalk') { action = 'thstalk'; params = { username: finalInputData }; }
 
         // Ganti teks loading khusus AI tanpa Timer
-        if (['hd-foto', 'remove-bg', 'noise-reduce'].includes(currentPlatform)) {
+        if (['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor'].includes(currentPlatform)) {
             loadingText.innerHTML = `Sedang diproses oleh AI, harap tunggu... <i class="fas fa-sparkles" style="color: #fbbf24;"></i>`;
         }
 
@@ -396,6 +415,12 @@ async function processAction() {
                     listContainer.innerHTML += `<button class="btn-secondary" onclick="fetchLirik('${item.url}')" style="text-align:left; justify-content:flex-start;"><i class="fas fa-music" style="color:var(--primary);"></i> ${item.title}</button>`;
                 });
             }
+            else if (currentPlatform === 'photo-editor') {
+                photoEditorResult.style.display = 'block';
+                document.getElementById('photoEditorInfo').innerText = `Ukuran File: ${data.size}`;
+                document.getElementById('photoEditorImage').src = data.url;
+                document.getElementById('photoEditorActionBtns').innerHTML = `<a href="${data.url}" class="btn-primary" target="_blank"><i class="fas fa-download"></i> Simpan Hasil Edit</a>`;
+            }
             else if (currentPlatform === 'hd-foto') {
                 hdFotoResult.style.display = 'block';
                 document.getElementById('hdFotoInfo').innerText = `Ukuran File Baru: ${data.size}`;
@@ -533,6 +558,7 @@ async function processAction() {
         else if (currentPlatform === 'hd-foto') mainBtn.innerHTML = "Tingkatkan Kualitas Foto";
         else if (currentPlatform === 'remove-bg') mainBtn.innerHTML = "Hapus Background Gambar";
         else if (currentPlatform === 'noise-reduce') mainBtn.innerHTML = "Bersihkan Suara Audio";
+        else if (currentPlatform === 'photo-editor') mainBtn.innerHTML = "Edit Foto Sekarang";
         else if (currentPlatform === 'lirik') mainBtn.innerHTML = "Cari Lirik Sekarang";
         else if (currentPlatform === 'terabox') mainBtn.innerHTML = "Buka File TeraBox";
         else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) mainBtn.innerHTML = "Cari Sekarang";
