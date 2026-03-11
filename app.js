@@ -1,10 +1,40 @@
 let currentPlatform = 'tiktok';
 const COOLDOWN_TIME = 15000;
+let toastTimeout; // Variabel untuk mengatur waktu toast
 
 window.onload = function () {
     setPlatform('youtube');
     openModal();
 };
+
+// ============================================================
+// TOAST NOTIFICATION FUNCTION
+// ============================================================
+function showToast(message, type = 'error') {
+    const toast = document.getElementById("toast");
+    const toastIcon = document.getElementById("toastIcon");
+    const toastMessage = document.getElementById("toastMessage");
+
+    // Reset class
+    toast.className = "toast";
+    toastIcon.className = "";
+
+    // Set tipe (error, success, info)
+    toast.classList.add(type);
+    if (type === 'error') toastIcon.className = 'fas fa-exclamation-circle';
+    else if (type === 'success') toastIcon.className = 'fas fa-check-circle';
+    else if (type === 'info') toastIcon.className = 'fas fa-info-circle';
+
+    // Set pesan dan tampilkan
+    toastMessage.innerText = message;
+    toast.classList.add("show");
+
+    // Sembunyikan otomatis setelah 3 detik
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(function(){
+        toast.classList.remove("show");
+    }, 3000);
+}
 
 function openModal() { document.getElementById('featuresModal').style.display = 'flex'; }
 function closeModal() { document.getElementById('featuresModal').style.display = 'none'; }
@@ -17,7 +47,7 @@ function checkCooldown() {
         const diff = now - parseInt(lastAction);
         if (diff < COOLDOWN_TIME) {
             const sisa = Math.ceil((COOLDOWN_TIME - diff) / 1000);
-            alert(`Sistem Anti-Spam: Harap tunggu ${sisa} detik sebelum menggunakan layanan ini lagi.`);
+            showToast(`Sistem Anti-Spam: Harap tunggu ${sisa} detik sebelum menggunakan layanan ini lagi.`, 'info');
             return false;
         }
     }
@@ -73,7 +103,7 @@ function setPlatform(platform) {
     else if (platform === 'photo-editor') { 
         title.innerHTML = "Photo Editor AI"; 
         fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; 
-        urlContainer.style.display = 'flex'; // Pakai input URL untuk wadah Prompt
+        urlContainer.style.display = 'flex';
         document.getElementById('mediaUrl').placeholder = "Ketik perintah edit (contoh: ubah baju jadi merah)...";
         catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto, lalu ketik perintah yang ingin kamu ubah pada foto tersebut.`; 
         catboxHelper.style.display = 'block'; 
@@ -96,9 +126,9 @@ function setPlatform(platform) {
     closeModal();
 }
 
-async function pasteToInput(elementId) { const inputEl = document.getElementById(elementId); try { if (!navigator.clipboard || !navigator.clipboard.readText) { throw new Error("Browser tidak mendukung baca clipboard otomatis."); } const text = await navigator.clipboard.readText(); if (text) { inputEl.value = text; } } catch (err) { inputEl.focus(); alert('Browser memblokir tempel otomatis demi keamanan.\n\nKolom sudah difokuskan, silakan Tahan Layar > Tempel (di HP) atau tekan Ctrl+V (di PC).'); } }
-function copyTranscript() { const textToCopy = document.getElementById('ytTranscriptText').innerText; navigator.clipboard.writeText(textToCopy).then(() => { const btn = document.getElementById('copyTranscriptBtn'); btn.innerHTML = '<i class="fas fa-check"></i> Tersalin'; btn.style.background = '#10b981'; setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Salin Teks ke Clipboard'; btn.style.background = 'var(--primary)'; }, 2000); }).catch(() => { alert('Gagal menyalin teks. Silakan blok teks dan salin manual.'); }); }
-function copyLirik() { const textToCopy = document.getElementById('lirikText').innerText; navigator.clipboard.writeText(textToCopy).then(() => { const btn = document.getElementById('copyLirikBtn'); btn.innerHTML = '<i class="fas fa-check"></i> Tersalin'; btn.style.background = '#10b981'; setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Salin Lirik ke Clipboard'; btn.style.background = 'var(--primary)'; }, 2000); }).catch(() => { alert('Gagal menyalin teks. Silakan blok teks dan salin manual.'); }); }
+async function pasteToInput(elementId) { const inputEl = document.getElementById(elementId); try { if (!navigator.clipboard || !navigator.clipboard.readText) { throw new Error("Browser tidak mendukung baca clipboard otomatis."); } const text = await navigator.clipboard.readText(); if (text) { inputEl.value = text; } } catch (err) { inputEl.focus(); showToast('Browser memblokir tempel otomatis. Silakan Tahan Layar > Tempel.', 'info'); } }
+function copyTranscript() { const textToCopy = document.getElementById('ytTranscriptText').innerText; navigator.clipboard.writeText(textToCopy).then(() => { const btn = document.getElementById('copyTranscriptBtn'); btn.innerHTML = '<i class="fas fa-check"></i> Tersalin'; btn.style.background = '#10b981'; setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Salin Teks ke Clipboard'; btn.style.background = 'var(--primary)'; }, 2000); }).catch(() => { showToast('Gagal menyalin teks. Silakan salin manual.', 'error'); }); }
+function copyLirik() { const textToCopy = document.getElementById('lirikText').innerText; navigator.clipboard.writeText(textToCopy).then(() => { const btn = document.getElementById('copyLirikBtn'); btn.innerHTML = '<i class="fas fa-check"></i> Tersalin'; btn.style.background = '#10b981'; setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Salin Lirik ke Clipboard'; btn.style.background = 'var(--primary)'; }, 2000); }).catch(() => { showToast('Gagal menyalin teks. Silakan salin manual.', 'error'); }); }
 
 async function fetchLirik(url) {
     const loading = document.getElementById('loading');
@@ -112,8 +142,8 @@ async function fetchLirik(url) {
             document.getElementById('lirikTitle').innerText = json.data.title;
             document.getElementById('lirikText').innerText = json.data.lyric;
             document.getElementById('lirikContentWrapper').style.display = 'block';
-        } else { alert("Gagal memuat lirik dari server."); }
-    } catch (error) { alert("Gangguan jaringan. Periksa koneksi internetmu."); } finally { loading.style.display = 'none'; }
+        } else { showToast("Gagal memuat lirik dari server.", "error"); }
+    } catch (error) { showToast("Gangguan jaringan. Periksa koneksi internetmu.", "error"); } finally { loading.style.display = 'none'; }
 }
 
 async function processAction() {
@@ -146,44 +176,44 @@ async function processAction() {
     let ytType = "";
     let ytQuality = "";
 
+    // VALIDASI INPUT DENGAN TOAST BUKAN ALERT
     if (currentPlatform === 'ai-detector' || currentPlatform === 'iqc' || currentPlatform === 'nulis') {
         inputData = document.getElementById('textContent').value.trim();
-        if (!inputData) return alert("Harap isi teks terlebih dahulu.");
+        if (!inputData) return showToast("Harap isi teks terlebih dahulu.", "error");
         if (currentPlatform === 'iqc') {
             phoneTime = document.getElementById('phoneTime').value;
             chatTime = document.getElementById('chatTime').value;
-            if (!phoneTime || !chatTime) return alert("Harap atur waktu terlebih dahulu.");
+            if (!phoneTime || !chatTime) return showToast("Harap atur waktu terlebih dahulu.", "error");
         }
     } else if (currentPlatform === 'pulsa' || currentPlatform === 'topup') {
         inputData = document.getElementById('mediaUrl').value.trim();
         providerData = document.getElementById('pulsaProvider').value;
         if (currentPlatform === 'pulsa') { amountData = document.getElementById('pulsaNominal').value; } 
-        else { amountData = document.getElementById('customAmount').value; if (!amountData || parseInt(amountData) < 10000) return alert("Masukkan nominal yang valid (Minimal Rp 10.000)."); }
-        if (!inputData || inputData.length < 9) return alert("Masukkan Nomor HP/Akun yang valid.");
+        else { amountData = document.getElementById('customAmount').value; if (!amountData || parseInt(amountData) < 10000) return showToast("Masukkan nominal yang valid (Minimal Rp 10.000).", "error"); }
+        if (!inputData || inputData.length < 9) return showToast("Masukkan Nomor HP/Akun yang valid.", "error");
     } else if (currentPlatform === 'youtube') {
         inputData = document.getElementById('mediaUrl').value.trim();
-        if (!inputData) return alert("Harap isi kolom input URL terlebih dahulu.");
+        if (!inputData) return showToast("Harap isi kolom input URL terlebih dahulu.", "error");
         const formatVal = document.getElementById('ytFormat').value.split('|');
         ytType = formatVal[0]; ytQuality = formatVal[1];
     } else if (['hd-foto', 'noise-reduce', 'remove-bg', 'photo-editor'].includes(currentPlatform)) {
         const fileInput = document.getElementById('mediaFile');
-        if (fileInput.files.length === 0) return alert("Harap pilih file terlebih dahulu dari perangkatmu.");
+        if (fileInput.files.length === 0) return showToast("Harap pilih file terlebih dahulu dari perangkatmu.", "error");
         
         if (fileInput.files[0].size > 4 * 1024 * 1024) {
-            return alert("Ukuran file terlalu besar! Demi stabilitas server, maksimal ukuran file adalah 4MB.");
+            return showToast("Ukuran file terlalu besar! Maksimal ukuran file adalah 4MB.", "error");
         }
         
-        // Khusus Photo Editor, pastikan prompt teks juga diisi
         if (currentPlatform === 'photo-editor') {
             inputData = document.getElementById('mediaUrl').value.trim();
-            if (!inputData) return alert("Harap ketik perintah edit (prompt) di kolom teks.");
+            if (!inputData) return showToast("Harap ketik perintah edit (prompt) di kolom teks.", "error");
         }
     } else if (currentPlatform === 'lirik') {
         inputData = document.getElementById('mediaUrl').value.trim();
-        if (!inputData) return alert("Harap masukkan judul lagu terlebih dahulu.");
+        if (!inputData) return showToast("Harap masukkan judul lagu terlebih dahulu.", "error");
     } else {
         inputData = document.getElementById('mediaUrl').value.trim();
-        if (!inputData) return alert("Harap isi kolom input terlebih dahulu.");
+        if (!inputData) return showToast("Harap isi kolom input terlebih dahulu.", "error");
     }
 
     setCooldown();
@@ -208,13 +238,8 @@ async function processAction() {
                 reader.readAsDataURL(file);
             });
             
-            fileBase64Obj = {
-                base64: base64String,
-                fileName: file.name,
-                mimeType: file.type
-            };
-            
-            finalInputData = inputData; // Akan tetap terisi teks prompt untuk photo-editor
+            fileBase64Obj = { base64: base64String, fileName: file.name, mimeType: file.type };
+            finalInputData = inputData; 
         }
 
         let action = '';
@@ -247,7 +272,6 @@ async function processAction() {
         else if (currentPlatform === 'ig-stalk') { action = 'igstalk'; params = { username: finalInputData }; }
         else if (currentPlatform === 'th-stalk') { action = 'thstalk'; params = { username: finalInputData }; }
 
-        // Ganti teks loading khusus AI tanpa Timer
         if (['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor'].includes(currentPlatform)) {
             loadingText.innerHTML = `Sedang diproses oleh AI, harap tunggu... <i class="fas fa-sparkles" style="color: #fbbf24;"></i>`;
         }
@@ -261,6 +285,7 @@ async function processAction() {
         const json = await response.json();
 
         if (json.status === true) {
+            showToast("Berhasil memproses permintaan!", "success");
             const data = json.data;
 
             if (currentPlatform === 'pulsa' || currentPlatform === 'topup') {
@@ -541,11 +566,11 @@ async function processAction() {
         }
         else {
             let pesanErrorAPI = json.msg || json.message || "Terjadi kesalahan pada sistem.";
-            alert("Info dari sistem: " + pesanErrorAPI);
+            showToast("Info sistem: " + pesanErrorAPI, "error");
         }
     } catch (error) {
         console.error(error);
-        alert("Pesan Sistem:\n" + error.message);
+        showToast(error.message, "error");
     } finally {
         loading.style.display = 'none';
         mainBtn.disabled = false;
