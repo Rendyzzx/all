@@ -67,9 +67,9 @@ function setPlatform(platform) {
     else if (platform === 'nulis') { title.innerHTML = "Nulis Otomatis"; document.getElementById('textContent').placeholder = "Ketik atau tempel teks yang ingin ditulis tangan..."; textContainer.style.display = 'flex'; btn.innerHTML = 'Mulai Nulis'; }
     
     // Fitur Upload File
-    else if (platform === 'hd-foto') { title.innerHTML = "HD Foto (Upscaler)"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari galerimu. Sistem akan mengunggah dan memprosesnya secara otomatis.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Tingkatkan Kualitas Foto'; }
-    else if (platform === 'remove-bg') { title.innerHTML = "Hapus Background"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari galerimu. Sistem akan mengunggah dan memprosesnya secara otomatis.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Hapus Background Gambar'; }
-    else if (platform === 'noise-reduce') { title.innerHTML = "Audio Noise Reduce"; fileContainer.style.display = 'flex'; mediaFile.accept = "audio/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih file audio (MP3/WAV) dari perangkatmu. Sistem akan membersihkannya otomatis.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Bersihkan Suara Audio'; }
+    else if (platform === 'hd-foto') { title.innerHTML = "HD Foto (Upscaler)"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari galerimu. Sistem akan memprosesnya secara otomatis. (Maksimal 4MB)`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Tingkatkan Kualitas Foto'; }
+    else if (platform === 'remove-bg') { title.innerHTML = "Hapus Background"; fileContainer.style.display = 'flex'; mediaFile.accept = "image/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih foto dari galerimu. Sistem akan memprosesnya secara otomatis. (Maksimal 4MB)`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Hapus Background Gambar'; }
+    else if (platform === 'noise-reduce') { title.innerHTML = "Audio Noise Reduce"; fileContainer.style.display = 'flex'; mediaFile.accept = "audio/*"; catboxHelper.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary); margin-right: 5px;"></i> Pilih file audio dari perangkatmu. Sistem akan membersihkannya otomatis. (Maksimal 4MB)`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Bersihkan Suara Audio'; }
     
     else if (platform === 'roblox-stalk') { title.innerHTML = "Roblox Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan username Roblox..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari Player'; }
     else if (platform === 'dc-stalk') { title.innerHTML = "Discord Stalk"; document.getElementById('mediaUrl').placeholder = "Masukkan ID Discord (angka)..."; urlContainer.style.display = 'flex'; btn.innerHTML = 'Cari User'; }
@@ -157,6 +157,11 @@ async function processAction() {
     } else if (['hd-foto', 'noise-reduce', 'remove-bg'].includes(currentPlatform)) {
         const fileInput = document.getElementById('mediaFile');
         if (fileInput.files.length === 0) return alert("Harap pilih file terlebih dahulu dari perangkatmu.");
+        
+        // Peringatan Batas Ukuran Vercel Serverless Function (Maks 4.5MB per payload)
+        if (fileInput.files[0].size > 4 * 1024 * 1024) {
+            return alert("Ukuran file terlalu besar! Demi stabilitas server, maksimal ukuran file adalah 4MB.");
+        }
     } else if (currentPlatform === 'lirik') {
         inputData = document.getElementById('mediaUrl').value.trim();
         if (!inputData) return alert("Harap masukkan judul lagu terlebih dahulu.");
@@ -172,30 +177,28 @@ async function processAction() {
 
     try {
         let finalInputData = inputData;
+        let fileBase64Obj = null;
 
-        // UPLOAD KE TMPFILES VIA VERCEL PROXY
+        // UBAH FILE FISIK MENJADI BASE64 UNTUK DIKIRIM KE BACKEND KITA
         if (['hd-foto', 'remove-bg', 'noise-reduce'].includes(currentPlatform)) {
             const fileInput = document.getElementById('mediaFile');
-            loadingText.innerText = "Mengunggah file sementara (Mohon tunggu)...";
+            loadingText.innerText = "Menyiapkan file untuk diproses (Mohon tunggu)...";
             
-            const formData = new FormData();
-            formData.append('file', fileInput.files[0]); // tmpfiles.org menggunakan parameter 'file'
-
-            const uploadRes = await fetch('/tmpfiles-proxy', {
-                method: 'POST',
-                body: formData
+            const file = fileInput.files[0];
+            const base64String = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(new Error("Gagal membaca file dari HP-mu."));
+                reader.readAsDataURL(file);
             });
-
-            if (!uploadRes.ok) throw new Error("Gagal mengunggah file. Server Vercel belum siap (404) atau ditolak.");
             
-            const uploadJson = await uploadRes.json();
-            if (uploadJson.status !== 'success') {
-                throw new Error("Ditolak oleh server penyimpanan sementara.");
-            }
-
-            // Mengubah URL halaman tmpfiles menjadi Direct Link (menambahkan /dl/)
-            let rawUrl = uploadJson.data.url;
-            finalInputData = rawUrl.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+            fileBase64Obj = {
+                base64: base64String,
+                fileName: file.name,
+                mimeType: file.type
+            };
+            
+            finalInputData = ""; // Akan diisi oleh backend secara otomatis
         }
 
         let action = '';
@@ -236,7 +239,7 @@ async function processAction() {
                     timeLeft--;
                     const timerEl = document.getElementById('timerCount');
                     if (timerEl) timerEl.innerText = timeLeft;
-                    if (timeLeft <= 0) { clearInterval(timerInterval); loadingText.innerHTML = `Selesai! Menyiapkan hasil...`; resolve(); }
+                    if (timeLeft <= 0) { clearInterval(timerInterval); loadingText.innerHTML = `Menyelesaikan hasil akhir...`; resolve(); }
                 }, 1000);
             });
         }
@@ -244,7 +247,7 @@ async function processAction() {
         const response = await fetch('/api/proses', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: action, params: params })
+            body: JSON.stringify({ action: action, params: params, fileData: fileBase64Obj })
         });
         
         const json = await response.json();
