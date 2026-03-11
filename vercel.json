@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/catbox-proxy",
+      "destination": "https://catbox.moe/user/api.php"
+    }
+  ]
+}
