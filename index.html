@@ -21,6 +21,7 @@
             --border-color: rgba(255, 255, 255, 0.08);
             --primary: #2563eb;
             --primary-hover: #1d4ed8; 
+            --ambient-glow: rgba(15, 23, 42, 0);
             --radius: 16px;
             --font-family-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
@@ -47,6 +48,18 @@
             -moz-osx-font-smoothing: grayscale;
             line-height: 1.5;
             padding-bottom: 70px;
+        }
+
+        #ambientBackground {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 0%, var(--ambient-glow) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+            transition: background 1.5s ease-in-out;
         }
 
         #splashScreen {
@@ -720,6 +733,8 @@
 </head>
 <body>
 
+    <div id="ambientBackground"></div>
+
     <div id="splashScreen">
         <div class="splash-logo"><i class="fas fa-moon"></i></div>
         <div class="splash-text">Moonlight</div>
@@ -894,8 +909,11 @@
                 <select id="pulsaNominal">
                     <option value="5000">Nominal: 5.000</option>
                     <option value="10000" selected>Nominal: 10.000</option>
+                    <option value="15000">Nominal: 15.000</option>
                     <option value="20000">Nominal: 20.000</option>
+                    <option value="25000">Nominal: 25.000</option>
                     <option value="50000">Nominal: 50.000</option>
+                    <option value="100000">Nominal: 100.000</option>
                 </select>
             </div>
             
@@ -921,7 +939,7 @@
                 <div class="time-col"><label>Jam Chat</label><input type="time" id="chatTime" value="10:15"></div>
             </div>
 
-            <div id="contactContainer">
+            <div id="contactContainer" style="display: none; width: 100%; flex-direction: column; gap: 16px;">
                 <div class="contact-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px 24px 32px 24px; text-align: center; backdrop-filter: blur(12px); box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
                     <img src="https://images.unsplash.com/photo-1522030299830-16b8d3d049fe?auto=format&fit=crop&w=200&q=80" alt="Profil" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 16px; border: 4px solid #1e293b; object-fit: cover;">
                     <h3 style="margin: 0 0 4px 0; font-size: 24px; color: #fff; font-weight: 700;">Ren</h3>
