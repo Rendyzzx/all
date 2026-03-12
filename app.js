@@ -82,6 +82,40 @@ function processQueue() {
     }
 }
 
+function extractColorAndApply(imageSrc) {
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        try {
+            const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            let r = 0;
+            let g = 0;
+            let b = 0;
+            for (let i = 0; i < data.length; i += 4) {
+                r += data[i];
+                g += data[i+1];
+                b += data[i+2];
+            }
+            const pixels = data.length / 4;
+            r = Math.floor(r / pixels);
+            g = Math.floor(g / pixels);
+            b = Math.floor(b / pixels);
+            document.documentElement.style.setProperty('--ambient-glow', `rgba(${r}, ${g}, ${b}, 0.5)`);
+        } catch(e) {
+            document.documentElement.style.setProperty('--ambient-glow', 'rgba(15, 23, 42, 0)');
+        }
+    };
+    img.onerror = function() {
+        document.documentElement.style.setProperty('--ambient-glow', 'rgba(15, 23, 42, 0)');
+    };
+    img.src = imageSrc;
+}
+
 function applyDynamicTheme(platform) {
     const root = document.documentElement;
     let primary = '#2563eb';
@@ -129,6 +163,7 @@ function applyDynamicTheme(platform) {
 
     root.style.setProperty('--primary', primary);
     root.style.setProperty('--primary-hover', hover);
+    root.style.setProperty('--ambient-glow', 'rgba(15, 23, 42, 0)');
 }
 
 function setPlatform(platform) {
@@ -367,6 +402,19 @@ function setPlatform(platform) {
     closeModal();
 }
 
+document.getElementById('mediaFile').addEventListener('change', function(event) {
+    if (event.target.files && event.target.files[0]) {
+        const file = event.target.files[0];
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                extractColorAndApply(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+});
+
 async function pasteToInput(elementId) { 
     try { 
         const text = await navigator.clipboard.readText(); 
@@ -426,7 +474,7 @@ async function fetchLirik(url) {
             params: { q: url }
         };
         
-        const res = await fetch(`/api/proses`, { 
+        const res = await fetch(API_BASE, { 
             method: 'POST', 
             headers: { 'Content-Type': 'application/json' }, 
             body: JSON.stringify(payload) 
@@ -796,7 +844,7 @@ async function processAction() {
         const formatVal = document.getElementById('ytFormat').value.split('|'); 
         ytType = formatVal[0]; 
         ytQuality = formatVal[1];
-    } else if (['hd-foto', 'noise-reduce', 'remove-bg', 'photo-editor'].includes(currentPlatform)) {
+    } else if (['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor'].includes(currentPlatform)) {
         const fileInput = document.getElementById('mediaFile');
         if (!fileInput || fileInput.files.length === 0) {
             return showToast("Harap pilih file terlebih dahulu.", "error");
@@ -1022,6 +1070,7 @@ async function processAction() {
                         <div class="ai-stat-box"><h4>${data.followings}</h4><p>Followings</p></div>
                     `;
                     extraEl.innerHTML = `<strong>ID:</strong> ${data.id}<br><strong>Banned:</strong> ${data.isBanned ? 'Ya' : 'Tidak'}`;
+                    extractColorAndApply(data.avatar);
                 }
                 else if (currentPlatform === 'gh-stalk') {
                     avatarImg.src = data.avatar_url; 
@@ -1034,6 +1083,7 @@ async function processAction() {
                         <div class="ai-stat-box"><h4>${data.following}</h4><p>Following</p></div>
                     `;
                     extraEl.innerHTML = `<strong>ID:</strong> ${data.id}<br><strong>Tipe:</strong> ${data.type}`;
+                    extractColorAndApply(data.avatar_url);
                 }
                 else if (currentPlatform === 'ig-stalk') {
                     avatarImg.src = data.photo; 
@@ -1046,6 +1096,7 @@ async function processAction() {
                         <div class="ai-stat-box"><h4>${data.following.toLocaleString()}</h4><p>Following</p></div>
                     `;
                     extraEl.innerHTML = `<strong>ID:</strong> ${data.id}<br><strong>Private:</strong> ${data.private ? 'Ya' : 'Tidak'}`;
+                    extractColorAndApply(data.photo);
                 }
                 else if (currentPlatform === 'th-stalk') {
                     let picUrl = data.profile_pic_url || (data.hd_profile_pic_versions ? data.hd_profile_pic_versions[0].url : '');
@@ -1056,6 +1107,7 @@ async function processAction() {
                     
                     gridEl.innerHTML = `<div class="ai-stat-box" style="grid-column: span 2;"><h4>${data.follower_count.toLocaleString()}</h4><p>Followers</p></div>`;
                     extraEl.innerHTML = `<strong>ID:</strong> ${data.pk}<br><strong>Verified:</strong> ${data.is_verified ? 'Ya' : 'Tidak'}`;
+                    extractColorAndApply(picUrl);
                 }
                 else if (currentPlatform === 'dc-stalk') {
                     avatarImg.src = data.avatar_url; 
@@ -1064,6 +1116,7 @@ async function processAction() {
                     
                     gridEl.innerHTML = `<div class="ai-stat-box" style="grid-column: span 2;"><h4>${data.id}</h4><p>User ID</p></div>`;
                     extraEl.innerHTML = `<strong>Dibuat:</strong> ${new Date(data.created_at).toLocaleString()}`;
+                    extractColorAndApply(data.avatar_url);
                 }
                 else if (currentPlatform === 'tt-stalk') {
                     avatarImg.src = data.photo; 
@@ -1076,6 +1129,7 @@ async function processAction() {
                         <div class="ai-stat-box"><h4>${data.following.toLocaleString()}</h4><p>Following</p></div>
                     `;
                     extraEl.innerHTML = `<strong>ID:</strong> ${data.id}<br><strong>Verified:</strong> ${data.verified ? 'Ya' : 'Tidak'}`;
+                    extractColorAndApply(data.photo);
                 }
                 else if (currentPlatform === 'tw-stalk') {
                     avatarImg.src = data.photo; 
@@ -1087,6 +1141,7 @@ async function processAction() {
                         <div class="ai-stat-box"><h4>${data.followings}</h4><p>Following</p></div>
                     `;
                     extraEl.innerHTML = `<strong>Status:</strong> ${data.joined}`;
+                    extractColorAndApply(data.photo);
                 }
             }
             else if (currentPlatform === 'lirik') {
@@ -1107,6 +1162,7 @@ async function processAction() {
                 document.getElementById('photoEditorImage').src = data.url; 
                 document.getElementById('photoEditorActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'EditAI.jpg')"><i class="fas fa-download"></i> Simpan</button>`;
                 saveToHistory(`Edit AI: ${finalInputData}`, data.url);
+                extractColorAndApply(data.url);
             }
             else if (currentPlatform === 'hd-foto') {
                 document.getElementById('hdFotoResult').style.display = 'block'; 
@@ -1114,12 +1170,14 @@ async function processAction() {
                 document.getElementById('hdImageResult').src = data.url; 
                 document.getElementById('hdActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'HDFoto.jpg')"><i class="fas fa-download"></i> Simpan HD</button>`;
                 saveToHistory(`HD Foto`, data.url);
+                extractColorAndApply(data.url);
             }
             else if (currentPlatform === 'remove-bg') {
                 document.getElementById('removeBgResult').style.display = 'block'; 
                 document.getElementById('removeBgImage').src = data.no_background; 
                 document.getElementById('removeBgActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.no_background}', 'NoBG.png')"><i class="fas fa-download"></i> Simpan Transparan</button>`;
                 saveToHistory(`Hapus BG`, data.no_background);
+                extractColorAndApply(data.no_background);
             }
             else if (currentPlatform === 'noise-reduce') {
                 document.getElementById('audioResult').style.display = 'block'; 
@@ -1131,16 +1189,19 @@ async function processAction() {
                 document.getElementById('ssWebResult').style.display = 'block'; 
                 document.getElementById('ssWebImage').src = data.url; 
                 document.getElementById('ssWebActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Screenshot.jpg')"><i class="fas fa-download"></i> Simpan SS</button>`;
+                extractColorAndApply(data.url);
             }
             else if (currentPlatform === 'iqc') {
                 document.getElementById('iqcResult').style.display = 'block'; 
                 document.getElementById('iqcImage').src = data.url; 
                 document.getElementById('iqcActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Kutipan.png')"><i class="fas fa-download"></i> Simpan Kutipan</button>`;
+                extractColorAndApply(data.url);
             }
             else if (currentPlatform === 'nulis') {
                 document.getElementById('nulisResult').style.display = 'block'; 
                 document.getElementById('nulisImage').src = data.url; 
                 document.getElementById('nulisActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Nulis.jpg')"><i class="fas fa-download"></i> Simpan Buku</button>`;
+                extractColorAndApply(data.url);
             }
             else if (currentPlatform === 'ai-detector') {
                 document.getElementById('aiResult').style.display = 'block'; 
@@ -1222,6 +1283,7 @@ async function processAction() {
                     }
                     actionBtns.innerHTML = vidHtml;
                     saveToHistory(`YouTube: ${json.title}`, data.url); 
+                    extractColorAndApply(json.thumbnail);
                 }
                 else if (currentPlatform === 'spotify') { 
                     profileSec.style.display = 'none'; 
@@ -1237,6 +1299,7 @@ async function processAction() {
                     
                     actionBtns.innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Spotify.mp3')"><i class="fas fa-music"></i> Download MP3</button>`; 
                     saveToHistory(`Spotify: ${data.title}`, data.url); 
+                    extractColorAndApply(data.thumbnail);
                 }
                 else if (currentPlatform === 'tiktok') { 
                     profileSec.style.display = 'none'; 
@@ -1255,6 +1318,7 @@ async function processAction() {
                             actionBtns.innerHTML += `<button class="btn-secondary" onclick="forceDownload('${data.audio}', 'TikTokAudio.mp3')">Download Audio</button>`; 
                         }
                         saveToHistory(`TikTok Slide (Foto)`, data.photo[0]); 
+                        extractColorAndApply(data.photo[0]);
                     } else { 
                         thumbCon.style.display = 'none'; 
                         if (data.video) { 
