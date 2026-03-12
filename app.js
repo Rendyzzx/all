@@ -638,106 +638,35 @@ function closeHistory() {
 
 // =========================================================================
 // =========================================================================
-// FUNGSI DOWNLOAD UNTUK WEBVIEW APK - LANGSUNG KE GALERI
+// FUNGSI DOWNLOAD - BUKA DI BROWSER EKSTERNAL (SAMA SEPERTI FITUR DOWNLOADER)
 // =========================================================================
 async function forceDownload(url, filename) {
     if (!url) return showToast("URL tidak valid", "error");
 
-    showToast("Menyiapkan unduhan...", "info");
-
     const isBase64 = url.startsWith('data:image') || (url.length > 500 && !url.startsWith('http'));
-    const isImageUrl = url.match(/\.(jpeg|jpg|gif|png|webp)(\?.*)?$/i);
-    const isAIImage = isBase64 || isImageUrl || url.includes('neoxr') || url.includes('catbox') || url.includes('files.');
 
-    // ── GAMBAR (Base64 / URL gambar langsung) ─────────────────────────────
-    if (isAIImage) {
+    // Kalau base64, konversi dulu ke blob lalu buat object URL
+    if (isBase64) {
         try {
-            showToast("Mengunduh gambar...", "info");
-
-            let base64Data, mimeType;
-
-            if (isBase64) {
-                let finalBase64 = url.startsWith('data:image') ? url : 'data:image/png;base64,' + url;
-                mimeType = finalBase64.match(/data:(.*?);/)[1];
-                base64Data = finalBase64.split(',')[1];
-            } else {
-                // Fetch URL eksternal → base64
-                const res = await fetch(url);
-                if (!res.ok) throw new Error("Gagal fetch");
-                const blob = await res.blob();
-                mimeType = blob.type || 'image/png';
-                base64Data = await new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onload = () => resolve(reader.result.split(',')[1]);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(blob);
-                });
-            }
-
-            const dataUri = `data:${mimeType};base64,${base64Data}`;
-            const safeName = filename || 'Moonlight_Image.png';
-
-            // 1️⃣ Android Bridge (jika APK expose window.Android.saveImage)
-            if (window.Android && typeof window.Android.saveImage === 'function') {
-                window.Android.saveImage(base64Data, safeName, mimeType);
-                showToast("✅ Tersimpan ke Galeri!", "success");
-                return;
-            }
-
-            // 2️⃣ Anchor download dengan data URI
-            const a = document.createElement('a');
-            a.href = dataUri;
-            a.download = safeName;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            showToast("✅ Gambar diunduh!", "success");
-
-        } catch (err) {
-            // 3️⃣ Fallback: Tampilkan gambar fullscreen + instruksi long-press
-            console.warn("Fetch gagal, pakai fallback halaman:", err);
-            showToast("Tekan lama gambar lalu pilih 'Simpan'", "info");
-
-            const w = window.open('', '_blank');
-            if (w) {
-                w.document.write(`<!DOCTYPE html><html>
-                <head>
-                  <meta charset="UTF-8">
-                  <meta name="viewport" content="width=device-width,initial-scale=1">
-                  <title>Simpan Gambar</title>
-                  <style>
-                    *{margin:0;padding:0;box-sizing:border-box}
-                    body{background:#000;min-height:100vh;display:flex;
-                         flex-direction:column;align-items:center;justify-content:center;}
-                    img{max-width:100%;max-height:85vh;object-fit:contain;display:block;}
-                    .info{color:#fff;font-family:sans-serif;font-size:15px;
-                          text-align:center;padding:16px 20px;line-height:1.6;background:#1a1a2e;}
-                    .info b{color:#60a5fa;}
-                  </style>
-                </head>
-                <body>
-                  <img src="${url}" alt="Gambar">
-                  <div class="info">📥 Tekan lama pada gambar di atas<br>
-                  lalu pilih <b>"Simpan gambar"</b> untuk menyimpan ke Galeri</div>
-                </body></html>`);
-                w.document.close();
-            }
+            let finalBase64 = url.startsWith('data:image') ? url : 'data:image/png;base64,' + url;
+            const arr = finalBase64.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while (n--) { u8arr[n] = bstr.charCodeAt(n); }
+            const blob = new Blob([u8arr], { type: mime });
+            const objectUrl = URL.createObjectURL(blob);
+            window.open(objectUrl, '_blank');
+        } catch (e) {
+            window.open(url, '_blank');
         }
         return;
     }
 
-    // ── LINK MEDIA BIASA (TikTok, YouTube, FB, IG, dll) ───────────────────
-    try {
-        const a = document.createElement('a');
-        a.href = url;
-        a.target = '_blank';
-        a.download = filename || 'Moonlight_Download';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    } catch (e) {
-        window.open(url, '_blank');
-    }
+    // URL biasa (gambar AI, video, dll) — langsung buka di browser
+    // Browser akan handle download ke galeri/folder download
+    window.open(url, '_blank');
 }
 // =========================================================================
 
