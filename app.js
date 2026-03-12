@@ -641,7 +641,7 @@ function closeHistory() {
 
 // =========================================================================
 // =========================================================================
-// FUNGSI DOWNLOAD - PAKSA BUKA DI CHROME VIA ANDROID INTENT
+// FUNGSI DOWNLOAD - SAMA PERSIS SEPERTI TIKTOK/YOUTUBE DOWNLOADER
 // =========================================================================
 async function forceDownload(url, filename) {
     if (!url) return showToast("URL tidak valid", "error");
@@ -661,53 +661,23 @@ async function forceDownload(url, filename) {
             form.append('file', blob, filename || 'Moonlight.png');
             const upRes = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: form });
             const upJson = await upRes.json();
-            if (upJson.status !== 'success') throw new Error('Upload gagal');
-            url = upJson.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
-        } catch (e) {
-            return showToast("Gagal memproses gambar", "error");
-        }
+            if (upJson.status === 'success') {
+                url = upJson.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+            }
+        } catch (e) { /* lanjut dengan url asli */ }
     }
 
-    showToast("Membuka Chrome untuk download...", "info");
-
-    const cleanUrl = url.replace(/^https?:\/\//, '');
-
-    // Coba 3 cara berurutan: Chrome khusus → Samsung Browser → fallback window.open
-
-    // Cara 1: Paksa buka pakai Chrome (package eksplisit)
-    const chromeIntent = `intent://${cleanUrl}#Intent;scheme=https;package=com.android.chrome;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end`;
-
-    // Cara 2: Samsung Internet Browser
-    const samsungIntent = `intent://${cleanUrl}#Intent;scheme=https;package=com.sec.android.app.sbrowser;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end`;
-
-    const tryOpen = (intentUrl, fallback) => {
-        return new Promise((resolve) => {
-            const a = document.createElement('a');
-            a.href = intentUrl;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            setTimeout(resolve, 800);
-        });
-    };
-
-    try {
-        await tryOpen(chromeIntent);
-    } catch(e) {}
-
-    // Fallback: buka langsung tanpa package agar OS pilih browser tersedia
-    setTimeout(() => {
-        const a = document.createElement('a');
-        a.href = `intent://${cleanUrl}#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    }, 900);
-
-    // Final fallback: window.open
-    setTimeout(() => { window.open(url, '_blank'); }, 1800);
+    // Persis sama seperti cara TikTok/YouTube download buka Chrome
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.download = filename || 'Moonlight_Image.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 // =========================================================================
+
 
 
 function openPip(url) {
