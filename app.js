@@ -523,19 +523,20 @@ async function fetchLirik(url) {
             const listContainer = document.getElementById('lirikList');
             if (listContainer) listContainer.style.display = 'none';
             
-            const lirikTitle = document.getElementById('lirikTitle');
-            if (lirikTitle) lirikTitle.innerText = json.data.title;
+            // Pencarian elemen secara dinamis (mengatasi masalah missing ID di index.html)
+            const lirikTitleEl = document.getElementById('lirikTitle') || document.querySelector('#lirikResult h3');
+            if (lirikTitleEl) lirikTitleEl.innerText = json.data.title || "Lirik Lagu";
             
             const lirikText = document.getElementById('lirikText');
-            if (lirikText) lirikText.innerText = json.data.lyric;
+            if (lirikText) lirikText.innerText = json.data.lyric || "Lirik tidak tersedia.";
             
             const lirikWrapper = document.getElementById('lirikContentWrapper');
             if (lirikWrapper) lirikWrapper.style.display = 'block';
         } else { 
-            showToast("Gagal memuat lirik.", "error"); 
+            showToast("Gagal memuat lirik dari server.", "error"); 
         }
     } catch (error) { 
-        showToast("Gangguan jaringan.", "error"); 
+        showToast("Gangguan jaringan saat memuat lirik.", "error"); 
     } finally { 
         if (loadingOverlay) loadingOverlay.style.display = 'none'; 
     }
@@ -670,7 +671,6 @@ async function forceDownload(url, filename) {
     }
 
     showToast("Membuka untuk download...", "info");
-
     window.location.href = url;
 }
 
@@ -862,7 +862,6 @@ async function processAction(isFromQueue = false) {
     let providerData = ""; 
     let amountData = "";
     
-    // PEMINDAI OTOMATIS: Hapus simbol '@' jika user tidak sengaja mengetiknya untuk fitur Stalk
     if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) {
         if (urlVal.startsWith('@')) urlVal = urlVal.substring(1);
     }
@@ -977,7 +976,6 @@ async function processAction(isFromQueue = false) {
         let action = ''; 
         let params = {};
         
-        // MAPPING ENDPOINT YANG SUDAH DIREVISI 100% SESUAI DOKUMENTASI NEOXR
         if (currentPlatform === 'pulsa' || currentPlatform === 'topup') { 
             action = providerData; 
             params = { number: finalInputData, amount: amountData }; 
@@ -1096,9 +1094,6 @@ async function processAction(isFromQueue = false) {
                 }
                 document.getElementById('invQrImage').src = qrData;
             }
-            // =================================================================
-            // SISTEM RENDER STALK YANG SUPER DINAMIS DAN AMAN DARI UNDEFINED
-            // =================================================================
             else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) {
                 document.getElementById('stalkResult').style.display = 'block';
                 
@@ -1113,29 +1108,23 @@ async function processAction(isFromQueue = false) {
                 extraEl.innerHTML = ''; 
                 if (bioEl) bioEl.innerText = ''; 
                 
-                // Menarik foto profil dari berbagai struktur JSON Neoxr
                 const profilePic = data.photo || data.avatar || data.avatar_url || data.profile_pic_url || (data.hd_profile_pic_versions && data.hd_profile_pic_versions[0].url) || 'https://i.ibb.co/30Z1W4z/user.png';
                 avatarImg.src = profilePic;
                 extractColorAndApply(profilePic);
 
-                // Menarik Nama Asli
                 nameEl.innerText = data.name || data.displayName || data.full_name || data.global_name || data.login || 'User Ditemukan';
                 
-                // Menarik Username dan memastikan format @-nya rapi
                 let unameStr = data.username || data.login || finalInputData;
                 if (!unameStr.toString().startsWith('@') && currentPlatform !== 'dc-stalk') {
                     unameStr = '@' + unameStr;
                 }
                 userEl.innerText = unameStr;
                 
-                // Menarik Bio (jika ada elemennya di HTML kamu, saya antisipasi saja)
                 if (bioEl && (data.about || data.bio || data.biography || data.description)) {
                     bioEl.innerText = data.about || data.bio || data.biography || data.description;
                 }
 
-                // Render Kotak Statistik Pintar
                 let gridHtml = '';
-                
                 let flw = data.follower ?? data.followers ?? data.follower_count;
                 if (flw !== undefined) {
                     let flwStr = typeof flw === 'number' ? flw.toLocaleString() : flw;
@@ -1148,7 +1137,6 @@ async function processAction(isFromQueue = false) {
                     gridHtml += `<div class="ai-stat-box"><h4>${flwiStr}</h4><p>Following</p></div>`;
                 }
                 
-                // Tambahan spesifik platform
                 if (currentPlatform === 'roblox-stalk' && data.friends !== undefined) {
                     gridHtml += `<div class="ai-stat-box"><h4>${data.friends.toLocaleString()}</h4><p>Teman</p></div>`;
                 } else if (currentPlatform === 'gh-stalk' && data.public_repos !== undefined) {
@@ -1165,7 +1153,6 @@ async function processAction(isFromQueue = false) {
                 
                 gridEl.innerHTML = gridHtml || `<div class="ai-stat-box" style="grid-column: span 2;"><h4>-</h4><p>Tidak ada data statistik</p></div>`;
 
-                // Render Info Ekstra di Bawah
                 let extraHtml = '';
                 if (data.id && currentPlatform !== 'dc-stalk') extraHtml += `<strong>ID:</strong> ${data.id}<br>`;
                 if (data.pk) extraHtml += `<strong>ID:</strong> ${data.pk}<br>`;
@@ -1187,17 +1174,34 @@ async function processAction(isFromQueue = false) {
 
                 extraEl.innerHTML = extraHtml;
             }
+            // ==============================================================
+            // PERBAIKAN FITUR LIRIK: CEK ID H3 DAN PENGAMAN URL (REPLACE ' )
+            // ==============================================================
             else if (currentPlatform === 'lirik') {
                 document.getElementById('lirikResult').style.display = 'block'; 
                 const listContainer = document.getElementById('lirikList'); 
-                document.getElementById('lirikTitle').innerText = "Pilih Versi Lagu:"; 
+                
+                // Fallback dinamis jika id lirikTitle tidak ditemukan di index.html
+                const lirikTitleEl = document.getElementById('lirikTitle') || document.querySelector('#lirikResult h3');
+                if (lirikTitleEl) lirikTitleEl.innerText = "Pilih Versi Lagu:"; 
+                
                 listContainer.style.display = 'flex'; 
                 document.getElementById('lirikContentWrapper').style.display = 'none'; 
                 listContainer.innerHTML = '';
                 
-                data.forEach(item => { 
-                    listContainer.innerHTML += `<button class="btn-secondary" onclick="fetchLirik('${item.url}')"><i class="fas fa-music"></i> ${item.title}</button>`; 
-                });
+                if (Array.isArray(data)) {
+                    data.forEach(item => { 
+                        // Mengamankan URL genius.com yang mungkin mengandung tanda petik agar tidak merusak kode onclick
+                        const safeUrl = item.url ? item.url.replace(/'/g, "\\'") : '';
+                        listContainer.innerHTML += `<button class="btn-secondary" onclick="fetchLirik('${safeUrl}')"><i class="fas fa-music"></i> ${item.title}</button>`; 
+                    });
+                } else if (data && data.lyric) {
+                    // Berjaga-jaga jika API membalas langsung lirik (bukan array)
+                    if (lirikTitleEl) lirikTitleEl.innerText = data.title || "Hasil Lirik";
+                    listContainer.style.display = 'none';
+                    document.getElementById('lirikText').innerText = data.lyric;
+                    document.getElementById('lirikContentWrapper').style.display = 'block';
+                }
             }
             else if (currentPlatform === 'photo-editor') {
                 document.getElementById('photoEditorResult').style.display = 'block'; 
