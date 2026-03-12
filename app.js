@@ -82,37 +82,52 @@ function processQueue() {
     }
 }
 
+// ==========================================
+// OPTIMASI: EKSTRAKSI WARNA YANG SANGAT RINGAN
+// ==========================================
 function extractColorAndApply(imageSrc) {
+    if (!imageSrc) return;
+    
     const img = new Image();
     img.crossOrigin = "Anonymous";
+    
     img.onload = function() {
         const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        
+        // Trik Optimasi: Kecilkan gambar ke 50x50 piksel saja agar super cepat!
+        canvas.width = 50;
+        canvas.height = 50;
+        
+        ctx.drawImage(img, 0, 0, 50, 50);
+        
         try {
-            const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-            let r = 0;
-            let g = 0;
-            let b = 0;
-            for (let i = 0; i < data.length; i += 4) {
+            const data = ctx.getImageData(0, 0, 50, 50).data;
+            let r = 0, g = 0, b = 0;
+            let count = 0;
+            
+            // Lompati piksel agar lebih cepat (step 16 = setiap 4 piksel)
+            for (let i = 0; i < data.length; i += 16) {
                 r += data[i];
                 g += data[i+1];
                 b += data[i+2];
+                count++;
             }
-            const pixels = data.length / 4;
-            r = Math.floor(r / pixels);
-            g = Math.floor(g / pixels);
-            b = Math.floor(b / pixels);
+            
+            r = Math.floor(r / count);
+            g = Math.floor(g / count);
+            b = Math.floor(b / count);
+            
             document.documentElement.style.setProperty('--ambient-glow', `rgba(${r}, ${g}, ${b}, 0.5)`);
         } catch(e) {
             document.documentElement.style.setProperty('--ambient-glow', 'rgba(15, 23, 42, 0)');
         }
     };
+    
     img.onerror = function() {
         document.documentElement.style.setProperty('--ambient-glow', 'rgba(15, 23, 42, 0)');
     };
+    
     img.src = imageSrc;
 }
 
@@ -402,6 +417,7 @@ function setPlatform(platform) {
     closeModal();
 }
 
+// Ekstrak warna secara realtime jika user memilih foto dari perangkat
 document.getElementById('mediaFile').addEventListener('change', function(event) {
     if (event.target.files && event.target.files[0]) {
         const file = event.target.files[0];
@@ -745,6 +761,9 @@ function moonJump() {
     }
 }
 
+// ==========================================
+// OPTIMASI: LOGIKA MINI GAME YANG LEBIH RINGAN
+// ==========================================
 function startGameLoop() {
     const player = document.getElementById('moonPlayer');
     const obstacle = document.getElementById('meteorObstacle');
@@ -769,13 +788,20 @@ function startGameLoop() {
         scoreEl.innerText = `Skor: ${gameScore}`;
     }, 100);
 
+    // Diperlambat dari 10ms ke 30ms agar tidak membebani browser (terhindar dari lag)
     gameInterval = setInterval(() => {
-        const playerTop = parseInt(window.getComputedStyle(player).getPropertyValue("top"), 10);
-        const obstacleLeft = parseInt(window.getComputedStyle(obstacle).getPropertyValue("left"), 10);
+        const playerRect = player.getBoundingClientRect();
+        const obstacleRect = obstacle.getBoundingClientRect();
         
-        if (obstacleLeft > 20 && obstacleLeft < 60 && playerTop >= 50) {
+        // Deteksi tabrakan menggunakan metode Bounding Box (Lebih ringan dari getComputedStyle)
+        if (
+            playerRect.left < obstacleRect.right &&
+            playerRect.right > obstacleRect.left &&
+            playerRect.top < obstacleRect.bottom &&
+            playerRect.bottom > obstacleRect.top
+        ) {
             obstacle.style.animation = "none";
-            obstacle.style.left = obstacleLeft + "px"; 
+            obstacle.style.left = (obstacleRect.left - playerRect.left + 30) + "px"; 
             
             clearInterval(gameInterval);
             clearInterval(scoreInterval);
@@ -790,7 +816,7 @@ function startGameLoop() {
                 }
             }, 1500);
         }
-    }, 10);
+    }, 30);
 }
 
 function stopGameLoop() {
