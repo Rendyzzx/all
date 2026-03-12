@@ -523,7 +523,6 @@ async function fetchLirik(url) {
             const listContainer = document.getElementById('lirikList');
             if (listContainer) listContainer.style.display = 'none';
             
-            // Pencarian elemen secara dinamis (mengatasi masalah missing ID di index.html)
             const lirikTitleEl = document.getElementById('lirikTitle') || document.querySelector('#lirikResult h3');
             if (lirikTitleEl) lirikTitleEl.innerText = json.data.title || "Lirik Lagu";
             
@@ -533,10 +532,10 @@ async function fetchLirik(url) {
             const lirikWrapper = document.getElementById('lirikContentWrapper');
             if (lirikWrapper) lirikWrapper.style.display = 'block';
         } else { 
-            showToast("Gagal memuat lirik dari server.", "error"); 
+            showToast("Gagal memuat lirik.", "error"); 
         }
     } catch (error) { 
-        showToast("Gangguan jaringan saat memuat lirik.", "error"); 
+        showToast("Gangguan jaringan.", "error"); 
     } finally { 
         if (loadingOverlay) loadingOverlay.style.display = 'none'; 
     }
@@ -671,6 +670,7 @@ async function forceDownload(url, filename) {
     }
 
     showToast("Membuka untuk download...", "info");
+
     window.location.href = url;
 }
 
@@ -1034,26 +1034,26 @@ async function processAction(isFromQueue = false) {
             action = 'lyric'; 
             params = { q: finalInputData }; 
         } else if (currentPlatform === 'roblox-stalk') { 
-            action = 'roblox-stalk'; 
-            params = { username: finalInputData }; 
+            action = 'roblox'; 
+            params = { username: finalInputData, q: finalInputData }; 
         } else if (currentPlatform === 'dc-stalk') { 
-            action = 'dcstalk'; 
-            params = { id: finalInputData }; 
+            action = 'discord'; 
+            params = { id: finalInputData, q: finalInputData }; 
         } else if (currentPlatform === 'tt-stalk') { 
-            action = 'ttstalk'; 
-            params = { username: finalInputData }; 
+            action = 'tiktokstalk'; 
+            params = { username: finalInputData, q: finalInputData }; 
         } else if (currentPlatform === 'tw-stalk') { 
-            action = 'twstalk'; 
-            params = { username: finalInputData }; 
+            action = 'twitterstalk'; 
+            params = { username: finalInputData, q: finalInputData }; 
         } else if (currentPlatform === 'gh-stalk') { 
-            action = 'ghstalk'; 
-            params = { username: finalInputData }; 
+            action = 'github'; 
+            params = { username: finalInputData, q: finalInputData }; 
         } else if (currentPlatform === 'ig-stalk') { 
             action = 'igstalk'; 
-            params = { username: finalInputData }; 
+            params = { username: finalInputData, q: finalInputData }; 
         } else if (currentPlatform === 'th-stalk') { 
-            action = 'thstalk'; 
-            params = { username: finalInputData }; 
+            action = 'threadstalk'; 
+            params = { username: finalInputData, q: finalInputData }; 
         }
 
         const payload = {
@@ -1174,14 +1174,10 @@ async function processAction(isFromQueue = false) {
 
                 extraEl.innerHTML = extraHtml;
             }
-            // ==============================================================
-            // PERBAIKAN FITUR LIRIK: CEK ID H3 DAN PENGAMAN URL (REPLACE ' )
-            // ==============================================================
             else if (currentPlatform === 'lirik') {
                 document.getElementById('lirikResult').style.display = 'block'; 
                 const listContainer = document.getElementById('lirikList'); 
                 
-                // Fallback dinamis jika id lirikTitle tidak ditemukan di index.html
                 const lirikTitleEl = document.getElementById('lirikTitle') || document.querySelector('#lirikResult h3');
                 if (lirikTitleEl) lirikTitleEl.innerText = "Pilih Versi Lagu:"; 
                 
@@ -1191,21 +1187,21 @@ async function processAction(isFromQueue = false) {
                 
                 if (Array.isArray(data)) {
                     data.forEach(item => { 
-                        // Mengamankan URL genius.com yang mungkin mengandung tanda petik agar tidak merusak kode onclick
                         const safeUrl = item.url ? item.url.replace(/'/g, "\\'") : '';
                         listContainer.innerHTML += `<button class="btn-secondary" onclick="fetchLirik('${safeUrl}')"><i class="fas fa-music"></i> ${item.title}</button>`; 
                     });
                 } else if (data && data.lyric) {
-                    // Berjaga-jaga jika API membalas langsung lirik (bukan array)
                     if (lirikTitleEl) lirikTitleEl.innerText = data.title || "Hasil Lirik";
                     listContainer.style.display = 'none';
                     document.getElementById('lirikText').innerText = data.lyric;
                     document.getElementById('lirikContentWrapper').style.display = 'block';
                 }
             }
+            // --- SAFE CHECK DOM FIX ---
             else if (currentPlatform === 'photo-editor') {
                 document.getElementById('photoEditorResult').style.display = 'block'; 
-                document.getElementById('photoEditorInfo').innerText = `Ukuran: ${data.size || 'HD'}`; 
+                const infoEl = document.getElementById('photoEditorInfo');
+                if (infoEl) infoEl.innerText = `Ukuran: ${data.size || 'HD'}`; 
                 
                 let imgSrc = data.url;
                 if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
@@ -1219,7 +1215,8 @@ async function processAction(isFromQueue = false) {
             }
             else if (currentPlatform === 'hd-foto') {
                 document.getElementById('hdFotoResult').style.display = 'block'; 
-                document.getElementById('hdFotoInfo').innerText = `Ukuran: ${data.size || 'HD'}`; 
+                const infoEl = document.getElementById('hdFotoInfo');
+                if (infoEl) infoEl.innerText = `Ukuran: ${data.size || 'HD'}`; 
                 
                 let imgSrc = data.url;
                 if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
@@ -1231,6 +1228,7 @@ async function processAction(isFromQueue = false) {
                 saveToHistory(`HD Foto`, imgSrc);
                 extractColorAndApply(imgSrc);
             }
+            // --------------------------
             else if (currentPlatform === 'remove-bg') {
                 document.getElementById('removeBgResult').style.display = 'block'; 
                 
@@ -1246,9 +1244,11 @@ async function processAction(isFromQueue = false) {
             }
             else if (currentPlatform === 'noise-reduce') {
                 document.getElementById('audioResult').style.display = 'block'; 
-                document.getElementById('audioPlayer').src = data.url; 
-                document.getElementById('audioActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Moonlight_CleanAudio.mp3')"><i class="fas fa-download"></i> Simpan Audio</button>`;
-                saveToHistory(`Bersihkan Audio`, data.url);
+                // Untuk audio, kita pastikan URL yang di-render sesuai (ditambah parameter fallback agar webview tenang)
+                let audioUrl = data.url;
+                document.getElementById('audioPlayer').src = audioUrl; 
+                document.getElementById('audioActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${audioUrl}', 'Moonlight_CleanAudio.mp3')"><i class="fas fa-download"></i> Simpan Audio</button>`;
+                saveToHistory(`Bersihkan Audio`, audioUrl);
             }
             else if (currentPlatform === 'ss-web') {
                 document.getElementById('ssWebResult').style.display = 'block'; 
