@@ -6,7 +6,7 @@ let toastTimeout;
 let historyList = JSON.parse(localStorage.getItem('moonlight_history')) || [];
 let offlineQueue = JSON.parse(localStorage.getItem('moonlight_queue')) || [];
 
-// Simpan URL gambar AI agar tidak putus di dalam onclick string
+
 const _imgStore = {};
 
 let gameInterval;
