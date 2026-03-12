@@ -636,24 +636,22 @@ function closeHistory() {
 }
 
 // ==============================================
-// SOLUSI APK WEBVIEW DOWNLOADER & BASE64 FIX
+// SOLUSI APK WEBVIEW DOWNLOADER & BASE64 UPLOAD
 // ==============================================
 async function forceDownload(url, filename) {
     if (!url) return showToast("URL tidak valid", "error");
 
-    let finalUrl = url;
-    
-    // 1. Validasi jika itu gambar Base64 tanpa awalan
-    if (url.length > 1000 && !url.startsWith('http') && !url.startsWith('data:image')) {
-        finalUrl = 'data:image/png;base64,' + url;
-    }
+    let isBase64 = url.length > 1000 && (!url.startsWith('http') || url.startsWith('data:image'));
 
-    try {
-        showToast("Memulai unduhan...", "info");
-        
-        // 2. Jika itu gambar Data URI (Base64), ubah menjadi Blob lalu unduh
-        if (finalUrl.startsWith('data:')) {
-            const arr = finalUrl.split(',');
+    if (isBase64) {
+        let finalBase64 = url;
+        if (!url.startsWith('data:image')) {
+            finalBase64 = 'data:image/png;base64,' + url;
+        }
+
+        showToast("Menyiapkan tautan eksternal...", "info");
+        try {
+            const arr = finalBase64.split(',');
             const mime = arr[0].match(/:(.*?);/)[1];
             const bstr = atob(arr[1]);
             let n = bstr.length;
@@ -662,41 +660,47 @@ async function forceDownload(url, filename) {
                 u8arr[n] = bstr.charCodeAt(n);
             }
             const blob = new Blob([u8arr], {type: mime});
-            const blobUrl = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = blobUrl;
-            a.download = filename || 'Moonlight_Image.png';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(blobUrl);
+            const formData = new FormData();
+            formData.append('file', blob, filename || 'Moonlight_Image.png');
+
+            const uploadRes = await fetch('https://tmpfiles.org/api/v1/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const uploadJson = await uploadRes.json();
+
+            if (uploadJson.status === 'success') {
+                let dlUrl = uploadJson.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+                showToast("Membuka browser untuk menyimpan...", "success");
+
+                const a = document.createElement('a');
+                a.href = dlUrl;
+                a.target = '_blank';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                return;
+            } else {
+                throw new Error("Gagal upload");
+            }
+        } catch (err) {
+            console.error(err);
+            showToast("Gagal membuat link unduhan.", "error");
             return;
         }
+    }
 
-        // 3. Jika URL biasa (http/https), fetch lalu jadikan blob agar bisa di-download paksa 
-        const response = await fetch(finalUrl);
-        const blob = await response.blob();
-        const blobUrl = window.URL.createObjectURL(blob);
-        
+    try {
+        showToast("Membuka tautan unduhan...", "info");
         const a = document.createElement('a');
-        a.href = blobUrl;
-        a.download = filename || 'Moonlight_Download';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(blobUrl);
-
-    } catch (e) {
-        console.error("Gagal fetch blob, fallback ke mode biasa", e);
-        // Fallback kalau fetch error (biasanya karena bentrok CORS server luar)
-        const a = document.createElement('a');
-        a.href = finalUrl;
-        a.download = filename || 'Moonlight_Download';
+        a.href = url;
         a.target = '_blank';
+        a.download = filename;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+    } catch (e) {
+        window.open(url, '_blank');
     }
 }
 
@@ -1224,9 +1228,6 @@ async function processAction(isFromQueue = false) {
                     listContainer.innerHTML += `<button class="btn-secondary" onclick="fetchLirik('${item.url}')"><i class="fas fa-music"></i> ${item.title}</button>`; 
                 });
             }
-            // ===========================================
-            // LOGIKA RENDER AI DAN BASE64 FIX
-            // ===========================================
             else if (currentPlatform === 'photo-editor') {
                 document.getElementById('photoEditorResult').style.display = 'block'; 
                 document.getElementById('photoEditorInfo').innerText = `Ukuran: ${data.size || 'HD'}`; 
