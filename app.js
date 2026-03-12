@@ -62,7 +62,7 @@ function handleOnline() {
     
     setTimeout(() => {
         processQueue();
-    }, 3000);
+    }, 1500);
 }
 
 function processQueue() {
@@ -627,31 +627,56 @@ function closeHistory() {
 
 async function forceDownload(url, filename) {
     try {
-        showToast("Sedang mengunduh...", "info");
-        const response = await fetch(url);
+        showToast("Menyiapkan file...", "info");
         
-        if (!response.ok) {
-            throw new Error("Gagal mengambil file");
+        let finalUrl = url;
+        if (url && url.length > 1000 && !url.startsWith('http') && !url.startsWith('data:image')) {
+            finalUrl = 'data:image/png;base64,' + url;
         }
-        
+
+        const response = await fetch(finalUrl);
+        if (!response.ok) throw new Error("Gagal mengambil file");
         const blob = await response.blob();
+
+        if (navigator.canShare && navigator.canShare({ files: [new File([blob], filename, { type: blob.type })] })) {
+            try {
+                await navigator.share({
+                    files: [new File([blob], filename, { type: blob.type })],
+                    title: filename,
+                });
+                showToast("Pilih 'Simpan' di menu pop-up!", "success");
+                return; 
+            } catch (shareErr) {
+                console.log("User membatalkan share.");
+            }
+        }
+
         const blobUrl = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
-        
         a.style.display = 'none';
         a.href = blobUrl;
         a.download = filename;
-        
         document.body.appendChild(a);
         a.click();
-        
         window.URL.revokeObjectURL(blobUrl);
         document.body.removeChild(a);
-        
-        showToast("Disimpan ke galeri!", "success");
+        showToast("Disimpan ke perangkat!", "success");
+
     } catch (error) {
-        window.open(url, '_blank');
-        showToast("Membuka di tab baru", "info");
+        let fallbackUrl = url;
+        if (url && url.length > 1000 && !url.startsWith('http') && !url.startsWith('data:image')) {
+            fallbackUrl = 'data:image/png;base64,' + url;
+        }
+        
+        const a = document.createElement('a');
+        a.href = fallbackUrl;
+        a.download = filename;
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        showToast("Membuka tautan unduhan...", "info");
     }
 }
 
@@ -1181,26 +1206,44 @@ async function processAction(isFromQueue = false) {
             }
             else if (currentPlatform === 'photo-editor') {
                 document.getElementById('photoEditorResult').style.display = 'block'; 
-                document.getElementById('photoEditorInfo').innerText = `Ukuran: ${data.size}`; 
-                document.getElementById('photoEditorImage').src = data.url; 
-                document.getElementById('photoEditorActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'EditAI.jpg')"><i class="fas fa-download"></i> Simpan</button>`;
-                saveToHistory(`Edit AI: ${finalInputData}`, data.url);
-                extractColorAndApply(data.url);
+                document.getElementById('photoEditorInfo').innerText = `Ukuran: ${data.size || 'HD'}`; 
+                
+                let imgSrc = data.url;
+                if (imgSrc && imgSrc.length > 100 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
+                    imgSrc = 'data:image/png;base64,' + imgSrc;
+                }
+                
+                document.getElementById('photoEditorImage').src = imgSrc; 
+                document.getElementById('photoEditorActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'EditAI.png')"><i class="fas fa-download"></i> Simpan</button>`;
+                saveToHistory(`Edit AI: ${finalInputData}`, imgSrc);
+                extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'hd-foto') {
                 document.getElementById('hdFotoResult').style.display = 'block'; 
-                document.getElementById('hdFotoInfo').innerText = `Ukuran: ${data.size}`; 
-                document.getElementById('hdImageResult').src = data.url; 
-                document.getElementById('hdActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'HDFoto.jpg')"><i class="fas fa-download"></i> Simpan HD</button>`;
-                saveToHistory(`HD Foto`, data.url);
-                extractColorAndApply(data.url);
+                document.getElementById('hdFotoInfo').innerText = `Ukuran: ${data.size || 'HD'}`; 
+                
+                let imgSrc = data.url;
+                if (imgSrc && imgSrc.length > 100 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
+                    imgSrc = 'data:image/png;base64,' + imgSrc;
+                }
+                
+                document.getElementById('hdImageResult').src = imgSrc; 
+                document.getElementById('hdActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'HDFoto.png')"><i class="fas fa-download"></i> Simpan HD</button>`;
+                saveToHistory(`HD Foto`, imgSrc);
+                extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'remove-bg') {
                 document.getElementById('removeBgResult').style.display = 'block'; 
-                document.getElementById('removeBgImage').src = data.no_background; 
-                document.getElementById('removeBgActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.no_background}', 'NoBG.png')"><i class="fas fa-download"></i> Simpan Transparan</button>`;
-                saveToHistory(`Hapus BG`, data.no_background);
-                extractColorAndApply(data.no_background);
+                
+                let imgSrc = data.no_background || data.url || data.image;
+                if (imgSrc && imgSrc.length > 100 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
+                    imgSrc = 'data:image/png;base64,' + imgSrc;
+                }
+                
+                document.getElementById('removeBgImage').src = imgSrc; 
+                document.getElementById('removeBgActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'NoBG.png')"><i class="fas fa-download"></i> Simpan Transparan</button>`;
+                saveToHistory(`Hapus BG`, imgSrc);
+                extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'noise-reduce') {
                 document.getElementById('audioResult').style.display = 'block'; 
@@ -1210,21 +1253,39 @@ async function processAction(isFromQueue = false) {
             }
             else if (currentPlatform === 'ss-web') {
                 document.getElementById('ssWebResult').style.display = 'block'; 
-                document.getElementById('ssWebImage').src = data.url; 
-                document.getElementById('ssWebActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Screenshot.jpg')"><i class="fas fa-download"></i> Simpan SS</button>`;
-                extractColorAndApply(data.url);
+                
+                let imgSrc = data.url;
+                if (imgSrc && imgSrc.length > 100 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
+                    imgSrc = 'data:image/png;base64,' + imgSrc;
+                }
+                
+                document.getElementById('ssWebImage').src = imgSrc; 
+                document.getElementById('ssWebActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Screenshot.png')"><i class="fas fa-download"></i> Simpan SS</button>`;
+                extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'iqc') {
                 document.getElementById('iqcResult').style.display = 'block'; 
-                document.getElementById('iqcImage').src = data.url; 
-                document.getElementById('iqcActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Kutipan.png')"><i class="fas fa-download"></i> Simpan Kutipan</button>`;
-                extractColorAndApply(data.url);
+                
+                let imgSrc = data.url;
+                if (imgSrc && imgSrc.length > 100 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
+                    imgSrc = 'data:image/png;base64,' + imgSrc;
+                }
+                
+                document.getElementById('iqcImage').src = imgSrc; 
+                document.getElementById('iqcActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Kutipan.png')"><i class="fas fa-download"></i> Simpan Kutipan</button>`;
+                extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'nulis') {
                 document.getElementById('nulisResult').style.display = 'block'; 
-                document.getElementById('nulisImage').src = data.url; 
-                document.getElementById('nulisActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Nulis.jpg')"><i class="fas fa-download"></i> Simpan Buku</button>`;
-                extractColorAndApply(data.url);
+                
+                let imgSrc = data.url;
+                if (imgSrc && imgSrc.length > 100 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
+                    imgSrc = 'data:image/png;base64,' + imgSrc;
+                }
+                
+                document.getElementById('nulisImage').src = imgSrc; 
+                document.getElementById('nulisActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Nulis.png')"><i class="fas fa-download"></i> Simpan Buku</button>`;
+                extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'ai-detector') {
                 document.getElementById('aiResult').style.display = 'block'; 
