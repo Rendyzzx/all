@@ -45,19 +45,47 @@ export default async function handler(req, res) {
         
         const response = await fetch(apiUrl);
         
-        // --- PERBAIKAN ERROR HANDLING DI SINI ---
-        // Cek dulu apakah responsenya benar-benar JSON
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
-            // Kalau bukan JSON (misal HTML error karena input aneh), beri tahu user baik-baik
             return res.status(500).json({ 
                 status: false, 
                 message: 'Input tidak valid atau server tujuan menolak permintaan (Bukan JSON).' 
             });
         }
-        // ----------------------------------------
 
         const data = await response.json();
+
+        // RE-UPLOAD HASIL GAMBAR AI KE TMPFILES AGAR BISA DIBUKA DI BROWSER
+        // Ini agar link yang diterima frontend bisa langsung dibuka Chrome untuk download
+        const isImageAction = ['upscale', 'nobg', 'photo-editor'].includes(action);
+        if (isImageAction && data.status && data.url && data.url.startsWith('http')) {
+            try {
+                const imgRes = await fetch(data.url);
+                if (imgRes.ok) {
+                    const imgBuffer = await imgRes.arrayBuffer();
+                    const imgMime = imgRes.headers.get('content-type') || 'image/png';
+                    const ext = imgMime.includes('png') ? 'png' : 'jpg';
+
+                    const reUploadForm = new FormData();
+                    reUploadForm.append('file', new Blob([imgBuffer], { type: imgMime }), `Moonlight_result.${ext}`);
+
+                    const reUploadRes = await fetch('https://tmpfiles.org/api/v1/upload', {
+                        method: 'POST',
+                        body: reUploadForm
+                    });
+                    const reUploadJson = await reUploadRes.json();
+
+                    if (reUploadJson.status === 'success') {
+                        // Ganti URL neoxr dengan URL tmpfiles yang bisa diakses publik
+                        data.url = reUploadJson.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+                    }
+                }
+            } catch (reUploadErr) {
+                // Kalau re-upload gagal, biarkan URL asli (tidak fatal)
+                console.warn('Re-upload gagal:', reUploadErr.message);
+            }
+        }
+
         res.status(200).json(data);
         
     } catch (error) {
