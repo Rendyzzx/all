@@ -184,7 +184,6 @@
             align-items: center; 
             justify-content: center; 
             padding: 20px;
-            backdrop-filter: blur(3px);
         }
         
         .modal-content {
@@ -200,6 +199,8 @@
             -webkit-overflow-scrolling: touch; 
             overscroll-behavior-y: contain; 
             transform: translateZ(0); 
+            -webkit-transform: translateZ(0);
+            will-change: transform, scroll-position;
             animation: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
