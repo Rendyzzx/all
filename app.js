@@ -640,69 +640,34 @@ function closeHistory() {
 
 
 // =========================================================================
-// FUNGSI DOWNLOAD - UPLOAD KE SERVER LALU BUKA DI CHROME
-// Gambar PNG di-wrap jadi octet-stream agar WebView lempar ke Chrome
+// FUNGSI DOWNLOAD
+// Untuk gambar AI: URL sudah tmpfiles dari proses.js, buka via window.location
+// Untuk video: buka _blank seperti biasa
 // =========================================================================
 async function forceDownload(url, filename) {
     if (!url) return showToast("URL tidak valid", "error");
 
     const isBase64 = url.startsWith('data:image') || (url.length > 500 && !url.startsWith('http'));
-    const isImage = isBase64 || url.match(/\.(jpeg|jpg|gif|png|webp)(\?.*)?$/i) || url.includes('neoxr') || url.includes('tmpfiles');
 
-    if (isImage) {
+    // Kalau masih base64 (fallback), upload via endpoint Vercel kita sendiri
+    if (isBase64) {
         try {
             showToast("Memproses gambar...", "info");
-            let blob;
-
-            if (isBase64) {
-                let b64 = url.startsWith('data:image') ? url : 'data:image/png;base64,' + url;
-                const mime = b64.match(/data:(.*?);/)[1];
-                const bstr = atob(b64.split(',')[1]);
-                const u8 = new Uint8Array(bstr.length);
-                for (let i = 0; i < bstr.length; i++) u8[i] = bstr.charCodeAt(i);
-                blob = new Blob([u8], { type: mime });
-            } else {
-                const res = await fetch(url);
-                if (!res.ok) throw new Error("Gagal fetch gambar");
-                blob = await res.blob();
-            }
-
-            showToast("Mengupload gambar...", "info");
-
-            // Upload ke 0x0.st - serve dengan Content-Disposition: attachment
-            // sehingga WebView/Chrome otomatis download, bukan tampilkan
-            const form = new FormData();
-            form.append('file', blob, filename || 'Moonlight.png');
-            const upRes = await fetch('https://0x0.st', { method: 'POST', body: form });
-            const uploadedUrl = (await upRes.text()).trim();
-
-            if (!uploadedUrl.startsWith('https://')) throw new Error("Upload gagal");
-
-            showToast("Membuka Chrome untuk download...", "info");
-            const a = document.createElement('a');
-            a.href = uploadedUrl;
-            a.target = '_blank';
-            a.download = filename || 'Moonlight_Image.png';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            return;
-
-        } catch (err) {
-            console.error(err);
-            showToast("Gagal upload: " + err.message, "error");
-            return;
-        }
+            const res = await fetch('/api/proses', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'upload-only', params: {}, fileData: { base64: url.startsWith('data:') ? url : 'data:image/png;base64,' + url, mimeType: 'image/png', fileName: filename || 'Moonlight.png' } })
+            });
+            const json = await res.json();
+            if (json.url) url = json.url;
+        } catch(e) { /* lanjut */ }
     }
 
-    // Link video biasa (TikTok, YT, dll)
-    const a = document.createElement('a');
-    a.href = url;
-    a.target = '_blank';
-    a.download = filename || 'Moonlight_Download';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    showToast("Membuka untuk download...", "info");
+
+    // Gunakan window.location.href — ini yang paling ampuh di WebView
+    // karena memaksa navigasi top-level, bukan buka tab baru
+    window.location.href = url;
 }
 // =========================================================================
 
