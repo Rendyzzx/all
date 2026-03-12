@@ -62,7 +62,7 @@ function handleOnline() {
     
     setTimeout(() => {
         processQueue();
-    }, 1500);
+    }, 3000);
 }
 
 function processQueue() {
@@ -83,8 +83,8 @@ function processQueue() {
                 textContentInput.value = task.text || '';
             }
             
-            processAction();
-        }, 100);
+            processAction(true);
+        }, 500);
     }
 }
 
@@ -823,7 +823,7 @@ function stopGameLoop() {
     }
 }
 
-async function processAction() {
+async function processAction(isFromQueue = false) {
     const mainBtn = document.getElementById('mainBtn');
     
     const mediaUrlInput = document.getElementById('mediaUrl');
@@ -893,8 +893,10 @@ async function processAction() {
         return;
     }
 
-    if (!checkCooldown()) return;
-    setCooldown();
+    if (!isFromQueue) {
+        if (!checkCooldown()) return;
+        setCooldown();
+    }
 
     if (mainBtn) {
         mainBtn.disabled = true; 
