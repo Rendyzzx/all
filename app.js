@@ -6,6 +6,9 @@ let toastTimeout;
 let historyList = JSON.parse(localStorage.getItem('moonlight_history')) || [];
 let offlineQueue = JSON.parse(localStorage.getItem('moonlight_queue')) || [];
 
+// Simpan URL gambar AI agar tidak putus di dalam onclick string
+const _imgStore = {};
+
 let gameInterval;
 let scoreInterval;
 let gameScore = 0;
@@ -638,8 +641,7 @@ function closeHistory() {
 
 // =========================================================================
 // =========================================================================
-// FUNGSI DOWNLOAD - BUKA DI BROWSER EKSTERNAL VIA ANDROID INTENT
-// URL gambar sudah dijamin tmpfiles (public) dari proses.js
+// FUNGSI DOWNLOAD - PAKSA BUKA DI CHROME VIA ANDROID INTENT
 // =========================================================================
 async function forceDownload(url, filename) {
     if (!url) return showToast("URL tidak valid", "error");
@@ -647,7 +649,6 @@ async function forceDownload(url, filename) {
     const isBase64 = url.startsWith('data:image') || (url.length > 500 && !url.startsWith('http'));
 
     if (isBase64) {
-        // Base64 → upload ke tmpfiles dulu, lalu buka di browser
         try {
             showToast("Memproses gambar...", "info");
             let b64 = url.startsWith('data:image') ? url : 'data:image/png;base64,' + url;
@@ -656,7 +657,6 @@ async function forceDownload(url, filename) {
             const u8 = new Uint8Array(bstr.length);
             for (let i = 0; i < bstr.length; i++) u8[i] = bstr.charCodeAt(i);
             const blob = new Blob([u8], { type: mime });
-
             const form = new FormData();
             form.append('file', blob, filename || 'Moonlight.png');
             const upRes = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: form });
@@ -668,17 +668,44 @@ async function forceDownload(url, filename) {
         }
     }
 
-    // Buka URL di browser eksternal via Android Intent
-    showToast("Membuka browser untuk download...", "info");
-    const intentUrl = `intent://${url.replace(/^https?:\/\//, '')}#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end`;
-    const a = document.createElement('a');
-    a.href = intentUrl;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    showToast("Membuka Chrome untuk download...", "info");
 
-    // Fallback window.open jika intent tidak terpicu
-    setTimeout(() => { window.open(url, '_blank'); }, 400);
+    const cleanUrl = url.replace(/^https?:\/\//, '');
+
+    // Coba 3 cara berurutan: Chrome khusus → Samsung Browser → fallback window.open
+
+    // Cara 1: Paksa buka pakai Chrome (package eksplisit)
+    const chromeIntent = `intent://${cleanUrl}#Intent;scheme=https;package=com.android.chrome;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end`;
+
+    // Cara 2: Samsung Internet Browser
+    const samsungIntent = `intent://${cleanUrl}#Intent;scheme=https;package=com.sec.android.app.sbrowser;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end`;
+
+    const tryOpen = (intentUrl, fallback) => {
+        return new Promise((resolve) => {
+            const a = document.createElement('a');
+            a.href = intentUrl;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(resolve, 800);
+        });
+    };
+
+    try {
+        await tryOpen(chromeIntent);
+    } catch(e) {}
+
+    // Fallback: buka langsung tanpa package agar OS pilih browser tersedia
+    setTimeout(() => {
+        const a = document.createElement('a');
+        a.href = `intent://${cleanUrl}#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }, 900);
+
+    // Final fallback: window.open
+    setTimeout(() => { window.open(url, '_blank'); }, 1800);
 }
 // =========================================================================
 
@@ -1215,9 +1242,9 @@ async function processAction(isFromQueue = false) {
                 if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
-                
+                _imgStore['photoEditor'] = imgSrc;
                 document.getElementById('photoEditorImage').src = imgSrc; 
-                document.getElementById('photoEditorActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_EditAI.png')"><i class="fas fa-download"></i> Simpan Gambar</button>`;
+                document.getElementById('photoEditorActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload(_imgStore['photoEditor'], 'Moonlight_EditAI.png')"><i class="fas fa-download"></i> Simpan Gambar</button>`;
                 saveToHistory(`Edit AI`, imgSrc);
                 extractColorAndApply(imgSrc);
             }
@@ -1229,9 +1256,9 @@ async function processAction(isFromQueue = false) {
                 if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
-                
+                _imgStore['hdFoto'] = imgSrc;
                 document.getElementById('hdImageResult').src = imgSrc; 
-                document.getElementById('hdActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_HDFoto.png')"><i class="fas fa-download"></i> Simpan Gambar HD</button>`;
+                document.getElementById('hdActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload(_imgStore['hdFoto'], 'Moonlight_HDFoto.png')"><i class="fas fa-download"></i> Simpan Gambar HD</button>`;
                 saveToHistory(`HD Foto`, imgSrc);
                 extractColorAndApply(imgSrc);
             }
@@ -1242,9 +1269,9 @@ async function processAction(isFromQueue = false) {
                 if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
-                
+                _imgStore['removeBg'] = imgSrc;
                 document.getElementById('removeBgImage').src = imgSrc; 
-                document.getElementById('removeBgActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_NoBG.png')"><i class="fas fa-download"></i> Simpan Transparan</button>`;
+                document.getElementById('removeBgActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload(_imgStore['removeBg'], 'Moonlight_NoBG.png')"><i class="fas fa-download"></i> Simpan Transparan</button>`;
                 saveToHistory(`Hapus BG`, imgSrc);
                 extractColorAndApply(imgSrc);
             }
