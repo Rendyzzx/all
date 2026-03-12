@@ -373,12 +373,12 @@ function setPlatform(platform) {
         btn.innerHTML = 'Cari User'; 
     } else if (platform === 'tt-stalk') { 
         title.innerHTML = "TikTok Stalk"; 
-        document.getElementById('mediaUrl').placeholder = "Masukkan username TikTok (tanpa @)..."; 
+        document.getElementById('mediaUrl').placeholder = "Masukkan username TikTok..."; 
         urlCont.style.display = 'flex'; 
         btn.innerHTML = 'Cari Akun'; 
     } else if (platform === 'tw-stalk') { 
         title.innerHTML = "Twitter Stalk"; 
-        document.getElementById('mediaUrl').placeholder = "Masukkan username Twitter (tanpa @)..."; 
+        document.getElementById('mediaUrl').placeholder = "Masukkan username Twitter..."; 
         urlCont.style.display = 'flex'; 
         btn.innerHTML = 'Cari Akun'; 
     } else if (platform === 'gh-stalk') { 
@@ -388,12 +388,12 @@ function setPlatform(platform) {
         btn.innerHTML = 'Cari Developer'; 
     } else if (platform === 'ig-stalk') { 
         title.innerHTML = "Instagram Stalk"; 
-        document.getElementById('mediaUrl').placeholder = "Masukkan username Instagram (tanpa @)..."; 
+        document.getElementById('mediaUrl').placeholder = "Masukkan username Instagram..."; 
         urlCont.style.display = 'flex'; 
         btn.innerHTML = 'Cari Akun IG'; 
     } else if (platform === 'th-stalk') { 
         title.innerHTML = "Threads Stalk"; 
-        document.getElementById('mediaUrl').placeholder = "Masukkan username Threads (tanpa @)..."; 
+        document.getElementById('mediaUrl').placeholder = "Masukkan username Threads..."; 
         urlCont.style.display = 'flex'; 
         btn.innerHTML = 'Cari Akun Threads'; 
     }
@@ -862,6 +862,7 @@ async function processAction(isFromQueue = false) {
     let providerData = ""; 
     let amountData = "";
     
+    // PEMINDAI OTOMATIS: Hapus simbol '@' jika user tidak sengaja mengetiknya untuk fitur Stalk
     if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) {
         if (urlVal.startsWith('@')) urlVal = urlVal.substring(1);
     }
@@ -976,7 +977,7 @@ async function processAction(isFromQueue = false) {
         let action = ''; 
         let params = {};
         
-        // MAPPING ENDPOINT YANG SUDAH DIREVISI MENJADI 100% AKURAT
+        // MAPPING ENDPOINT YANG SUDAH DIREVISI 100% SESUAI DOKUMENTASI NEOXR
         if (currentPlatform === 'pulsa' || currentPlatform === 'topup') { 
             action = providerData; 
             params = { number: finalInputData, amount: amountData }; 
@@ -1095,6 +1096,9 @@ async function processAction(isFromQueue = false) {
                 }
                 document.getElementById('invQrImage').src = qrData;
             }
+            // =================================================================
+            // SISTEM RENDER STALK YANG SUPER DINAMIS DAN AMAN DARI UNDEFINED
+            // =================================================================
             else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) {
                 document.getElementById('stalkResult').style.display = 'block';
                 
@@ -1107,43 +1111,80 @@ async function processAction(isFromQueue = false) {
                 
                 gridEl.innerHTML = ''; 
                 extraEl.innerHTML = ''; 
-                bioEl.innerText = ''; 
+                if (bioEl) bioEl.innerText = ''; 
                 
-                const profilePic = data.photo || data.avatar || data.avatar_url || (data.hd_profile_pic_versions && data.hd_profile_pic_versions[0].url) || 'https://i.ibb.co/30Z1W4z/user.png';
+                // Menarik foto profil dari berbagai struktur JSON Neoxr
+                const profilePic = data.photo || data.avatar || data.avatar_url || data.profile_pic_url || (data.hd_profile_pic_versions && data.hd_profile_pic_versions[0].url) || 'https://i.ibb.co/30Z1W4z/user.png';
                 avatarImg.src = profilePic;
                 extractColorAndApply(profilePic);
 
+                // Menarik Nama Asli
                 nameEl.innerText = data.name || data.displayName || data.full_name || data.global_name || data.login || 'User Ditemukan';
-                userEl.innerText = `@${data.username || data.login || finalInputData}`;
                 
-                if (data.about || data.bio || data.biography || data.description) {
+                // Menarik Username dan memastikan format @-nya rapi
+                let unameStr = data.username || data.login || finalInputData;
+                if (!unameStr.toString().startsWith('@') && currentPlatform !== 'dc-stalk') {
+                    unameStr = '@' + unameStr;
+                }
+                userEl.innerText = unameStr;
+                
+                // Menarik Bio (jika ada elemennya di HTML kamu, saya antisipasi saja)
+                if (bioEl && (data.about || data.bio || data.biography || data.description)) {
                     bioEl.innerText = data.about || data.bio || data.biography || data.description;
                 }
 
+                // Render Kotak Statistik Pintar
                 let gridHtml = '';
-                if (data.follower !== undefined || data.followers !== undefined || data.follower_count !== undefined) {
-                    let flw = data.follower || data.followers || data.follower_count;
-                    gridHtml += `<div class="ai-stat-box"><h4>${flw.toLocaleString()}</h4><p>Followers</p></div>`;
+                
+                let flw = data.follower ?? data.followers ?? data.follower_count;
+                if (flw !== undefined) {
+                    let flwStr = typeof flw === 'number' ? flw.toLocaleString() : flw;
+                    gridHtml += `<div class="ai-stat-box"><h4>${flwStr}</h4><p>Followers</p></div>`;
                 }
-                if (data.following !== undefined || data.followings !== undefined) {
-                    let flw = data.following || data.followings;
-                    gridHtml += `<div class="ai-stat-box"><h4>${flw.toLocaleString()}</h4><p>Following</p></div>`;
+                
+                let flwi = data.following ?? data.followings;
+                if (flwi !== undefined) {
+                    let flwiStr = typeof flwi === 'number' ? flwi.toLocaleString() : flwi;
+                    gridHtml += `<div class="ai-stat-box"><h4>${flwiStr}</h4><p>Following</p></div>`;
                 }
-                if (data.friends !== undefined) {
-                    gridHtml += `<div class="ai-stat-box"><h4>${data.friends}</h4><p>Teman</p></div>`;
+                
+                // Tambahan spesifik platform
+                if (currentPlatform === 'roblox-stalk' && data.friends !== undefined) {
+                    gridHtml += `<div class="ai-stat-box"><h4>${data.friends.toLocaleString()}</h4><p>Teman</p></div>`;
+                } else if (currentPlatform === 'gh-stalk' && data.public_repos !== undefined) {
+                    gridHtml += `<div class="ai-stat-box"><h4>${data.public_repos}</h4><p>Repositori</p></div>`;
+                } else if (currentPlatform === 'ig-stalk' && data.post !== undefined) {
+                    gridHtml += `<div class="ai-stat-box"><h4>${data.post.toLocaleString()}</h4><p>Posts</p></div>`;
+                } else if (currentPlatform === 'tt-stalk' && data.likes !== undefined) {
+                    gridHtml += `<div class="ai-stat-box"><h4>${data.likes.toLocaleString()}</h4><p>Likes</p></div>`;
+                } else if (currentPlatform === 'tw-stalk' && data.tweets !== undefined) {
+                    gridHtml += `<div class="ai-stat-box"><h4>${data.tweets}</h4><p>Tweets</p></div>`;
+                } else if (currentPlatform === 'dc-stalk') {
+                    gridHtml = `<div class="ai-stat-box" style="grid-column: span 2;"><h4>${data.id}</h4><p>Discord ID</p></div>`;
                 }
-                gridEl.innerHTML = gridHtml || `<div class="ai-stat-box" style="grid-column: span 2;"><h4>-</h4><p>Tidak ada data spesifik</p></div>`;
+                
+                gridEl.innerHTML = gridHtml || `<div class="ai-stat-box" style="grid-column: span 2;"><h4>-</h4><p>Tidak ada data statistik</p></div>`;
 
+                // Render Info Ekstra di Bawah
                 let extraHtml = '';
-                if (data.id || data.pk) extraHtml += `<strong>ID:</strong> ${data.id || data.pk}<br>`;
+                if (data.id && currentPlatform !== 'dc-stalk') extraHtml += `<strong>ID:</strong> ${data.id}<br>`;
+                if (data.pk) extraHtml += `<strong>ID:</strong> ${data.pk}<br>`;
                 if (data.type) extraHtml += `<strong>Tipe:</strong> ${data.type}<br>`;
-                if (data.is_verified !== undefined || data.verified !== undefined) extraHtml += `<strong>Verified:</strong> ${data.is_verified || data.verified ? 'Ya' : 'Tidak'}<br>`;
-                if (data.private !== undefined) extraHtml += `<strong>Private:</strong> ${data.private ? 'Ya' : 'Tidak'}<br>`;
-                if (data.isBanned !== undefined) extraHtml += `<strong>Banned:</strong> ${data.isBanned ? 'Ya' : 'Tidak'}<br>`;
-                if (data.joined || data.created_at) {
-                    const dateStr = data.joined ? data.joined : new Date(data.created_at).toLocaleString();
-                    extraHtml += `<strong>Bergabung:</strong> ${dateStr}<br>`;
+                
+                if (data.verified !== undefined || data.is_verified !== undefined) {
+                    let verif = data.verified ?? data.is_verified;
+                    extraHtml += `<strong>Terverifikasi:</strong> ${verif ? 'Ya ✅' : 'Tidak ❌'}<br>`;
                 }
+                if (data.private !== undefined) extraHtml += `<strong>Private Akun:</strong> ${data.private ? 'Ya 🔒' : 'Tidak 🔓'}<br>`;
+                if (data.isBanned !== undefined) extraHtml += `<strong>Banned:</strong> ${data.isBanned ? 'Ya 🚨' : 'Tidak'}<br>`;
+                
+                if (data.joined) {
+                    extraHtml += `<strong>${data.joined}</strong><br>`;
+                } else if (data.created_at || data.created_utc) {
+                    let cDate = data.created_at || data.created_utc;
+                    extraHtml += `<strong>Dibuat Pada:</strong> ${new Date(cDate).toLocaleString('id-ID')}<br>`;
+                }
+
                 extraEl.innerHTML = extraHtml;
             }
             else if (currentPlatform === 'lirik') {
