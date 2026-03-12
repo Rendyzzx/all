@@ -862,7 +862,6 @@ async function processAction(isFromQueue = false) {
     let providerData = ""; 
     let amountData = "";
     
-    // Auto Remove '@' symbol for stalk features to prevent API 404 errors
     if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) {
         if (urlVal.startsWith('@')) urlVal = urlVal.substring(1);
     }
@@ -977,7 +976,7 @@ async function processAction(isFromQueue = false) {
         let action = ''; 
         let params = {};
         
-        // --- Perbaikan Mapping Endpoint API Stalk ---
+        // MAPPING ENDPOINT YANG SUDAH DIREVISI MENJADI 100% AKURAT
         if (currentPlatform === 'pulsa' || currentPlatform === 'topup') { 
             action = providerData; 
             params = { number: finalInputData, amount: amountData }; 
@@ -1036,25 +1035,25 @@ async function processAction(isFromQueue = false) {
             action = 'lyric'; 
             params = { q: finalInputData }; 
         } else if (currentPlatform === 'roblox-stalk') { 
-            action = 'roblox'; 
+            action = 'roblox-stalk'; 
             params = { username: finalInputData }; 
         } else if (currentPlatform === 'dc-stalk') { 
-            action = 'discord'; 
+            action = 'dcstalk'; 
             params = { id: finalInputData }; 
         } else if (currentPlatform === 'tt-stalk') { 
             action = 'ttstalk'; 
             params = { username: finalInputData }; 
         } else if (currentPlatform === 'tw-stalk') { 
-            action = 'twitterstalk'; 
+            action = 'twstalk'; 
             params = { username: finalInputData }; 
         } else if (currentPlatform === 'gh-stalk') { 
-            action = 'github'; 
+            action = 'ghstalk'; 
             params = { username: finalInputData }; 
         } else if (currentPlatform === 'ig-stalk') { 
             action = 'igstalk'; 
             params = { username: finalInputData }; 
         } else if (currentPlatform === 'th-stalk') { 
-            action = 'threadstalk'; 
+            action = 'thstalk'; 
             params = { username: finalInputData }; 
         }
 
@@ -1077,7 +1076,7 @@ async function processAction(isFromQueue = false) {
 
         if (json.status === true) {
             showToast("Sukses!", "success");
-            const data = json.data || json; // Mengamankan jika struktur JSON berubah
+            const data = json.data || json;
             
             const mainResultCard = document.getElementById('resultCard');
             if (mainResultCard) mainResultCard.style.display = 'block';
@@ -1096,7 +1095,6 @@ async function processAction(isFromQueue = false) {
                 }
                 document.getElementById('invQrImage').src = qrData;
             }
-            // --- Perbaikan Besar-Besaran Sistem Render Stalk (Sangat Dinamis) ---
             else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) {
                 document.getElementById('stalkResult').style.display = 'block';
                 
@@ -1111,21 +1109,17 @@ async function processAction(isFromQueue = false) {
                 extraEl.innerHTML = ''; 
                 bioEl.innerText = ''; 
                 
-                // Cari foto dari berbagai kemungkinan key API
                 const profilePic = data.photo || data.avatar || data.avatar_url || (data.hd_profile_pic_versions && data.hd_profile_pic_versions[0].url) || 'https://i.ibb.co/30Z1W4z/user.png';
                 avatarImg.src = profilePic;
                 extractColorAndApply(profilePic);
 
-                // Cari nama dan username dari berbagai kemungkinan
                 nameEl.innerText = data.name || data.displayName || data.full_name || data.global_name || data.login || 'User Ditemukan';
                 userEl.innerText = `@${data.username || data.login || finalInputData}`;
                 
-                // Cari bio
                 if (data.about || data.bio || data.biography || data.description) {
                     bioEl.innerText = data.about || data.bio || data.biography || data.description;
                 }
 
-                // Bangun Kotak Statistik dengan aman
                 let gridHtml = '';
                 if (data.follower !== undefined || data.followers !== undefined || data.follower_count !== undefined) {
                     let flw = data.follower || data.followers || data.follower_count;
@@ -1140,7 +1134,6 @@ async function processAction(isFromQueue = false) {
                 }
                 gridEl.innerHTML = gridHtml || `<div class="ai-stat-box" style="grid-column: span 2;"><h4>-</h4><p>Tidak ada data spesifik</p></div>`;
 
-                // Bangun Info Ekstra dengan aman
                 let extraHtml = '';
                 if (data.id || data.pk) extraHtml += `<strong>ID:</strong> ${data.id || data.pk}<br>`;
                 if (data.type) extraHtml += `<strong>Tipe:</strong> ${data.type}<br>`;
