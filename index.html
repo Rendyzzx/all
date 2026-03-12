@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Moonlight - Super App</title>
     
     <link rel="manifest" href="manifest.json">
@@ -12,9 +12,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <style>
-        /* =========================================
-           1. VARIABEL & RESET
-           ========================================= */
         :root {
             --bg-body: #0f172a;       
             --bg-card: rgba(15, 23, 42, 0.95);
@@ -49,12 +46,9 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             line-height: 1.5;
-            padding-bottom: 70px; /* Ruang untuk bottom nav di mobile */
+            padding-bottom: 70px;
         }
 
-        /* =========================================
-           2. SPLASH SCREEN (LAYAR PEMBUKA)
-           ========================================= */
         #splashScreen {
             position: fixed;
             top: 0; 
@@ -95,9 +89,6 @@
             visibility: hidden !important;
         }
 
-        /* =========================================
-           3. NAVBAR ATAS
-           ========================================= */
         .navbar {
             display: flex; 
             justify-content: space-between; 
@@ -149,9 +140,25 @@
         
         .logo i { color: #60a5fa; }
 
-        /* =========================================
-           4. MODAL (POPUP MENU)
-           ========================================= */
+        #offlineIndicator {
+            display: none;
+            background: #ef4444;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            position: sticky;
+            top: 74px;
+            z-index: 99;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
         .modal {
             display: none; 
             position: fixed; 
@@ -258,9 +265,6 @@
         .feature-list li i { font-size: 20px; width: 24px; text-align: center; }
         .feature-list li h4 { margin: 0; font-size: 15px; font-weight: 500; color: #e2e8f0; }
 
-        /* =========================================
-           5. HERO & FORM INPUT
-           ========================================= */
         .hero { 
             flex: 1; 
             padding: 50px 20px; 
@@ -341,7 +345,6 @@
         
         input[type="file"]::file-selector-button:hover { background: rgba(255,255,255,0.2); }
         .input-wrapper input::placeholder, .text-wrapper textarea::placeholder { color: var(--text-muted); }
-        .select-wrapper select option { background: #1e293b; color: var(--text-main); }
         
         .select-wrapper::after { 
             content: '\f107'; 
@@ -373,7 +376,6 @@
             backdrop-filter: blur(8px);
         }
         
-        /* Tombol Paste */
         .paste-btn {
             background: rgba(255,255,255,0.08); 
             color: var(--text-muted); 
@@ -417,9 +419,6 @@
         .main-action-btn:hover { background: var(--primary-hover); }
         .main-action-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
 
-        /* =========================================
-           6. MINI GAME MOON RUN & LOADING
-           ========================================= */
         #loadingOverlay { 
             display: none; 
             margin: 16px 0; 
@@ -526,9 +525,6 @@
             color: var(--primary); 
         }
 
-        /* =========================================
-           7. RESULT CARD & MODULES
-           ========================================= */
         #resultCard {
             display: none; 
             width: 100%; 
@@ -600,17 +596,15 @@
         .profile p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); }
         .caption { font-size: 14px; margin-bottom: 20px; line-height: 1.6; color: var(--text-main); }
 
-        /* CSS Stalker */
-        .ai-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-        .ai-stat-box { background: #0f172a; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; text-align: center; }
-        .ai-stat-box h4 { margin: 0; font-size: 22px; color: #fff; font-weight: 700;}
-        .ai-stat-box p { margin: 4px 0 0 0; font-size: 12px; color: var(--text-muted); font-weight: 500;}
-        
-        /* CSS AI */
         .ai-feedback-badge { display: inline-block; padding: 12px 16px; border-radius: 10px; font-weight: 700; font-size: 14px; margin-bottom: 24px; width: 100%; text-align: center; }
         .ai-human { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
         .ai-fake { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
         .ai-mixed { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
+        
+        .ai-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+        .ai-stat-box { background: #0f172a; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; text-align: center; }
+        .ai-stat-box h4 { margin: 0; font-size: 22px; color: #fff; font-weight: 700;}
+        .ai-stat-box p { margin: 4px 0 0 0; font-size: 12px; color: var(--text-muted); font-weight: 500;}
         .ai-bar-container { width: 100%; background: #1e293b; border-radius: 6px; height: 6px; overflow: hidden; margin-top: 10px; }
         .ai-bar-human { height: 100%; background: #22c55e; width: 0%; transition: 1s ease-out; }
         .ai-bar-fake { height: 100%; background: #ef4444; width: 0%; transition: 1s ease-out; }
@@ -631,9 +625,6 @@
         .qr-container { text-align: center; background: #fff; padding: 16px; border-radius: 12px; margin: 0 auto 16px auto; width: 220px; }
         .qr-container img { width: 100%; height: auto; display: block; }
         
-        /* =========================================
-           8. HISTORY MODAL & TOAST
-           ========================================= */
         .history-item { 
             background: #1e293b; border: 1px solid var(--border-color); border-radius: 12px; 
             padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; 
@@ -660,9 +651,6 @@
         .toast.success .toast-icon { color: #10b981; }
         .toast.info .toast-icon { color: #3b82f6; }
         
-        /* =========================================
-           9. BOTTOM NAVIGATION & RESPONSIVE
-           ========================================= */
         .bottom-nav { 
             position: fixed; bottom: 0; left: 0; width: 100%; 
             background-color: rgba(15, 23, 42, 0.90); border-top: 1px solid var(--border-color); 
@@ -676,6 +664,35 @@
         }
         .bnav-item i { font-size: 20px; transition: transform 0.2s ease; }
         .bnav-item:hover, .bnav-item.active { color: var(--primary); }
+
+        #pipOverlay {
+            display: none;
+            position: fixed;
+            bottom: 85px;
+            right: 20px;
+            width: 180px;
+            height: 110px;
+            background: #000;
+            border-radius: 12px;
+            border: 2px solid var(--primary);
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            overflow: hidden;
+            animation: popIn 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+        }
+
+        #pipOverlay video { width: 100%; height: 100%; object-fit: cover; }
+
+        .pip-close {
+            position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.5);
+            color: white; border: none; border-radius: 50%; width: 22px; height: 22px;
+            font-size: 12px; cursor: pointer; z-index: 2;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0) translate(50%, 50%); opacity: 0; }
+            to { transform: scale(1) translate(0, 0); opacity: 1; }
+        }
 
         footer { margin-top: auto; padding: 30px 20px; text-align: center; font-size: 13px; color: var(--text-muted); background-color: transparent; }
 
@@ -697,6 +714,7 @@
             .feature-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; background: transparent; border: none; }
             .feature-list li { background: #1e293b; border: 1px solid var(--border-color); border-radius: 16px; }
             .feature-list li, .feature-list li:last-child { border-bottom: 1px solid var(--border-color); }
+            #pipOverlay { width: 300px; height: 170px; bottom: 30px; right: 30px; }
         }
     </style>
 </head>
@@ -706,6 +724,8 @@
         <div class="splash-logo"><i class="fas fa-moon"></i></div>
         <div class="splash-text">Moonlight</div>
     </div>
+
+    <div id="offlineIndicator">ANDA SEDANG OFFLINE. PERMINTAAN AKAN MASUK ANTREAN.</div>
 
     <nav class="navbar">
         <div class="logo"><i class="fas fa-moon"></i> Moonlight</div>
@@ -832,24 +852,11 @@
                 </li>
             </ul>
             
-            <p class="modal-category">Produk Digital</p>
+            <p class="modal-category">Digital & Info</p>
             <ul class="feature-list">
-                <li onclick="setPlatform('pulsa')">
-                    <i class="fas fa-mobile-alt" style="color: #3b82f6;"></i>
-                    <div><h4>Beli Pulsa (All Operator)</h4></div>
-                </li>
-                <li onclick="setPlatform('topup')">
-                    <i class="fas fa-wallet" style="color: #10b981;"></i>
-                    <div><h4>Topup E-Wallet</h4></div>
-                </li>
-            </ul>
-
-            <p class="modal-category">Informasi & Bantuan</p>
-            <ul class="feature-list">
-                <li onclick="setPlatform('kontak')">
-                    <i class="fas fa-id-badge" style="color: #60a5fa;"></i>
-                    <div><h4>Kontak Owner</h4></div>
-                </li>
+                <li onclick="setPlatform('pulsa')"><i class="fas fa-mobile-alt" style="color: #3b82f6;"></i><div><h4>Beli Pulsa</h4></div></li>
+                <li onclick="setPlatform('topup')"><i class="fas fa-wallet" style="color: #10b981;"></i><div><h4>Topup Wallet</h4></div></li>
+                <li onclick="setPlatform('kontak')"><i class="fas fa-id-badge" style="color: #60a5fa;"></i><div><h4>Kontak Owner</h4></div></li>
             </ul>
         </div>
     </div>
@@ -859,10 +866,7 @@
             <span class="close-modal" onclick="closeHistory()">&times;</span>
             <h2 style="margin-bottom: 8px;"><i class="fas fa-history" style="color: #60a5fa;"></i> Riwayat Terakhir</h2>
             <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Menyimpan 10 hasil sukses terakhirmu.</p>
-            
-            <div id="historyListContainer">
-                </div>
-            
+            <div id="historyListContainer"></div>
             <button onclick="clearHistory()" class="btn-secondary" style="width: 100%; padding: 14px; border-radius: 12px; margin-top: 16px; border: none; cursor: pointer; font-weight: 600;">
                 <i class="fas fa-trash"></i> Bersihkan Riwayat
             </button>
@@ -884,34 +888,26 @@
             
             <div id="catboxHelper"></div>
             
-            <div id="providerContainer" class="select-wrapper">
-                <select id="pulsaProvider"></select>
-            </div>
+            <div id="providerContainer" class="select-wrapper"><select id="pulsaProvider"></select></div>
             
             <div id="nominalContainer" class="select-wrapper">
                 <select id="pulsaNominal">
                     <option value="5000">Nominal: 5.000</option>
                     <option value="10000" selected>Nominal: 10.000</option>
-                    <option value="15000">Nominal: 15.000</option>
                     <option value="20000">Nominal: 20.000</option>
-                    <option value="25000">Nominal: 25.000</option>
                     <option value="50000">Nominal: 50.000</option>
-                    <option value="100000">Nominal: 100.000</option>
                 </select>
             </div>
             
             <div id="customAmountContainer" class="input-wrapper" style="display: none;">
-                <input type="number" id="customAmount" placeholder="Masukkan nominal (minimal 10000)">
+                <input type="number" id="customAmount" placeholder="Nominal (min 10000)">
             </div>
             
             <div id="ytFormatContainer" class="select-wrapper">
                 <select id="ytFormat">
-                    <option value="video|360p">Video (MP4) - Kualitas 360p</option>
-                    <option value="video|480p">Video (MP4) - Kualitas 480p</option>
-                    <option value="video|720p" selected>Video (MP4) - Kualitas 720p (Rekomendasi)</option>
-                    <option value="video|1080p">Video (MP4) - Kualitas 1080p (HD)</option>
-                    <option value="audio|128kbps">Audio (MP3) - Kualitas 128kbps</option>
-                    <option value="audio|320kbps">Audio (MP3) - Kualitas 320kbps (Jernih)</option>
+                    <option value="video|720p" selected>Video (MP4) - 720p</option>
+                    <option value="video|1080p">Video (MP4) - 1080p</option>
+                    <option value="audio|320kbps">Audio (MP3) - 320kbps</option>
                 </select>
             </div>
             
@@ -921,44 +917,33 @@
             </div>
             
             <div id="timeInputsContainer" class="time-row">
-                <div class="time-col">
-                    <label>Jam Status HP</label>
-                    <input type="time" id="phoneTime" value="12:00">
-                </div>
-                <div class="time-col">
-                    <label>Jam Chat</label>
-                    <input type="time" id="chatTime" value="10:15">
-                </div>
+                <div class="time-col"><label>Status HP</label><input type="time" id="phoneTime" value="12:00"></div>
+                <div class="time-col"><label>Jam Chat</label><input type="time" id="chatTime" value="10:15"></div>
             </div>
 
-            <div id="contactContainer" style="display: none; width: 100%; flex-direction: column; gap: 16px;">
+            <div id="contactContainer">
                 <div class="contact-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px 24px 32px 24px; text-align: center; backdrop-filter: blur(12px); box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
                     <img src="https://images.unsplash.com/photo-1522030299830-16b8d3d049fe?auto=format&fit=crop&w=200&q=80" alt="Profil" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 16px; border: 4px solid #1e293b; object-fit: cover;">
                     <h3 style="margin: 0 0 4px 0; font-size: 24px; color: #fff; font-weight: 700;">Ren</h3>
                     <p style="margin: 0 0 24px 0; font-size: 14px; color: var(--text-muted);">Developer & Owner Moonlight</p>
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         <a href="https://wa.me/6281249578370" target="_blank" class="btn-primary" style="background: #25D366; text-decoration: none; padding: 14px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; color: white;">
-                            <i class="fab fa-whatsapp" style="font-size: 18px;"></i> Chat via WhatsApp
+                            <i class="fab fa-whatsapp" style="font-size: 18px;"></i> WhatsApp
                         </a>
                         <a href="mailto:rawrrawr195@gmail.com" class="btn-secondary" style="text-decoration: none; padding: 14px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                            <i class="fas fa-envelope" style="font-size: 18px;"></i> Kirim Email
+                            <i class="fas fa-envelope" style="font-size: 18px;"></i> Email
                         </a>
                     </div>
                 </div>
             </div>
 
-            <button id="mainBtn" class="main-action-btn" onclick="processAction()">
-                Download Sekarang
-            </button>
+            <button id="mainBtn" class="main-action-btn" onclick="processAction()">Download Sekarang</button>
         </div>
 
         <div id="loadingOverlay">
-            <div id="loadingSpinner">
-                <i class="fas fa-circle-notch fa-spin"></i> <span id="loadingText">Memproses permintaan...</span>
-            </div>
-            
+            <div id="loadingSpinner"><i class="fas fa-circle-notch fa-spin"></i> <span id="loadingText">Memproses permintaan...</span></div>
             <div id="miniGame">
-                <p><i class="fas fa-gamepad" style="color:var(--primary); margin-right:4px;"></i> AI sedang memproses. Main bentar yuk! (Tap area untuk lompat)</p>
+                <p><i class="fas fa-gamepad" style="color:var(--primary); margin-right:4px;"></i> Main bentar yuk! (Tap untuk lompat)</p>
                 <div id="gameArea" onmousedown="moonJump()" ontouchstart="moonJump()">
                     <div id="moonPlayer"><i class="fas fa-user-astronaut"></i></div>
                     <div id="meteorObstacle"><i class="fas fa-meteor"></i></div>
@@ -969,22 +954,15 @@
         </div>
 
         <div id="resultCard">
-            
             <div id="downloaderResult">
                 <div id="profileSection" class="profile">
                     <img id="authorAvatar" src="" alt="Avatar">
-                    <div>
-                        <h3 id="authorName">Nama</h3>
-                        <p id="authorId">@username</p>
-                    </div>
+                    <div><h3 id="authorName">Nama</h3><p id="authorId">@username</p></div>
                 </div>
                 <div class="caption" id="videoCaption">Deskripsi</div>
                 <div id="thumbnailContainer" class="thumbnail-container">
-                    <img id="videoThumbnail" src="" alt="Thumbnail Video" class="video-thumbnail">
-                    <div class="thumbnail-fallback" id="thumbnailFallback">
-                        <i class="fas fa-image"></i>
-                        <p>Preview Tidak Tersedia</p>
-                    </div>
+                    <img id="videoThumbnail" src="" alt="Thumbnail" class="video-thumbnail">
+                    <div class="thumbnail-fallback" id="thumbnailFallback"><i class="fas fa-image"></i><p>Preview Tidak Tersedia</p></div>
                 </div>
                 <div id="actionBtns" class="action-btns"></div>
             </div>
@@ -992,167 +970,45 @@
             <div id="aiResult">
                 <div id="aiFeedbackBadge" class="ai-feedback-badge">Menganalisis...</div>
                 <div class="ai-stats-grid">
-                    <div class="ai-stat-box">
-                        <h4 id="aiScoreHuman">0%</h4>
-                        <p>Probabilitas Manusia</p>
-                        <div class="ai-bar-container"><div id="barHuman" class="ai-bar-human"></div></div>
-                    </div>
-                    <div class="ai-stat-box">
-                        <h4 id="aiScoreFake">0%</h4>
-                        <p>Probabilitas AI</p>
-                        <div class="ai-bar-container"><div id="barFake" class="ai-bar-fake"></div></div>
-                    </div>
+                    <div class="ai-stat-box"><h4>Manusia</h4><h4 id="aiScoreHuman">0%</h4><div class="ai-bar-container"><div id="barHuman" class="ai-bar-human"></div></div></div>
+                    <div class="ai-stat-box"><h4>AI</h4><h4 id="aiScoreFake">0%</h4><div class="ai-bar-container"><div id="barFake" class="ai-bar-fake"></div></div></div>
                 </div>
             </div>
 
-            <div id="hdFotoResult">
-                <h3>Kualitas Berhasil Ditingkatkan</h3>
-                <p id="hdFotoInfo">Ukuran baru: - MB</p>
-                <div class="thumbnail-container" style="display:flex;">
-                    <img id="hdImageResult" src="" alt="HD Foto" class="video-thumbnail" style="display:block;">
-                </div>
-                <div class="action-btns" id="hdActionBtns"></div>
-            </div>
-            
-            <div id="removeBgResult">
-                <h3>Background Berhasil Dihapus</h3>
-                <div class="thumbnail-container" style="display:flex; max-height: 350px; overflow-y: auto;">
-                    <img id="removeBgImage" src="" alt="Remove BG" style="width: 100%; object-fit: contain; display:block;">
-                </div>
-                <div class="action-btns" id="removeBgActionBtns"></div>
-            </div>
-
-            <div id="audioResult">
-                <h3>Audio Berhasil Dibersihkan</h3>
-                <audio id="audioPlayer" controls style="width: 100%; margin-bottom: 16px;"></audio>
-                <div class="action-btns" id="audioActionBtns"></div>
-            </div>
-
-            <div id="ssWebResult">
-                <h3>Tangkapan Layar Berhasil</h3>
-                <div class="thumbnail-container" style="display:flex; max-height: 300px; overflow-y: auto;">
-                    <img id="ssWebImage" src="" alt="Screenshot Web" style="width: 100%; object-fit: contain; display:block;">
-                </div>
-                <div class="action-btns" id="ssWebActionBtns"></div>
-            </div>
-
-            <div id="iqcResult">
-                <h3>Kutipan iPhone Berhasil Dibuat</h3>
-                <div class="thumbnail-container" style="display:flex; max-height: 350px; overflow-y: auto;">
-                    <img id="iqcImage" src="" alt="iPhone Quoted" style="width: 100%; object-fit: contain; display:block;">
-                </div>
-                <div class="action-btns" id="iqcActionBtns"></div>
-            </div>
-
-            <div id="nulisResult">
-                <h3>Tulisan Tangan Berhasil Dibuat</h3>
-                <div class="thumbnail-container" style="display:flex; max-height: 400px; overflow-y: auto;">
-                    <img id="nulisImage" src="" alt="Hasil Nulis" style="width: 100%; object-fit: contain; display:block;">
-                </div>
-                <div class="action-btns" id="nulisActionBtns"></div>
-            </div>
-            
-            <div id="photoEditorResult">
-                <h3>Hasil Edit Foto AI</h3>
-                <p id="photoEditorInfo">Berhasil diproses</p>
-                <div class="thumbnail-container" style="display:flex; max-height: 400px; overflow-y: auto;">
-                    <img id="photoEditorImage" src="" alt="Edit Foto" style="width: 100%; object-fit: contain; display:block;">
-                </div>
-                <div class="action-btns" id="photoEditorActionBtns"></div>
-            </div>
-
-            <div id="ytTranscriptResult">
-                <h3>Ekstraksi Teks Berhasil</h3>
-                <div class="transcript-box" id="ytTranscriptText"></div>
-                <div class="action-btns">
-                    <button class="btn-primary" onclick="copyTranscript()" id="copyTranscriptBtn"><i class="fas fa-copy"></i> Salin Teks ke Clipboard</button>
-                </div>
-            </div>
-            
-            <div id="lirikResult">
-                <h3 id="lirikTitle">Hasil Pencarian Lagu</h3>
-                <div id="lirikList" class="action-btns"></div>
-                <div id="lirikContentWrapper" style="display: none;">
-                    <div class="transcript-box" id="lirikText"></div>
-                    <div class="action-btns">
-                        <button class="btn-primary" onclick="copyLirik()" id="copyLirikBtn"><i class="fas fa-copy"></i> Salin Lirik ke Clipboard</button>
-                    </div>
-                </div>
-            </div>
-
+            <div id="hdFotoResult"><h3>Foto HD Berhasil</h3><div class="thumbnail-container" style="display:flex;"><img id="hdImageResult" src="" class="video-thumbnail" style="display:block;"></div><div class="action-btns" id="hdActionBtns"></div></div>
+            <div id="removeBgResult"><h3>Background Terhapus</h3><div class="thumbnail-container" style="display:flex;"><img id="removeBgImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="removeBgActionBtns"></div></div>
+            <div id="audioResult"><h3>Audio Bersih</h3><audio id="audioPlayer" controls style="width: 100%; margin-bottom: 16px;"></audio><div class="action-btns" id="audioActionBtns"></div></div>
+            <div id="ssWebResult"><h3>Tangkapan Layar</h3><div class="thumbnail-container" style="display:flex;"><img id="ssWebImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="ssWebActionBtns"></div></div>
+            <div id="iqcResult"><h3>Kutipan iPhone</h3><div class="thumbnail-container" style="display:flex;"><img id="iqcImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="iqcActionBtns"></div></div>
+            <div id="nulisResult"><h3>Hasil Nulis</h3><div class="thumbnail-container" style="display:flex;"><img id="nulisImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="nulisActionBtns"></div></div>
+            <div id="photoEditorResult"><h3>Hasil Edit AI</h3><div class="thumbnail-container" style="display:flex;"><img id="photoEditorImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="photoEditorActionBtns"></div></div>
+            <div id="ytTranscriptResult"><h3>Teks Video</h3><div class="transcript-box" id="ytTranscriptText"></div><div class="action-btns"><button class="btn-primary" onclick="copyTranscript()" id="copyTranscriptBtn">Salin Teks</button></div></div>
+            <div id="lirikResult"><h3>Hasil Lirik</h3><div id="lirikList" class="action-btns"></div><div id="lirikContentWrapper" style="display:none;"><div class="transcript-box" id="lirikText"></div><div class="action-btns"><button class="btn-primary" onclick="copyLirik()" id="copyLirikBtn">Salin Lirik</button></div></div></div>
             <div id="stalkResult">
                 <div style="text-align: center;">
-                    <img id="stalkAvatar" src="" alt="Avatar" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); margin-bottom: 12px; object-fit: cover; background: #1e293b;">
-                    <h3 id="stalkName" style="color: #fff; margin: 0 0 4px 0; font-size: 20px; font-weight: 700;">Name</h3>
-                    <p id="stalkUsername" style="color: var(--text-muted); margin: 0 0 16px 0; font-size: 14px; font-weight: 500;">@username</p>
-                    <p id="stalkBio" style="color: #e2e8f0; font-size: 14px; margin-bottom: 24px; font-style: italic;"></p>
+                    <img id="stalkAvatar" src="" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); margin-bottom: 12px; object-fit: cover; background: #1e293b;">
+                    <h3 id="stalkName">Name</h3><p id="stalkUsername">@username</p>
                 </div>
-                
-                <div id="stalkStatsGrid" class="ai-stats-grid"></div>
-                <div id="stalkExtra" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); text-align: left; font-size: 13px; line-height: 1.6; color: var(--text-muted);"></div>
-
-                <div id="stalkBadgeContainer" style="display: none; margin-top: 24px; text-align: left;">
-                    <h4 style="color: #fff; font-size: 16px; margin-bottom: 12px;">Daftar Badge</h4>
-                    <div id="stalkBadgeList" style="display: flex; flex-direction: column; gap: 12px; max-height: 300px; overflow-y: auto; padding-right: 8px;"></div>
-                </div>
+                <div id="stalkStatsGrid" class="ai-stats-grid"></div><div id="stalkExtra"></div>
             </div>
-
-            <div id="invoiceResult">
-                <div class="invoice-header">
-                    <h3>Tagihan Pembayaran</h3>
-                    <p id="invoiceId">Order ID: -</p>
-                </div>
-                <div class="invoice-details">
-                    <div class="invoice-row">
-                        <span class="invoice-label">Layanan</span>
-                        <span class="invoice-value" id="invService">DIGITAL</span>
-                    </div>
-                    <div class="invoice-row">
-                        <span class="invoice-label">Nomor Tujuan</span>
-                        <span class="invoice-value" id="invNumber">08xxx</span>
-                    </div>
-                    <div class="invoice-row">
-                        <span class="invoice-label">Batas Waktu</span>
-                        <span class="invoice-value" id="invExpired" style="color: #f87171;">-</span>
-                    </div>
-                    <div class="invoice-row" style="margin-top: 8px;">
-                        <span class="invoice-label">Total Tagihan</span>
-                        <span class="invoice-value invoice-price" id="invPrice">Rp 0</span>
-                    </div>
-                </div>
-                <div class="qr-container">
-                    <img id="invQrImage" src="" alt="QR Code Pembayaran">
-                </div>
-                <p class="qr-note">Scan kode QR di atas menggunakan aplikasi E-Wallet atau Mobile Banking Anda.</p>
-            </div>
-
+            <div id="invoiceResult"><div class="invoice-header"><h3>Tagihan</h3><p id="invoiceId">Order ID: -</p></div><div class="invoice-details"><div class="invoice-row"><span>Tujuan</span><span id="invNumber">08xxx</span></div><div class="invoice-row"><span>Total</span><span id="invPrice" style="color:#facc15; font-weight:800;">Rp 0</span></div></div><div class="qr-container"><img id="invQrImage" src=""></div></div>
         </div>
     </main>
 
-    <div id="toast" class="toast">
-        <div class="toast-icon"><i id="toastIcon" class="fas fa-info-circle"></i></div>
-        <div class="toast-message" id="toastMessage">Pesan</div>
+    <div id="pipOverlay">
+        <button class="pip-close" onclick="closePip()">&times;</button>
+        <video id="pipVideo" autoplay loop muted playsinline></video>
     </div>
+
+    <div id="toast" class="toast"><div class="toast-icon"><i id="toastIcon" class="fas fa-info-circle"></i></div><div class="toast-message" id="toastMessage">Pesan</div></div>
 
     <footer>&copy; Created by RendyZ</footer>
 
     <nav class="bottom-nav">
-        <button id="bnav-all" class="bnav-item active" onclick="openCategory('all', 'bnav-all')">
-            <i class="fas fa-layer-group"></i>
-            <span>Semua</span>
-        </button>
-        <button id="bnav-dl" class="bnav-item" onclick="openCategory('cat-downloader', 'bnav-dl')">
-            <i class="fas fa-download"></i>
-            <span>Media</span>
-        </button>
-        <button id="bnav-ai" class="bnav-item" onclick="openCategory('cat-ai', 'bnav-ai')">
-            <i class="fas fa-magic"></i>
-            <span>AI Tools</span>
-        </button>
-        <button id="bnav-stalk" class="bnav-item" onclick="openCategory('cat-stalker', 'bnav-stalk')">
-            <i class="fas fa-search"></i>
-            <span>Stalker</span>
-        </button>
+        <button id="bnav-all" class="bnav-item active" onclick="openCategory('all', 'bnav-all')"><i class="fas fa-layer-group"></i><span>Semua</span></button>
+        <button id="bnav-dl" class="bnav-item" onclick="openCategory('cat-downloader', 'bnav-dl')"><i class="fas fa-download"></i><span>Media</span></button>
+        <button id="bnav-ai" class="bnav-item" onclick="openCategory('cat-ai', 'bnav-ai')"><i class="fas fa-magic"></i><span>AI Tools</span></button>
+        <button id="bnav-stalk" class="bnav-item" onclick="openCategory('cat-stalker', 'bnav-stalk')"><i class="fas fa-search"></i><span>Stalker</span></button>
     </nav>
 
     <script src="app.js"></script>
