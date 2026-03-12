@@ -635,43 +635,26 @@ function closeHistory() {
     if (modal) modal.style.display = 'none'; 
 }
 
-// ==============================================
-// SOLUSI EKSTREM APK WEBVIEW & INTENT CHROME
-// ==============================================
+// =========================================================
+// SOLUSI FINAL APK WEBVIEW: KEMBALI KE CARA LAMA UNTUK URL
+// + TMPFILES HANYA UNTUK BASE64 (GAMBAR AI)
+// =========================================================
 async function forceDownload(url, filename) {
     if (!url) return showToast("URL tidak valid", "error");
 
-    showToast("Membuka browser bawaan HP...", "info");
-    
-    let finalUrl = url;
-    if (url.length > 1000 && !url.startsWith('http') && !url.startsWith('data:')) {
-        finalUrl = 'data:image/png;base64,' + url;
-    }
+    // Deteksi apakah ini file Base64 murni (Hasil dari AI)
+    let isBase64 = url.length > 1000 && (!url.startsWith('http') || url.startsWith('data:image'));
 
-    // FUNGSI INTI: Melempar URL ke sistem OS Android (Browser Luar)
-    const triggerIntent = (targetUrl) => {
-        const isAndroid = /Android/i.test(navigator.userAgent);
-        
-        if (isAndroid) {
-            let scheme = targetUrl.startsWith('http:') ? 'http' : 'https';
-            let cleanUrl = targetUrl.replace(/^https?:\/\//, '');
-            
-            // Format Intent Android standar untuk memaksa buka di luar APK
-            let intentUrl = `intent://${cleanUrl}#Intent;scheme=${scheme};action=android.intent.action.VIEW;end;`;
-            
-            // Eksekusi pelemparan URL ke OS Android
-            window.location.href = intentUrl;
-        } else {
-            // Jika diakses lewat PC/iOS
-            window.open(targetUrl, '_blank');
+    // 1. JIKA GAMBAR AI (BASE64) -> JADIKAN FILE & UPLOAD KE TMPFILES
+    if (isBase64) {
+        let finalBase64 = url;
+        if (!url.startsWith('data:image')) {
+            finalBase64 = 'data:image/png;base64,' + url;
         }
-    };
 
-    // Jika berupa teks mentah (Base64), kita upload dulu ke Tmpfiles
-    if (finalUrl.startsWith('data:')) {
-        showToast("Mengunggah gambar ke Cloud...", "info");
+        showToast("Menyiapkan tautan gambar...", "info");
         try {
-            const arr = finalUrl.split(',');
+            const arr = finalBase64.split(',');
             const mime = arr[0].match(/:(.*?);/)[1];
             const bstr = atob(arr[1]);
             let n = bstr.length;
@@ -690,22 +673,38 @@ async function forceDownload(url, filename) {
             const uploadJson = await uploadRes.json();
 
             if (uploadJson.status === 'success') {
+                // Dapatkan link direct download
                 let dlUrl = uploadJson.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
-                showToast("Selesai! Mengalihkan ke browser...", "success");
-                triggerIntent(dlUrl);
+                showToast("Membuka browser untuk menyimpan...", "success");
+
+                // BUKA DI BROWSER LUAR SAMA SEPERTI CARA TIKTOK
+                setTimeout(() => {
+                    window.open(dlUrl, '_blank');
+                }, 500);
+                return;
             } else {
-                showToast("Gagal membuat link eksternal", "error");
+                throw new Error("Gagal upload");
             }
         } catch (err) {
             console.error(err);
-            showToast("Terjadi kesalahan sistem.", "error");
+            showToast("Gagal membuat link unduhan.", "error");
+            return;
         }
-    } else {
-        // Jika sudah berbentuk Link HTTP (Seperti Neoxr, TikTok, Youtube, dll)
-        // Langsung tending link tersebut ke Browser Eksternal Chrome!
-        setTimeout(() => {
-            triggerIntent(finalUrl);
-        }, 500);
+    }
+
+    // 2. JIKA BUKAN BASE64 (URL TIKTOK, YOUTUBE, FOTO NEOXR, DLL)
+    // KEMBALI MENGGUNAKAN METODE LAMA YANG SUDAH TERBUKTI BERHASIL
+    try {
+        showToast("Membuka tautan unduhan...", "info");
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.download = filename || 'Moonlight_Download';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    } catch (e) {
+        window.open(url, '_blank');
     }
 }
 
