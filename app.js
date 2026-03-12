@@ -6,7 +6,6 @@ let toastTimeout;
 let historyList = JSON.parse(localStorage.getItem('moonlight_history')) || [];
 let offlineQueue = JSON.parse(localStorage.getItem('moonlight_queue')) || [];
 
-
 const _imgStore = {};
 
 let gameInterval;
@@ -422,6 +421,20 @@ function setPlatform(platform) {
             mainTitleEl.style.animation = '';
         }, 10);
     }
+
+    if (typeof FITUR !== 'undefined' && btn && platform !== 'kontak') {
+        if (FITUR[platform] === false) {
+            btn.innerHTML = '<i class="fas fa-tools"></i> Sedang Maintenance';
+            btn.disabled = true;
+            btn.style.background = '#475569';
+            btn.style.color = '#94a3b8';
+            showToast("Maaf, fitur ini sedang dalam pemeliharaan.", "info");
+        } else {
+            btn.disabled = false;
+            btn.style.background = '';
+            btn.style.color = '';
+        }
+    }
     
     closeModal();
 }
@@ -638,18 +651,11 @@ function closeHistory() {
     if (modal) modal.style.display = 'none'; 
 }
 
-
-// =========================================================================
-// FUNGSI DOWNLOAD
-// Untuk gambar AI: URL sudah tmpfiles dari proses.js, buka via window.location
-// Untuk video: buka _blank seperti biasa
-// =========================================================================
 async function forceDownload(url, filename) {
     if (!url) return showToast("URL tidak valid", "error");
 
     const isBase64 = url.startsWith('data:image') || (url.length > 500 && !url.startsWith('http'));
 
-    // Kalau masih base64 (fallback), upload via endpoint Vercel kita sendiri
     if (isBase64) {
         try {
             showToast("Memproses gambar...", "info");
@@ -660,17 +666,13 @@ async function forceDownload(url, filename) {
             });
             const json = await res.json();
             if (json.url) url = json.url;
-        } catch(e) { /* lanjut */ }
+        } catch(e) { }
     }
 
     showToast("Membuka untuk download...", "info");
 
-    // Gunakan window.location.href — ini yang paling ampuh di WebView
-    // karena memaksa navigasi top-level, bukan buka tab baru
     window.location.href = url;
 }
-// =========================================================================
-
 
 function openPip(url) {
     const overlay = document.getElementById('pipOverlay');
@@ -841,13 +843,17 @@ function stopGameLoop() {
 }
 
 async function processAction(isFromQueue = false) {
+    if (typeof FITUR !== 'undefined' && FITUR[currentPlatform] === false) {
+        return showToast("Fitur ini sedang dalam pemeliharaan.", "error");
+    }
+
     const mainBtn = document.getElementById('mainBtn');
     
-    const mediaUrlInput = document.getElementById('mediaUrl');
-    const urlVal = mediaUrlInput ? mediaUrlInput.value.trim() : "";
+    let mediaUrlInput = document.getElementById('mediaUrl');
+    let urlVal = mediaUrlInput ? mediaUrlInput.value.trim() : "";
     
-    const textContentInput = document.getElementById('textContent');
-    const textVal = textContentInput ? textContentInput.value.trim() : "";
+    let textContentInput = document.getElementById('textContent');
+    let textVal = textContentInput ? textContentInput.value.trim() : "";
     
     let phoneTime = ""; 
     let chatTime = ""; 
@@ -856,6 +862,11 @@ async function processAction(isFromQueue = false) {
     let providerData = ""; 
     let amountData = "";
     
+    // Auto Remove '@' symbol for stalk features to prevent API 404 errors
+    if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) {
+        if (urlVal.startsWith('@')) urlVal = urlVal.substring(1);
+    }
+
     if (currentPlatform === 'ai-detector' || currentPlatform === 'iqc' || currentPlatform === 'nulis') {
         if (!textVal) return showToast("Harap isi teks terlebih dahulu.", "error");
         
@@ -966,6 +977,7 @@ async function processAction(isFromQueue = false) {
         let action = ''; 
         let params = {};
         
+        // --- Perbaikan Mapping Endpoint API Stalk ---
         if (currentPlatform === 'pulsa' || currentPlatform === 'topup') { 
             action = providerData; 
             params = { number: finalInputData, amount: amountData }; 
@@ -1024,25 +1036,25 @@ async function processAction(isFromQueue = false) {
             action = 'lyric'; 
             params = { q: finalInputData }; 
         } else if (currentPlatform === 'roblox-stalk') { 
-            action = 'roblox-stalk'; 
+            action = 'roblox'; 
             params = { username: finalInputData }; 
         } else if (currentPlatform === 'dc-stalk') { 
-            action = 'dcstalk'; 
+            action = 'discord'; 
             params = { id: finalInputData }; 
         } else if (currentPlatform === 'tt-stalk') { 
             action = 'ttstalk'; 
             params = { username: finalInputData }; 
         } else if (currentPlatform === 'tw-stalk') { 
-            action = 'twstalk'; 
+            action = 'twitterstalk'; 
             params = { username: finalInputData }; 
         } else if (currentPlatform === 'gh-stalk') { 
-            action = 'ghstalk'; 
+            action = 'github'; 
             params = { username: finalInputData }; 
         } else if (currentPlatform === 'ig-stalk') { 
             action = 'igstalk'; 
             params = { username: finalInputData }; 
         } else if (currentPlatform === 'th-stalk') { 
-            action = 'thstalk'; 
+            action = 'threadstalk'; 
             params = { username: finalInputData }; 
         }
 
@@ -1065,7 +1077,7 @@ async function processAction(isFromQueue = false) {
 
         if (json.status === true) {
             showToast("Sukses!", "success");
-            const data = json.data;
+            const data = json.data || json; // Mengamankan jika struktur JSON berubah
             
             const mainResultCard = document.getElementById('resultCard');
             if (mainResultCard) mainResultCard.style.display = 'block';
@@ -1084,6 +1096,7 @@ async function processAction(isFromQueue = false) {
                 }
                 document.getElementById('invQrImage').src = qrData;
             }
+            // --- Perbaikan Besar-Besaran Sistem Render Stalk (Sangat Dinamis) ---
             else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) {
                 document.getElementById('stalkResult').style.display = 'block';
                 
@@ -1098,91 +1111,47 @@ async function processAction(isFromQueue = false) {
                 extraEl.innerHTML = ''; 
                 bioEl.innerText = ''; 
                 
-                if (currentPlatform === 'roblox-stalk') {
-                    avatarImg.src = data.avatar; 
-                    nameEl.innerText = data.displayName || data.name; 
-                    userEl.innerText = `@${data.name}`; 
-                    if(data.description) bioEl.innerText = data.description;
-                    
-                    gridEl.innerHTML = `
-                        <div class="ai-stat-box"><h4>${data.friends}</h4><p>Teman</p></div>
-                        <div class="ai-stat-box"><h4>${data.followers}</h4><p>Followers</p></div>
-                        <div class="ai-stat-box"><h4>${data.followings}</h4><p>Followings</p></div>
-                    `;
-                    extraEl.innerHTML = `<strong>ID:</strong> ${data.id}<br><strong>Banned:</strong> ${data.isBanned ? 'Ya' : 'Tidak'}`;
-                    extractColorAndApply(data.avatar);
+                // Cari foto dari berbagai kemungkinan key API
+                const profilePic = data.photo || data.avatar || data.avatar_url || (data.hd_profile_pic_versions && data.hd_profile_pic_versions[0].url) || 'https://i.ibb.co/30Z1W4z/user.png';
+                avatarImg.src = profilePic;
+                extractColorAndApply(profilePic);
+
+                // Cari nama dan username dari berbagai kemungkinan
+                nameEl.innerText = data.name || data.displayName || data.full_name || data.global_name || data.login || 'User Ditemukan';
+                userEl.innerText = `@${data.username || data.login || finalInputData}`;
+                
+                // Cari bio
+                if (data.about || data.bio || data.biography || data.description) {
+                    bioEl.innerText = data.about || data.bio || data.biography || data.description;
                 }
-                else if (currentPlatform === 'gh-stalk') {
-                    avatarImg.src = data.avatar_url; 
-                    nameEl.innerText = data.name || data.login; 
-                    userEl.innerText = `@${data.login}`; 
-                    if(data.bio && data.bio !== '.') bioEl.innerText = data.bio;
-                    
-                    gridEl.innerHTML = `
-                        <div class="ai-stat-box"><h4>${data.followers}</h4><p>Followers</p></div>
-                        <div class="ai-stat-box"><h4>${data.following}</h4><p>Following</p></div>
-                    `;
-                    extraEl.innerHTML = `<strong>ID:</strong> ${data.id}<br><strong>Tipe:</strong> ${data.type}`;
-                    extractColorAndApply(data.avatar_url);
+
+                // Bangun Kotak Statistik dengan aman
+                let gridHtml = '';
+                if (data.follower !== undefined || data.followers !== undefined || data.follower_count !== undefined) {
+                    let flw = data.follower || data.followers || data.follower_count;
+                    gridHtml += `<div class="ai-stat-box"><h4>${flw.toLocaleString()}</h4><p>Followers</p></div>`;
                 }
-                else if (currentPlatform === 'ig-stalk') {
-                    avatarImg.src = data.photo; 
-                    nameEl.innerText = data.name; 
-                    userEl.innerText = `@${data.username}`; 
-                    if(data.about) bioEl.innerText = data.about;
-                    
-                    gridEl.innerHTML = `
-                        <div class="ai-stat-box"><h4>${data.follower.toLocaleString()}</h4><p>Followers</p></div>
-                        <div class="ai-stat-box"><h4>${data.following.toLocaleString()}</h4><p>Following</p></div>
-                    `;
-                    extraEl.innerHTML = `<strong>ID:</strong> ${data.id}<br><strong>Private:</strong> ${data.private ? 'Ya' : 'Tidak'}`;
-                    extractColorAndApply(data.photo);
+                if (data.following !== undefined || data.followings !== undefined) {
+                    let flw = data.following || data.followings;
+                    gridHtml += `<div class="ai-stat-box"><h4>${flw.toLocaleString()}</h4><p>Following</p></div>`;
                 }
-                else if (currentPlatform === 'th-stalk') {
-                    let picUrl = data.profile_pic_url || (data.hd_profile_pic_versions ? data.hd_profile_pic_versions[0].url : '');
-                    avatarImg.src = picUrl; 
-                    nameEl.innerText = data.full_name; 
-                    userEl.innerText = `@${data.username}`; 
-                    if(data.biography) bioEl.innerText = data.biography;
-                    
-                    gridEl.innerHTML = `<div class="ai-stat-box" style="grid-column: span 2;"><h4>${data.follower_count.toLocaleString()}</h4><p>Followers</p></div>`;
-                    extraEl.innerHTML = `<strong>ID:</strong> ${data.pk}<br><strong>Verified:</strong> ${data.is_verified ? 'Ya' : 'Tidak'}`;
-                    extractColorAndApply(picUrl);
+                if (data.friends !== undefined) {
+                    gridHtml += `<div class="ai-stat-box"><h4>${data.friends}</h4><p>Teman</p></div>`;
                 }
-                else if (currentPlatform === 'dc-stalk') {
-                    avatarImg.src = data.avatar_url; 
-                    nameEl.innerText = data.global_name || data.username; 
-                    userEl.innerText = `@${data.username}`;
-                    
-                    gridEl.innerHTML = `<div class="ai-stat-box" style="grid-column: span 2;"><h4>${data.id}</h4><p>User ID</p></div>`;
-                    extraEl.innerHTML = `<strong>Dibuat:</strong> ${new Date(data.created_at).toLocaleString()}`;
-                    extractColorAndApply(data.avatar_url);
+                gridEl.innerHTML = gridHtml || `<div class="ai-stat-box" style="grid-column: span 2;"><h4>-</h4><p>Tidak ada data spesifik</p></div>`;
+
+                // Bangun Info Ekstra dengan aman
+                let extraHtml = '';
+                if (data.id || data.pk) extraHtml += `<strong>ID:</strong> ${data.id || data.pk}<br>`;
+                if (data.type) extraHtml += `<strong>Tipe:</strong> ${data.type}<br>`;
+                if (data.is_verified !== undefined || data.verified !== undefined) extraHtml += `<strong>Verified:</strong> ${data.is_verified || data.verified ? 'Ya' : 'Tidak'}<br>`;
+                if (data.private !== undefined) extraHtml += `<strong>Private:</strong> ${data.private ? 'Ya' : 'Tidak'}<br>`;
+                if (data.isBanned !== undefined) extraHtml += `<strong>Banned:</strong> ${data.isBanned ? 'Ya' : 'Tidak'}<br>`;
+                if (data.joined || data.created_at) {
+                    const dateStr = data.joined ? data.joined : new Date(data.created_at).toLocaleString();
+                    extraHtml += `<strong>Bergabung:</strong> ${dateStr}<br>`;
                 }
-                else if (currentPlatform === 'tt-stalk') {
-                    avatarImg.src = data.photo; 
-                    nameEl.innerText = data.name; 
-                    userEl.innerText = `@${data.username}`; 
-                    if(data.bio) bioEl.innerText = data.bio;
-                    
-                    gridEl.innerHTML = `
-                        <div class="ai-stat-box"><h4>${data.followers.toLocaleString()}</h4><p>Followers</p></div>
-                        <div class="ai-stat-box"><h4>${data.following.toLocaleString()}</h4><p>Following</p></div>
-                    `;
-                    extraEl.innerHTML = `<strong>ID:</strong> ${data.id}<br><strong>Verified:</strong> ${data.verified ? 'Ya' : 'Tidak'}`;
-                    extractColorAndApply(data.photo);
-                }
-                else if (currentPlatform === 'tw-stalk') {
-                    avatarImg.src = data.photo; 
-                    nameEl.innerText = data.name; 
-                    userEl.innerText = data.username;
-                    
-                    gridEl.innerHTML = `
-                        <div class="ai-stat-box"><h4>${data.followers}</h4><p>Followers</p></div>
-                        <div class="ai-stat-box"><h4>${data.followings}</h4><p>Following</p></div>
-                    `;
-                    extraEl.innerHTML = `<strong>Status:</strong> ${data.joined}`;
-                    extractColorAndApply(data.photo);
-                }
+                extraEl.innerHTML = extraHtml;
             }
             else if (currentPlatform === 'lirik') {
                 document.getElementById('lirikResult').style.display = 'block'; 
@@ -1439,7 +1408,7 @@ async function processAction(isFromQueue = false) {
             }
         }
         else {
-            showToast(json.msg || "Gagal memproses data dari server.", "error");
+            showToast(json.message || json.msg || "Gagal memproses data dari server.", "error");
         }
     } catch (error) {
         console.error(error);
@@ -1450,7 +1419,7 @@ async function processAction(isFromQueue = false) {
         
         stopGameLoop(); 
         
-        if (mainBtn) {
+        if (mainBtn && (typeof FITUR === 'undefined' || FITUR[currentPlatform] !== false)) {
             mainBtn.disabled = false;
             
             if (currentPlatform === 'pulsa' || currentPlatform === 'topup') {
