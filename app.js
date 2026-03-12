@@ -59,7 +59,10 @@ function handleOnline() {
         indicator.style.display = 'none';
     }
     showToast("Internet terhubung! Memproses antrean...", "success");
-    processQueue();
+    
+    setTimeout(() => {
+        processQueue();
+    }, 1500);
 }
 
 function processQueue() {
@@ -67,24 +70,24 @@ function processQueue() {
         const task = offlineQueue.shift();
         localStorage.setItem('moonlight_queue', JSON.stringify(offlineQueue));
         
-        const mediaUrlInput = document.getElementById('mediaUrl');
-        if (mediaUrlInput) {
-            mediaUrlInput.value = task.url || '';
-        }
-        
-        const textContentInput = document.getElementById('textContent');
-        if (textContentInput) {
-            textContentInput.value = task.text || '';
-        }
-        
         setPlatform(task.platform);
-        processAction();
+        
+        setTimeout(() => {
+            const mediaUrlInput = document.getElementById('mediaUrl');
+            if (mediaUrlInput) {
+                mediaUrlInput.value = task.url || '';
+            }
+            
+            const textContentInput = document.getElementById('textContent');
+            if (textContentInput) {
+                textContentInput.value = task.text || '';
+            }
+            
+            processAction();
+        }, 100);
     }
 }
 
-// ==========================================
-// OPTIMASI: EKSTRAKSI WARNA YANG SANGAT RINGAN
-// ==========================================
 function extractColorAndApply(imageSrc) {
     if (!imageSrc) return;
     
@@ -95,7 +98,6 @@ function extractColorAndApply(imageSrc) {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
         
-        // Trik Optimasi: Kecilkan gambar ke 50x50 piksel saja agar super cepat!
         canvas.width = 50;
         canvas.height = 50;
         
@@ -106,7 +108,6 @@ function extractColorAndApply(imageSrc) {
             let r = 0, g = 0, b = 0;
             let count = 0;
             
-            // Lompati piksel agar lebih cepat (step 16 = setiap 4 piksel)
             for (let i = 0; i < data.length; i += 16) {
                 r += data[i];
                 g += data[i+1];
@@ -417,7 +418,6 @@ function setPlatform(platform) {
     closeModal();
 }
 
-// Ekstrak warna secara realtime jika user memilih foto dari perangkat
 document.getElementById('mediaFile').addEventListener('change', function(event) {
     if (event.target.files && event.target.files[0]) {
         const file = event.target.files[0];
@@ -761,9 +761,6 @@ function moonJump() {
     }
 }
 
-// ==========================================
-// OPTIMASI: LOGIKA MINI GAME YANG LEBIH RINGAN
-// ==========================================
 function startGameLoop() {
     const player = document.getElementById('moonPlayer');
     const obstacle = document.getElementById('meteorObstacle');
@@ -788,12 +785,10 @@ function startGameLoop() {
         scoreEl.innerText = `Skor: ${gameScore}`;
     }, 100);
 
-    // Diperlambat dari 10ms ke 30ms agar tidak membebani browser (terhindar dari lag)
     gameInterval = setInterval(() => {
         const playerRect = player.getBoundingClientRect();
         const obstacleRect = obstacle.getBoundingClientRect();
         
-        // Deteksi tabrakan menggunakan metode Bounding Box (Lebih ringan dari getComputedStyle)
         if (
             playerRect.left < obstacleRect.right &&
             playerRect.right > obstacleRect.left &&
