@@ -7,6 +7,28 @@ export default async function handler(req, res) {
     const apiKey = process.env.API_KEY; 
     const baseUrl = 'https://api.neoxr.eu/api';
 
+    // ACTION KHUSUS: upload file saja, kembalikan URL publik
+    if (action === 'upload-only') {
+        try {
+            if (!fileData || !fileData.base64) {
+                return res.status(400).json({ status: false, message: 'Tidak ada file.' });
+            }
+            const base64Data = fileData.base64.split(',')[1];
+            const buffer = Buffer.from(base64Data, 'base64');
+            const form = new FormData();
+            form.append('file', new Blob([buffer], { type: fileData.mimeType || 'image/png' }), fileData.fileName || 'Moonlight.png');
+            const upRes = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: form });
+            const upJson = await upRes.json();
+            if (upJson.status === 'success') {
+                const dlUrl = upJson.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+                return res.status(200).json({ status: true, url: dlUrl });
+            }
+            throw new Error('Upload gagal');
+        } catch(e) {
+            return res.status(500).json({ status: false, message: e.message });
+        }
+    }
+
     if (!apiKey) {
         return res.status(500).json({ status: false, message: 'Sistem Error: API Key belum diatur di Vercel.' });
     }
