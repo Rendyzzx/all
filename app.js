@@ -635,34 +635,53 @@ function closeHistory() {
     if (modal) modal.style.display = 'none'; 
 }
 
-// =========================================================
-// SOLUSI FINAL APK WEBVIEW: KEMBALI KE CARA LAMA UNTUK URL
-// + TMPFILES HANYA UNTUK BASE64 (GAMBAR AI)
-// =========================================================
+
+// =========================================================================
+// SOLUSI ABSOLUT UNTUK WEBVIEW APK:
+// - TikTok, YouTube, IG -> Tetap buka di Browser seperti biasa (BERHASIL)
+// - Gambar AI, Base64, & URL s.neoxr.eu -> Di-fetch & Dilempar ke Tmpfiles
+// =========================================================================
 async function forceDownload(url, filename) {
     if (!url) return showToast("URL tidak valid", "error");
 
-    // Deteksi apakah ini file Base64 murni (Hasil dari AI)
+    showToast("Menyiapkan unduhan...", "info");
+
+    // Deteksi jika link adalah Base64 ATAU URL gambar dari AI (neoxr, png, jpg)
     let isBase64 = url.length > 1000 && (!url.startsWith('http') || url.startsWith('data:image'));
+    let isAIImage = url.includes('neoxr') || url.match(/\.(jpeg|jpg|gif|png)$/i) != null;
 
-    // 1. JIKA GAMBAR AI (BASE64) -> JADIKAN FILE & UPLOAD KE TMPFILES
-    if (isBase64) {
-        let finalBase64 = url;
-        if (!url.startsWith('data:image')) {
-            finalBase64 = 'data:image/png;base64,' + url;
-        }
-
-        showToast("Menyiapkan tautan gambar...", "info");
+    // JIKA INI ADALAH GAMBAR DARI AI (Base64 atau URL Neoxr)
+    if (isBase64 || isAIImage) {
         try {
-            const arr = finalBase64.split(',');
-            const mime = arr[0].match(/:(.*?);/)[1];
-            const bstr = atob(arr[1]);
-            let n = bstr.length;
-            const u8arr = new Uint8Array(n);
-            while(n--){
-                u8arr[n] = bstr.charCodeAt(n);
+            showToast("Memproses file gambar...", "info");
+            let blob;
+
+            // Jika itu teks Base64
+            if (isBase64) {
+                let finalBase64 = url;
+                if (!url.startsWith('data:image')) {
+                    finalBase64 = 'data:image/png;base64,' + url;
+                }
+                const arr = finalBase64.split(',');
+                const mime = arr[0].match(/:(.*?);/)[1];
+                const bstr = atob(arr[1]);
+                let n = bstr.length;
+                const u8arr = new Uint8Array(n);
+                while(n--){
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
+                blob = new Blob([u8arr], {type: mime});
+            } 
+            // Jika itu URL Gambar dari Neoxr API
+            else {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error("Gagal mengambil gambar dari server API");
+                blob = await res.blob();
             }
-            const blob = new Blob([u8arr], {type: mime});
+
+            showToast("Mengunggah ke server unduhan sementara...", "info");
+            
+            // Upload ke Tmpfiles
             const formData = new FormData();
             formData.append('file', blob, filename || 'Moonlight_Image.png');
 
@@ -672,30 +691,44 @@ async function forceDownload(url, filename) {
             });
             const uploadJson = await uploadRes.json();
 
+            // Berhasil upload! Ubah ke link Download langsung (/dl/)
             if (uploadJson.status === 'success') {
-                // Dapatkan link direct download
                 let dlUrl = uploadJson.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
-                showToast("Membuka browser untuk menyimpan...", "success");
+                showToast("Selesai! Mengalihkan ke Browser...", "success");
 
-                // BUKA DI BROWSER LUAR SAMA SEPERTI CARA TIKTOK
+                // Buka di browser persis seperti cara mendownload TikTok
                 setTimeout(() => {
-                    window.open(dlUrl, '_blank');
+                    const a = document.createElement('a');
+                    a.href = dlUrl;
+                    a.target = '_blank';
+                    a.download = filename || 'Moonlight_Download';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
                 }, 500);
                 return;
             } else {
-                throw new Error("Gagal upload");
+                throw new Error("Gagal memproses link di server sementara.");
             }
         } catch (err) {
             console.error(err);
-            showToast("Gagal membuat link unduhan.", "error");
+            showToast("Gagal memproses gambar. Mencoba manual...", "error");
+            // Fallback manual
+            setTimeout(() => {
+                const a = document.createElement('a');
+                a.href = url;
+                a.target = '_blank';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }, 1500);
             return;
         }
     }
 
-    // 2. JIKA BUKAN BASE64 (URL TIKTOK, YOUTUBE, FOTO NEOXR, DLL)
-    // KEMBALI MENGGUNAKAN METODE LAMA YANG SUDAH TERBUKTI BERHASIL
+    // JIKA INI ADALAH LINK BIASA (TikTok, YouTube, FB, IG)
+    // Terapkan cara lama yang terbukti ampuh dan berhasil di HP kamu
     try {
-        showToast("Membuka tautan unduhan...", "info");
         const a = document.createElement('a');
         a.href = url;
         a.target = '_blank';
@@ -707,6 +740,8 @@ async function forceDownload(url, filename) {
         window.open(url, '_blank');
     }
 }
+// =========================================================================
+
 
 function openPip(url) {
     const overlay = document.getElementById('pipOverlay');
@@ -1243,7 +1278,7 @@ async function processAction(isFromQueue = false) {
                 
                 document.getElementById('photoEditorImage').src = imgSrc; 
                 document.getElementById('photoEditorActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_EditAI.png')"><i class="fas fa-download"></i> Simpan Gambar</button>`;
-                saveToHistory(`Edit AI: ${finalInputData}`, imgSrc);
+                saveToHistory(`Edit AI`, imgSrc);
                 extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'hd-foto') {
