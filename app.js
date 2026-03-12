@@ -91,6 +91,11 @@ function processQueue() {
 function extractColorAndApply(imageSrc) {
     if (!imageSrc) return;
     
+    let finalSrc = imageSrc;
+    if (imageSrc.length > 1000 && !imageSrc.startsWith('http') && !imageSrc.startsWith('data:image')) {
+        finalSrc = 'data:image/png;base64,' + imageSrc;
+    }
+
     const img = new Image();
     img.crossOrigin = "Anonymous";
     
@@ -129,7 +134,7 @@ function extractColorAndApply(imageSrc) {
         document.documentElement.style.setProperty('--ambient-glow', 'rgba(15, 23, 42, 0)');
     };
     
-    img.src = imageSrc;
+    img.src = finalSrc;
 }
 
 function applyDynamicTheme(platform) {
@@ -551,10 +556,15 @@ function showToast(message, type = 'error') {
 function saveToHistory(title, link) {
     if (!link || typeof link !== 'string' || link.trim() === '') return;
     
+    let finalLink = link;
+    if (link.length > 1000 && !link.startsWith('http') && !link.startsWith('data:image')) {
+        finalLink = 'data:image/png;base64,' + link;
+    }
+
     const newItem = {
         id: Date.now(),
         title: title,
-        link: link,
+        link: finalLink,
         date: new Date().toLocaleString('id-ID', {
             day: 'numeric', 
             month: 'short', 
@@ -625,58 +635,49 @@ function closeHistory() {
     if (modal) modal.style.display = 'none'; 
 }
 
-async function forceDownload(url, filename) {
+// ==============================================
+// SOLUSI APK WEBVIEW DOWNLOADER & BASE64 FIX
+// ==============================================
+function forceDownload(url, filename) {
+    if (!url) return showToast("URL tidak valid", "error");
+
+    let finalUrl = url;
+    
+    // 1. Validasi jika itu gambar Base64 tanpa awalan
+    if (url.length > 1000 && !url.startsWith('http') && !url.startsWith('data:image')) {
+        finalUrl = 'data:image/png;base64,' + url;
+    }
+
+    // 2. Jika itu gambar Data URI (Base64), paksa buka di tab baru
+    // Webview biasanya bisa menghandle Data URI di tab baru untuk di-save
+    if (finalUrl.startsWith('data:')) {
+        try {
+            const a = document.createElement('a');
+            a.href = finalUrl;
+            a.download = filename || 'Moonlight_Image.png';
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast("Buka gambar dan tahan untuk menyimpan.", "info");
+        } catch (e) {
+            console.error("Gagal save Data URI", e);
+        }
+        return;
+    }
+
+    // 3. Jika URL biasa (http/https), lempar ke sistem Android
     try {
-        showToast("Menyiapkan file...", "info");
-        
-        let finalUrl = url;
-        if (url && url.length > 1000 && !url.startsWith('http') && !url.startsWith('data:image')) {
-            finalUrl = 'data:image/png;base64,' + url;
-        }
-
-        const response = await fetch(finalUrl);
-        if (!response.ok) throw new Error("Gagal mengambil file");
-        const blob = await response.blob();
-
-        if (navigator.canShare && navigator.canShare({ files: [new File([blob], filename, { type: blob.type })] })) {
-            try {
-                await navigator.share({
-                    files: [new File([blob], filename, { type: blob.type })],
-                    title: filename,
-                });
-                showToast("Pilih 'Simpan' di menu pop-up!", "success");
-                return; 
-            } catch (shareErr) {
-                console.log("User membatalkan share.");
-            }
-        }
-
-        const blobUrl = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = blobUrl;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(blobUrl);
-        document.body.removeChild(a);
-        showToast("Disimpan ke perangkat!", "success");
-
-    } catch (error) {
-        let fallbackUrl = url;
-        if (url && url.length > 1000 && !url.startsWith('http') && !url.startsWith('data:image')) {
-            fallbackUrl = 'data:image/png;base64,' + url;
-        }
-        
-        const a = document.createElement('a');
-        a.href = fallbackUrl;
-        a.download = filename;
+        a.href = finalUrl;
+        a.download = filename || 'Moonlight_Download';
         a.target = '_blank';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        
         showToast("Membuka tautan unduhan...", "info");
+    } catch (e) {
+        showToast("Gagal memulai unduhan", "error");
     }
 }
 
@@ -1204,18 +1205,21 @@ async function processAction(isFromQueue = false) {
                     listContainer.innerHTML += `<button class="btn-secondary" onclick="fetchLirik('${item.url}')"><i class="fas fa-music"></i> ${item.title}</button>`; 
                 });
             }
+            // ===========================================
+            // LOGIKA RENDER AI DAN BASE64 FIX
+            // ===========================================
             else if (currentPlatform === 'photo-editor') {
                 document.getElementById('photoEditorResult').style.display = 'block'; 
                 document.getElementById('photoEditorInfo').innerText = `Ukuran: ${data.size || 'HD'}`; 
                 
                 let imgSrc = data.url;
-                if (imgSrc && imgSrc.length > 100 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
+                if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
                 
                 document.getElementById('photoEditorImage').src = imgSrc; 
-                document.getElementById('photoEditorActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'EditAI.png')"><i class="fas fa-download"></i> Simpan</button>`;
-                saveToHistory(`Edit AI: ${finalInputData}`, imgSrc);
+                document.getElementById('photoEditorActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_EditAI.png')"><i class="fas fa-download"></i> Simpan Gambar</button>`;
+                saveToHistory(`Edit AI`, imgSrc);
                 extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'hd-foto') {
@@ -1223,12 +1227,12 @@ async function processAction(isFromQueue = false) {
                 document.getElementById('hdFotoInfo').innerText = `Ukuran: ${data.size || 'HD'}`; 
                 
                 let imgSrc = data.url;
-                if (imgSrc && imgSrc.length > 100 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
+                if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
                 
                 document.getElementById('hdImageResult').src = imgSrc; 
-                document.getElementById('hdActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'HDFoto.png')"><i class="fas fa-download"></i> Simpan HD</button>`;
+                document.getElementById('hdActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_HDFoto.png')"><i class="fas fa-download"></i> Simpan Gambar HD</button>`;
                 saveToHistory(`HD Foto`, imgSrc);
                 extractColorAndApply(imgSrc);
             }
@@ -1236,55 +1240,55 @@ async function processAction(isFromQueue = false) {
                 document.getElementById('removeBgResult').style.display = 'block'; 
                 
                 let imgSrc = data.no_background || data.url || data.image;
-                if (imgSrc && imgSrc.length > 100 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
+                if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
                 
                 document.getElementById('removeBgImage').src = imgSrc; 
-                document.getElementById('removeBgActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'NoBG.png')"><i class="fas fa-download"></i> Simpan Transparan</button>`;
+                document.getElementById('removeBgActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_NoBG.png')"><i class="fas fa-download"></i> Simpan Transparan</button>`;
                 saveToHistory(`Hapus BG`, imgSrc);
                 extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'noise-reduce') {
                 document.getElementById('audioResult').style.display = 'block'; 
                 document.getElementById('audioPlayer').src = data.url; 
-                document.getElementById('audioActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'CleanAudio.mp3')"><i class="fas fa-download"></i> Simpan Audio</button>`;
+                document.getElementById('audioActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Moonlight_CleanAudio.mp3')"><i class="fas fa-download"></i> Simpan Audio</button>`;
                 saveToHistory(`Bersihkan Audio`, data.url);
             }
             else if (currentPlatform === 'ss-web') {
                 document.getElementById('ssWebResult').style.display = 'block'; 
                 
                 let imgSrc = data.url;
-                if (imgSrc && imgSrc.length > 100 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
+                if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
                 
                 document.getElementById('ssWebImage').src = imgSrc; 
-                document.getElementById('ssWebActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Screenshot.png')"><i class="fas fa-download"></i> Simpan SS</button>`;
+                document.getElementById('ssWebActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_Screenshot.png')"><i class="fas fa-download"></i> Simpan Screenshot</button>`;
                 extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'iqc') {
                 document.getElementById('iqcResult').style.display = 'block'; 
                 
                 let imgSrc = data.url;
-                if (imgSrc && imgSrc.length > 100 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
+                if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
                 
                 document.getElementById('iqcImage').src = imgSrc; 
-                document.getElementById('iqcActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Kutipan.png')"><i class="fas fa-download"></i> Simpan Kutipan</button>`;
+                document.getElementById('iqcActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_Kutipan.png')"><i class="fas fa-download"></i> Simpan Kutipan</button>`;
                 extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'nulis') {
                 document.getElementById('nulisResult').style.display = 'block'; 
                 
                 let imgSrc = data.url;
-                if (imgSrc && imgSrc.length > 100 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
+                if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
                 
                 document.getElementById('nulisImage').src = imgSrc; 
-                document.getElementById('nulisActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Nulis.png')"><i class="fas fa-download"></i> Simpan Buku</button>`;
+                document.getElementById('nulisActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_Nulis.png')"><i class="fas fa-download"></i> Simpan Buku</button>`;
                 extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'ai-detector') {
@@ -1396,10 +1400,10 @@ async function processAction(isFromQueue = false) {
                         thumbFallback.style.display = "none"; 
                         
                         data.photo.forEach((img, i) => { 
-                            actionBtns.innerHTML += `<button class="btn-primary" onclick="forceDownload('${img}', 'TikTok_${i}.jpg')">Download Foto ${i+1}</button>`; 
+                            actionBtns.innerHTML += `<button class="btn-primary" onclick="forceDownload('${img}', 'TikTok_${i}.jpg')"><i class="fas fa-image"></i> Download Foto ${i+1}</button>`; 
                         }); 
                         if (data.audio) {
-                            actionBtns.innerHTML += `<button class="btn-secondary" onclick="forceDownload('${data.audio}', 'TikTokAudio.mp3')">Download Audio</button>`; 
+                            actionBtns.innerHTML += `<button class="btn-secondary" onclick="forceDownload('${data.audio}', 'TikTokAudio.mp3')"><i class="fas fa-music"></i> Download Audio</button>`; 
                         }
                         saveToHistory(`TikTok Slide (Foto)`, data.photo[0]); 
                         extractColorAndApply(data.photo[0]);
@@ -1407,13 +1411,13 @@ async function processAction(isFromQueue = false) {
                         thumbCon.style.display = 'none'; 
                         if (data.video) { 
                             actionBtns.innerHTML += `<button class="btn-secondary" onclick="openPip('${data.video}')"><i class="fas fa-play"></i> Pratinjau PiP</button>`;
-                            actionBtns.innerHTML += `<button class="btn-primary" onclick="forceDownload('${data.video}', 'TikTok.mp4')">Download Video</button>`; 
+                            actionBtns.innerHTML += `<button class="btn-primary" onclick="forceDownload('${data.video}', 'TikTok.mp4')"><i class="fas fa-video"></i> Download Video</button>`; 
                         } 
                         if (data.videoHD) {
-                            actionBtns.innerHTML += `<button class="btn-primary" onclick="forceDownload('${data.videoHD}', 'TikTokHD.mp4')">Download Video HD</button>`; 
+                            actionBtns.innerHTML += `<button class="btn-primary" onclick="forceDownload('${data.videoHD}', 'TikTokHD.mp4')"><i class="fas fa-video"></i> Download Video HD</button>`; 
                         }
                         if (data.audio) {
-                            actionBtns.innerHTML += `<button class="btn-secondary" onclick="forceDownload('${data.audio}', 'TikTokAudio.mp3')">Download Audio</button>`; 
+                            actionBtns.innerHTML += `<button class="btn-secondary" onclick="forceDownload('${data.audio}', 'TikTokAudio.mp3')"><i class="fas fa-music"></i> Download Audio</button>`; 
                         }
                         if (data.video || data.videoHD) {
                             saveToHistory(`Video TikTok`, data.video || data.videoHD); 
@@ -1429,7 +1433,7 @@ async function processAction(isFromQueue = false) {
                         if (item.type === 'mp4') {
                             actionBtns.innerHTML += `<button class="btn-secondary" onclick="openPip('${item.url}')"><i class="fas fa-play"></i> Pratinjau PiP ${i+1}</button>`;
                         }
-                        actionBtns.innerHTML += `<button class="btn-primary" onclick="forceDownload('${item.url}', 'IG_${i}.mp4')">Download File ${i+1}</button>`; 
+                        actionBtns.innerHTML += `<button class="btn-primary" onclick="forceDownload('${item.url}', 'IG_${i}.mp4')"><i class="fas fa-download"></i> Download File ${i+1}</button>`; 
                     }); 
                     
                     if (data.length > 0) {
@@ -1441,7 +1445,7 @@ async function processAction(isFromQueue = false) {
                     captionText.style.display = 'none'; 
                     thumbCon.style.display = 'none'; 
                     
-                    actionBtns.innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Pinterest.jpg')">Download Media</button>`; 
+                    actionBtns.innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Pinterest.jpg')"><i class="fas fa-download"></i> Download Media</button>`; 
                     saveToHistory(`Pinterest Media`, data.url); 
                 }
             }
