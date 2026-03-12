@@ -636,25 +636,41 @@ function closeHistory() {
 }
 
 // ==============================================
-// SOLUSI APK WEBVIEW DOWNLOADER & TMPFILES UPLOAD
+// SOLUSI EKSTREM APK WEBVIEW & INTENT CHROME
 // ==============================================
 async function forceDownload(url, filename) {
     if (!url) return showToast("URL tidak valid", "error");
 
-    showToast("Menyiapkan tautan unduhan eksternal...", "info");
+    showToast("Membuka browser bawaan HP...", "info");
     
-    try {
-        let blob;
-        let finalUrl = url;
+    let finalUrl = url;
+    if (url.length > 1000 && !url.startsWith('http') && !url.startsWith('data:')) {
+        finalUrl = 'data:image/png;base64,' + url;
+    }
 
-        // 1. Jika URL berupa Base64 polos, beri prefix data:image
-        if (url.length > 1000 && !url.startsWith('http') && !url.startsWith('data:')) {
-            finalUrl = 'data:image/png;base64,' + url;
+    // FUNGSI INTI: Melempar URL ke sistem OS Android (Browser Luar)
+    const triggerIntent = (targetUrl) => {
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        
+        if (isAndroid) {
+            let scheme = targetUrl.startsWith('http:') ? 'http' : 'https';
+            let cleanUrl = targetUrl.replace(/^https?:\/\//, '');
+            
+            // Format Intent Android standar untuk memaksa buka di luar APK
+            let intentUrl = `intent://${cleanUrl}#Intent;scheme=${scheme};action=android.intent.action.VIEW;end;`;
+            
+            // Eksekusi pelemparan URL ke OS Android
+            window.location.href = intentUrl;
+        } else {
+            // Jika diakses lewat PC/iOS
+            window.open(targetUrl, '_blank');
         }
+    };
 
-        // 2. Fetch File (Ubah ke BLOB)
-        if (finalUrl.startsWith('data:')) {
-            // Proses konversi Data URI (Base64) ke Blob
+    // Jika berupa teks mentah (Base64), kita upload dulu ke Tmpfiles
+    if (finalUrl.startsWith('data:')) {
+        showToast("Mengunggah gambar ke Cloud...", "info");
+        try {
             const arr = finalUrl.split(',');
             const mime = arr[0].match(/:(.*?);/)[1];
             const bstr = atob(arr[1]);
@@ -663,60 +679,33 @@ async function forceDownload(url, filename) {
             while(n--){
                 u8arr[n] = bstr.charCodeAt(n);
             }
-            blob = new Blob([u8arr], {type: mime});
-        } else {
-            // Proses Fetch dari URL HTTP/HTTPS (seperti s.neoxr.eu)
-            const response = await fetch(finalUrl);
-            if (!response.ok) throw new Error("Gagal mengambil file dari server.");
-            blob = await response.blob();
+            const blob = new Blob([u8arr], {type: mime});
+            const formData = new FormData();
+            formData.append('file', blob, filename || 'Moonlight_Image.png');
+
+            const uploadRes = await fetch('https://tmpfiles.org/api/v1/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const uploadJson = await uploadRes.json();
+
+            if (uploadJson.status === 'success') {
+                let dlUrl = uploadJson.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+                showToast("Selesai! Mengalihkan ke browser...", "success");
+                triggerIntent(dlUrl);
+            } else {
+                showToast("Gagal membuat link eksternal", "error");
+            }
+        } catch (err) {
+            console.error(err);
+            showToast("Terjadi kesalahan sistem.", "error");
         }
-
-        showToast("Mengunggah ke server unduhan sementara...", "info");
-
-        // 3. Upload Blob ke tmpfiles.org
-        const formData = new FormData();
-        formData.append('file', blob, filename || 'Moonlight_File.png');
-
-        const uploadRes = await fetch('https://tmpfiles.org/api/v1/upload', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const uploadJson = await uploadRes.json();
-
-        // 4. Ubah link menjadi link Direct Download (/dl/) & Lempar ke Chrome
-        if (uploadJson.status === 'success') {
-            let dlUrl = uploadJson.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
-            
-            showToast("Membuka browser untuk menyimpan...", "success");
-            
-            setTimeout(() => {
-                const a = document.createElement('a');
-                a.href = dlUrl;
-                a.target = '_blank';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            }, 500);
-            
-        } else {
-            throw new Error("Gagal membuat link tmpfiles");
-        }
-
-    } catch (err) {
-        console.error(err);
-        showToast("Gagal diproses, mencoba membuka tautan asli...", "error");
-        
-        // Fallback terakhir: Coba buka URL aslinya saja
+    } else {
+        // Jika sudah berbentuk Link HTTP (Seperti Neoxr, TikTok, Youtube, dll)
+        // Langsung tending link tersebut ke Browser Eksternal Chrome!
         setTimeout(() => {
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename || 'Moonlight_Download';
-            a.target = '_blank';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }, 1500);
+            triggerIntent(finalUrl);
+        }, 500);
     }
 }
 
