@@ -638,7 +638,8 @@ function closeHistory() {
 
 // =========================================================================
 // =========================================================================
-// FUNGSI DOWNLOAD - BUKA DI BROWSER EKSTERNAL (WEBVIEW COMPATIBLE)
+// FUNGSI DOWNLOAD - BUKA DI BROWSER EKSTERNAL VIA ANDROID INTENT
+// URL gambar sudah dijamin tmpfiles (public) dari proses.js
 // =========================================================================
 async function forceDownload(url, filename) {
     if (!url) return showToast("URL tidak valid", "error");
@@ -646,45 +647,38 @@ async function forceDownload(url, filename) {
     const isBase64 = url.startsWith('data:image') || (url.length > 500 && !url.startsWith('http'));
 
     if (isBase64) {
+        // Base64 → upload ke tmpfiles dulu, lalu buka di browser
         try {
-            let finalBase64 = url.startsWith('data:image') ? url : 'data:image/png;base64,' + url;
-            const arr = finalBase64.split(',');
-            const mime = arr[0].match(/:(.*?);/)[1];
-            const bstr = atob(arr[1]);
-            let n = bstr.length;
-            const u8arr = new Uint8Array(n);
-            while (n--) { u8arr[n] = bstr.charCodeAt(n); }
-            const blob = new Blob([u8arr], { type: mime });
-            const objectUrl = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = objectUrl;
-            a.download = filename || 'Moonlight_Image.png';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            showToast("Memproses gambar...", "info");
+            let b64 = url.startsWith('data:image') ? url : 'data:image/png;base64,' + url;
+            const mime = b64.match(/data:(.*?);/)[1];
+            const bstr = atob(b64.split(',')[1]);
+            const u8 = new Uint8Array(bstr.length);
+            for (let i = 0; i < bstr.length; i++) u8[i] = bstr.charCodeAt(i);
+            const blob = new Blob([u8], { type: mime });
+
+            const form = new FormData();
+            form.append('file', blob, filename || 'Moonlight.png');
+            const upRes = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: form });
+            const upJson = await upRes.json();
+            if (upJson.status !== 'success') throw new Error('Upload gagal');
+            url = upJson.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
         } catch (e) {
-            window.open(url, '_blank');
+            return showToast("Gagal memproses gambar", "error");
         }
-        return;
     }
 
-    // Untuk URL gambar/file — paksa buka di browser eksternal
-    // Coba beberapa cara sekaligus agar salah satu berhasil di WebView
+    // Buka URL di browser eksternal via Android Intent
     showToast("Membuka browser untuk download...", "info");
-
-    // Cara 1: Intent Android (paling ampuh untuk WebView)
     const intentUrl = `intent://${url.replace(/^https?:\/\//, '')}#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end`;
-    
     const a = document.createElement('a');
     a.href = intentUrl;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
 
-    // Cara 2: Fallback window.open setelah 300ms jika intent gagal
-    setTimeout(() => {
-        window.open(url, '_blank');
-    }, 300);
+    // Fallback window.open jika intent tidak terpicu
+    setTimeout(() => { window.open(url, '_blank'); }, 400);
 }
 // =========================================================================
 
