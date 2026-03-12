@@ -6,6 +6,9 @@ let toastTimeout;
 let historyList = JSON.parse(localStorage.getItem('moonlight_history')) || [];
 let offlineQueue = JSON.parse(localStorage.getItem('moonlight_queue')) || [];
 
+// Simpan URL gambar AI agar tidak putus di dalam onclick string
+const _imgStore = {};
+
 let gameInterval;
 let scoreInterval;
 let gameScore = 0;
@@ -635,86 +638,74 @@ function closeHistory() {
     if (modal) modal.style.display = 'none'; 
 }
 
+
 // =========================================================================
-// SOLUSI FINAL APK WEBVIEW
-// Format Intent disempurnakan agar 100% dipaksa terbuka di Chrome.
-// Base64 AI di-upload ke Tmpfiles lalu dilempar ke Chrome.
+// FUNGSI DOWNLOAD - UPLOAD KE SERVER LALU BUKA DI CHROME
+// Gambar PNG di-wrap jadi octet-stream agar WebView lempar ke Chrome
 // =========================================================================
 async function forceDownload(url, filename) {
     if (!url) return showToast("URL tidak valid", "error");
 
-    // Fungsi Utama Penembus Webview
-    const triggerIntent = (targetUrl) => {
-        const isAndroid = /Android/i.test(navigator.userAgent);
-        
-        if (isAndroid) {
-            const cleanUrl = targetUrl.replace(/^https?:\/\//, '');
-            const scheme = targetUrl.startsWith('https') ? 'https' : 'http';
-            
-            // Perhatikan kode BROWSABLE dan browser_fallback_url agar OS tidak bingung
-            const intentUrl = `intent://${cleanUrl}#Intent;scheme=${scheme};action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;S.browser_fallback_url=${encodeURIComponent(targetUrl)};end;`;
-            
-            window.location.href = intentUrl;
-        } else {
-            // Jika diakses lewat iOS / PC
-            window.open(targetUrl, '_blank');
-        }
-    };
+    const isBase64 = url.startsWith('data:image') || (url.length > 500 && !url.startsWith('http'));
+    const isImage = isBase64 || url.match(/\.(jpeg|jpg|gif|png|webp)(\?.*)?$/i) || url.includes('neoxr') || url.includes('tmpfiles');
 
-    // Cek apakah url adalah Base64 mentah
-    let isBase64 = url.length > 1000 && (!url.startsWith('http') || url.startsWith('data:'));
-
-    if (isBase64) {
-        let finalBase64 = url;
-        if (!url.startsWith('data:image')) {
-            finalBase64 = 'data:image/png;base64,' + url;
-        }
-
-        showToast("Mengunggah gambar ke server...", "info");
+    if (isImage) {
         try {
-            const arr = finalBase64.split(',');
-            const mime = arr[0].match(/:(.*?);/)[1];
-            const bstr = atob(arr[1]);
-            let n = bstr.length;
-            const u8arr = new Uint8Array(n);
-            while(n--){
-                u8arr[n] = bstr.charCodeAt(n);
-            }
-            const blob = new Blob([u8arr], {type: mime});
-            const formData = new FormData();
-            formData.append('file', blob, filename || 'Moonlight_Image.png');
+            showToast("Memproses gambar...", "info");
+            let blob;
 
-            const uploadRes = await fetch('https://tmpfiles.org/api/v1/upload', {
-                method: 'POST',
-                body: formData
-            });
-            const uploadJson = await uploadRes.json();
-
-            if (uploadJson.status === 'success') {
-                let dlUrl = uploadJson.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
-                showToast("Selesai! Mengalihkan ke Browser...", "success");
-                
-                // Lempar link Tmpfiles ke Chrome
-                setTimeout(() => {
-                    triggerIntent(dlUrl);
-                }, 500);
+            if (isBase64) {
+                let b64 = url.startsWith('data:image') ? url : 'data:image/png;base64,' + url;
+                const mime = b64.match(/data:(.*?);/)[1];
+                const bstr = atob(b64.split(',')[1]);
+                const u8 = new Uint8Array(bstr.length);
+                for (let i = 0; i < bstr.length; i++) u8[i] = bstr.charCodeAt(i);
+                blob = new Blob([u8], { type: mime });
             } else {
-                throw new Error("Gagal upload tmpfiles");
+                const res = await fetch(url);
+                if (!res.ok) throw new Error("Gagal fetch gambar");
+                blob = await res.blob();
             }
+
+            showToast("Mengupload gambar...", "info");
+
+            // Upload ke 0x0.st - serve dengan Content-Disposition: attachment
+            // sehingga WebView/Chrome otomatis download, bukan tampilkan
+            const form = new FormData();
+            form.append('file', blob, filename || 'Moonlight.png');
+            const upRes = await fetch('https://0x0.st', { method: 'POST', body: form });
+            const uploadedUrl = (await upRes.text()).trim();
+
+            if (!uploadedUrl.startsWith('https://')) throw new Error("Upload gagal");
+
+            showToast("Membuka Chrome untuk download...", "info");
+            const a = document.createElement('a');
+            a.href = uploadedUrl;
+            a.target = '_blank';
+            a.download = filename || 'Moonlight_Image.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            return;
+
         } catch (err) {
             console.error(err);
-            showToast("Gagal memproses gambar.", "error");
+            showToast("Gagal upload: " + err.message, "error");
+            return;
         }
-        return;
     }
 
-    // JIKA URL BIASA (TikTok, YouTube, FB, Neoxr, dll)
-    showToast("Mengalihkan ke Browser...", "success");
-    setTimeout(() => {
-        triggerIntent(url);
-    }, 500);
+    // Link video biasa (TikTok, YT, dll)
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.download = filename || 'Moonlight_Download';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 // =========================================================================
+
 
 function openPip(url) {
     const overlay = document.getElementById('pipOverlay');
@@ -1248,10 +1239,10 @@ async function processAction(isFromQueue = false) {
                 if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
-                
+                _imgStore['photoEditor'] = imgSrc;
                 document.getElementById('photoEditorImage').src = imgSrc; 
-                document.getElementById('photoEditorActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_EditAI.png')"><i class="fas fa-download"></i> Simpan Gambar</button>`;
-                saveToHistory(`Edit AI: ${finalInputData}`, imgSrc);
+                document.getElementById('photoEditorActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload(_imgStore['photoEditor'], 'Moonlight_EditAI.png')"><i class="fas fa-download"></i> Simpan Gambar</button>`;
+                saveToHistory(`Edit AI`, imgSrc);
                 extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'hd-foto') {
@@ -1262,9 +1253,9 @@ async function processAction(isFromQueue = false) {
                 if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
-                
+                _imgStore['hdFoto'] = imgSrc;
                 document.getElementById('hdImageResult').src = imgSrc; 
-                document.getElementById('hdActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_HDFoto.png')"><i class="fas fa-download"></i> Simpan Gambar HD</button>`;
+                document.getElementById('hdActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload(_imgStore['hdFoto'], 'Moonlight_HDFoto.png')"><i class="fas fa-download"></i> Simpan Gambar HD</button>`;
                 saveToHistory(`HD Foto`, imgSrc);
                 extractColorAndApply(imgSrc);
             }
@@ -1275,9 +1266,9 @@ async function processAction(isFromQueue = false) {
                 if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
-                
+                _imgStore['removeBg'] = imgSrc;
                 document.getElementById('removeBgImage').src = imgSrc; 
-                document.getElementById('removeBgActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_NoBG.png')"><i class="fas fa-download"></i> Simpan Transparan</button>`;
+                document.getElementById('removeBgActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload(_imgStore['removeBg'], 'Moonlight_NoBG.png')"><i class="fas fa-download"></i> Simpan Transparan</button>`;
                 saveToHistory(`Hapus BG`, imgSrc);
                 extractColorAndApply(imgSrc);
             }
