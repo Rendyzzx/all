@@ -638,7 +638,7 @@ function closeHistory() {
 // ==============================================
 // SOLUSI APK WEBVIEW DOWNLOADER & BASE64 FIX
 // ==============================================
-function forceDownload(url, filename) {
+async function forceDownload(url, filename) {
     if (!url) return showToast("URL tidak valid", "error");
 
     let finalUrl = url;
@@ -648,26 +648,48 @@ function forceDownload(url, filename) {
         finalUrl = 'data:image/png;base64,' + url;
     }
 
-    // 2. Jika itu gambar Data URI (Base64), paksa buka di tab baru
-    // Webview biasanya bisa menghandle Data URI di tab baru untuk di-save
-    if (finalUrl.startsWith('data:')) {
-        try {
+    try {
+        showToast("Memulai unduhan...", "info");
+        
+        // 2. Jika itu gambar Data URI (Base64), ubah menjadi Blob lalu unduh
+        if (finalUrl.startsWith('data:')) {
+            const arr = finalUrl.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while(n--){
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            const blob = new Blob([u8arr], {type: mime});
+            const blobUrl = URL.createObjectURL(blob);
+            
             const a = document.createElement('a');
-            a.href = finalUrl;
+            a.href = blobUrl;
             a.download = filename || 'Moonlight_Image.png';
-            a.target = '_blank';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            showToast("Buka gambar dan tahan untuk menyimpan.", "info");
-        } catch (e) {
-            console.error("Gagal save Data URI", e);
+            URL.revokeObjectURL(blobUrl);
+            return;
         }
-        return;
-    }
 
-    // 3. Jika URL biasa (http/https), lempar ke sistem Android
-    try {
+        // 3. Jika URL biasa (http/https), fetch lalu jadikan blob agar bisa di-download paksa 
+        const response = await fetch(finalUrl);
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = filename || 'Moonlight_Download';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(blobUrl);
+
+    } catch (e) {
+        console.error("Gagal fetch blob, fallback ke mode biasa", e);
+        // Fallback kalau fetch error (biasanya karena bentrok CORS server luar)
         const a = document.createElement('a');
         a.href = finalUrl;
         a.download = filename || 'Moonlight_Download';
@@ -675,9 +697,6 @@ function forceDownload(url, filename) {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        showToast("Membuka tautan unduhan...", "info");
-    } catch (e) {
-        showToast("Gagal memulai unduhan", "error");
     }
 }
 
