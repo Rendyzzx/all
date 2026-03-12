@@ -638,14 +638,13 @@ function closeHistory() {
 
 // =========================================================================
 // =========================================================================
-// FUNGSI DOWNLOAD - BUKA DI BROWSER EKSTERNAL (SAMA SEPERTI FITUR DOWNLOADER)
+// FUNGSI DOWNLOAD - BUKA DI BROWSER EKSTERNAL (WEBVIEW COMPATIBLE)
 // =========================================================================
 async function forceDownload(url, filename) {
     if (!url) return showToast("URL tidak valid", "error");
 
     const isBase64 = url.startsWith('data:image') || (url.length > 500 && !url.startsWith('http'));
 
-    // Kalau base64, konversi dulu ke blob lalu buat object URL
     if (isBase64) {
         try {
             let finalBase64 = url.startsWith('data:image') ? url : 'data:image/png;base64,' + url;
@@ -657,16 +656,35 @@ async function forceDownload(url, filename) {
             while (n--) { u8arr[n] = bstr.charCodeAt(n); }
             const blob = new Blob([u8arr], { type: mime });
             const objectUrl = URL.createObjectURL(blob);
-            window.open(objectUrl, '_blank');
+            const a = document.createElement('a');
+            a.href = objectUrl;
+            a.download = filename || 'Moonlight_Image.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         } catch (e) {
             window.open(url, '_blank');
         }
         return;
     }
 
-    // URL biasa (gambar AI, video, dll) — langsung buka di browser
-    // Browser akan handle download ke galeri/folder download
-    window.open(url, '_blank');
+    // Untuk URL gambar/file — paksa buka di browser eksternal
+    // Coba beberapa cara sekaligus agar salah satu berhasil di WebView
+    showToast("Membuka browser untuk download...", "info");
+
+    // Cara 1: Intent Android (paling ampuh untuk WebView)
+    const intentUrl = `intent://${url.replace(/^https?:\/\//, '')}#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end`;
+    
+    const a = document.createElement('a');
+    a.href = intentUrl;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    // Cara 2: Fallback window.open setelah 300ms jika intent gagal
+    setTimeout(() => {
+        window.open(url, '_blank');
+    }, 300);
 }
 // =========================================================================
 
