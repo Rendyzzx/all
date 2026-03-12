@@ -636,22 +636,26 @@ function closeHistory() {
 }
 
 // ==============================================
-// SOLUSI APK WEBVIEW DOWNLOADER & BASE64 UPLOAD
+// SOLUSI APK WEBVIEW DOWNLOADER & TMPFILES UPLOAD
 // ==============================================
 async function forceDownload(url, filename) {
     if (!url) return showToast("URL tidak valid", "error");
 
-    let isBase64 = url.length > 1000 && (!url.startsWith('http') || url.startsWith('data:image'));
+    showToast("Menyiapkan tautan unduhan eksternal...", "info");
+    
+    try {
+        let blob;
+        let finalUrl = url;
 
-    if (isBase64) {
-        let finalBase64 = url;
-        if (!url.startsWith('data:image')) {
-            finalBase64 = 'data:image/png;base64,' + url;
+        // 1. Jika URL berupa Base64 polos, beri prefix data:image
+        if (url.length > 1000 && !url.startsWith('http') && !url.startsWith('data:')) {
+            finalUrl = 'data:image/png;base64,' + url;
         }
 
-        showToast("Menyiapkan tautan eksternal...", "info");
-        try {
-            const arr = finalBase64.split(',');
+        // 2. Fetch File (Ubah ke BLOB)
+        if (finalUrl.startsWith('data:')) {
+            // Proses konversi Data URI (Base64) ke Blob
+            const arr = finalUrl.split(',');
             const mime = arr[0].match(/:(.*?);/)[1];
             const bstr = atob(arr[1]);
             let n = bstr.length;
@@ -659,48 +663,60 @@ async function forceDownload(url, filename) {
             while(n--){
                 u8arr[n] = bstr.charCodeAt(n);
             }
-            const blob = new Blob([u8arr], {type: mime});
-            const formData = new FormData();
-            formData.append('file', blob, filename || 'Moonlight_Image.png');
+            blob = new Blob([u8arr], {type: mime});
+        } else {
+            // Proses Fetch dari URL HTTP/HTTPS (seperti s.neoxr.eu)
+            const response = await fetch(finalUrl);
+            if (!response.ok) throw new Error("Gagal mengambil file dari server.");
+            blob = await response.blob();
+        }
 
-            const uploadRes = await fetch('https://tmpfiles.org/api/v1/upload', {
-                method: 'POST',
-                body: formData
-            });
-            const uploadJson = await uploadRes.json();
+        showToast("Mengunggah ke server unduhan sementara...", "info");
 
-            if (uploadJson.status === 'success') {
-                let dlUrl = uploadJson.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
-                showToast("Membuka browser untuk menyimpan...", "success");
+        // 3. Upload Blob ke tmpfiles.org
+        const formData = new FormData();
+        formData.append('file', blob, filename || 'Moonlight_File.png');
 
+        const uploadRes = await fetch('https://tmpfiles.org/api/v1/upload', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const uploadJson = await uploadRes.json();
+
+        // 4. Ubah link menjadi link Direct Download (/dl/) & Lempar ke Chrome
+        if (uploadJson.status === 'success') {
+            let dlUrl = uploadJson.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+            
+            showToast("Membuka browser untuk menyimpan...", "success");
+            
+            setTimeout(() => {
                 const a = document.createElement('a');
                 a.href = dlUrl;
                 a.target = '_blank';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-                return;
-            } else {
-                throw new Error("Gagal upload");
-            }
-        } catch (err) {
-            console.error(err);
-            showToast("Gagal membuat link unduhan.", "error");
-            return;
+            }, 500);
+            
+        } else {
+            throw new Error("Gagal membuat link tmpfiles");
         }
-    }
 
-    try {
-        showToast("Membuka tautan unduhan...", "info");
-        const a = document.createElement('a');
-        a.href = url;
-        a.target = '_blank';
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    } catch (e) {
-        window.open(url, '_blank');
+    } catch (err) {
+        console.error(err);
+        showToast("Gagal diproses, mencoba membuka tautan asli...", "error");
+        
+        // Fallback terakhir: Coba buka URL aslinya saja
+        setTimeout(() => {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename || 'Moonlight_Download';
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }, 1500);
     }
 }
 
@@ -1239,7 +1255,7 @@ async function processAction(isFromQueue = false) {
                 
                 document.getElementById('photoEditorImage').src = imgSrc; 
                 document.getElementById('photoEditorActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_EditAI.png')"><i class="fas fa-download"></i> Simpan Gambar</button>`;
-                saveToHistory(`Edit AI`, imgSrc);
+                saveToHistory(`Edit AI: ${finalInputData}`, imgSrc);
                 extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'hd-foto') {
