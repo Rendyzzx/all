@@ -145,43 +145,30 @@ function applyDynamicTheme(platform) {
     let hover = '#1d4ed8';
     
     const aiTools = [
-        'hd-foto', 
-        'remove-bg', 
-        'noise-reduce', 
-        'photo-editor', 
-        'ai-detector'
+        'hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor', 'ai-detector',
+        'qr-gen', 'shortlink', 'tts'
     ];
     
-    if (['youtube', 'yt-transcript', 'pin'].includes(platform)) { 
-        primary = '#ef4444'; 
-        hover = '#dc2626'; 
-    } else if (['tiktok', 'tt-stalk'].includes(platform)) { 
-        primary = '#06b6d4'; 
-        hover = '#0891b2'; 
+    if (['youtube', 'yt-transcript', 'pin', 'tts'].includes(platform)) { 
+        primary = '#ef4444'; hover = '#dc2626'; 
+    } else if (['tiktok', 'tt-stalk', 'shortlink'].includes(platform)) { 
+        primary = '#06b6d4'; hover = '#0891b2'; 
     } else if (['ig', 'ig-stalk'].includes(platform)) { 
-        primary = '#d946ef'; 
-        hover = '#c026d3'; 
+        primary = '#d946ef'; hover = '#c026d3'; 
     } else if (platform === 'facebook') { 
-        primary = '#1877f2'; 
-        hover = '#1462cb'; 
+        primary = '#1877f2'; hover = '#1462cb'; 
     } else if (['twitter', 'tw-stalk', 'th-stalk'].includes(platform)) { 
-        primary = '#475569'; 
-        hover = '#334155'; 
-    } else if (['spotify', 'lirik'].includes(platform)) { 
-        primary = '#1db954'; 
-        hover = '#1aa34a'; 
+        primary = '#475569'; hover = '#334155'; 
+    } else if (['spotify', 'lirik', 'qr-gen'].includes(platform)) { 
+        primary = '#10b981'; hover = '#059669'; 
     } else if (platform === 'terabox') { 
-        primary = '#eab308'; 
-        hover = '#ca8a04'; 
+        primary = '#eab308'; hover = '#ca8a04'; 
     } else if (aiTools.includes(platform)) { 
-        primary = '#8b5cf6'; 
-        hover = '#7c3aed'; 
+        primary = '#8b5cf6'; hover = '#7c3aed'; 
     } else if (['pulsa', 'topup', 'roblox-stalk'].includes(platform)) { 
-        primary = '#10b981'; 
-        hover = '#059669'; 
+        primary = '#10b981'; hover = '#059669'; 
     } else if (['nulis', 'iqc', 'ss-web', 'dc-stalk', 'gh-stalk'].includes(platform)) { 
-        primary = '#f59e0b'; 
-        hover = '#d97706'; 
+        primary = '#f59e0b'; hover = '#d97706'; 
     }
 
     root.style.setProperty('--primary', primary);
@@ -207,16 +194,8 @@ function setPlatform(platform) {
     const btn = document.getElementById('mainBtn');
     
     const allContainers = [
-        urlCont, 
-        textCont, 
-        fileCont, 
-        nominalCont, 
-        customAmountCont, 
-        providerCont, 
-        ytFormatCont, 
-        timeInputsCont, 
-        catboxHelper, 
-        contactCont
+        urlCont, textCont, fileCont, nominalCont, customAmountCont, 
+        providerCont, ytFormatCont, timeInputsCont, catboxHelper, contactCont
     ];
     
     allContainers.forEach(el => {
@@ -239,102 +218,81 @@ function setPlatform(platform) {
     } else if (platform === 'pulsa') { 
         title.innerHTML = "Isi Ulang Pulsa"; 
         document.getElementById('mediaUrl').placeholder = "Masukkan Nomor HP (0812...)"; 
-        document.getElementById('pulsaProvider').innerHTML = `
-            <option value="pulsa-axis">AXIS</option>
-            <option value="pulsa-indosat">INDOSAT (IM3)</option>
-            <option value="pulsa-telkomsel">TELKOMSEL</option>
-            <option value="pulsa-tri">TRI (3)</option>
-            <option value="pulsa-xl">XL AXIATA</option>
-        `;
-        urlCont.style.display = 'flex'; 
-        providerCont.style.display = 'flex'; 
-        nominalCont.style.display = 'flex'; 
-        btn.innerHTML = 'Buat Tagihan'; 
+        document.getElementById('pulsaProvider').innerHTML = `<option value="pulsa-axis">AXIS</option><option value="pulsa-indosat">INDOSAT (IM3)</option><option value="pulsa-telkomsel">TELKOMSEL</option><option value="pulsa-tri">TRI (3)</option><option value="pulsa-xl">XL AXIATA</option>`;
+        urlCont.style.display = 'flex'; providerCont.style.display = 'flex'; nominalCont.style.display = 'flex'; btn.innerHTML = 'Buat Tagihan'; 
     } else if (platform === 'topup') { 
         title.innerHTML = "Topup E-Wallet"; 
         document.getElementById('mediaUrl').placeholder = "Masukkan Nomor Akun (0812...)"; 
-        document.getElementById('pulsaProvider').innerHTML = `
-            <option value="topup-dana">DANA</option>
-            <option value="topup-gopay">GOPAY</option>
-            <option value="topup-ovo">OVO</option>
-            <option value="topup-shopeepay">SHOPEEPAY</option>
-        `;
-        urlCont.style.display = 'flex'; 
-        providerCont.style.display = 'flex'; 
-        customAmountCont.style.display = 'flex'; 
-        btn.innerHTML = 'Buat Tagihan'; 
+        document.getElementById('pulsaProvider').innerHTML = `<option value="topup-dana">DANA</option><option value="topup-gopay">GOPAY</option><option value="topup-ovo">OVO</option><option value="topup-shopeepay">SHOPEEPAY</option>`;
+        urlCont.style.display = 'flex'; providerCont.style.display = 'flex'; customAmountCont.style.display = 'flex'; btn.innerHTML = 'Buat Tagihan'; 
     } else if (platform === 'youtube') { 
         title.innerHTML = "Unduh YouTube"; 
         document.getElementById('mediaUrl').placeholder = "Tempel tautan video YouTube di sini..."; 
-        urlCont.style.display = 'flex'; 
-        ytFormatCont.style.display = 'flex'; 
-        btn.innerHTML = 'Download Sekarang'; 
+        urlCont.style.display = 'flex'; ytFormatCont.style.display = 'flex'; btn.innerHTML = 'Download Sekarang'; 
     } else if (platform === 'tiktok') { 
         title.innerHTML = "Unduh Video TikTok"; 
         document.getElementById('mediaUrl').placeholder = "Tempel tautan video TikTok di sini..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Download Sekarang'; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Download Sekarang'; 
     } else if (platform === 'ig') { 
         title.innerHTML = "Unduh Media Instagram"; 
         document.getElementById('mediaUrl').placeholder = "Tempel tautan Post/Reels IG di sini..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Download Sekarang'; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Download Sekarang'; 
     } else if (platform === 'facebook') { 
         title.innerHTML = "Unduh Video Facebook"; 
         document.getElementById('mediaUrl').placeholder = "Tempel tautan video/Reels Facebook..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Download Sekarang'; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Download Sekarang'; 
     } else if (platform === 'twitter') { 
         title.innerHTML = "Unduh Media Twitter (X)"; 
         document.getElementById('mediaUrl').placeholder = "Tempel tautan postingan Twitter (X)..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Download Sekarang'; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Download Sekarang'; 
     } else if (platform === 'terabox') { 
         title.innerHTML = "TeraBox Downloader"; 
         document.getElementById('mediaUrl').placeholder = "Tempel tautan file TeraBox di sini..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Buka File TeraBox'; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Buka File TeraBox'; 
     } else if (platform === 'pin') { 
         title.innerHTML = "Unduh Media Pinterest"; 
         document.getElementById('mediaUrl').placeholder = "Tempel tautan Pin dari Pinterest di sini..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Download Sekarang'; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Download Sekarang'; 
     } else if (platform === 'spotify') { 
         title.innerHTML = "Unduh Musik Spotify"; 
         document.getElementById('mediaUrl').placeholder = "Tempel tautan lagu Spotify di sini..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Download Sekarang'; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Download Sekarang'; 
     } else if (platform === 'lirik') { 
         title.innerHTML = "Pencarian Lirik Lagu"; 
         document.getElementById('mediaUrl').placeholder = "Ketik judul lagu (contoh: Komang)..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Cari Lirik Sekarang'; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Cari Lirik Sekarang'; 
     } else if (platform === 'ss-web') { 
         title.innerHTML = "Screenshot Website"; 
         document.getElementById('mediaUrl').placeholder = "Masukkan URL web (https://...)"; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Ambil Screenshot'; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Ambil Screenshot'; 
     } else if (platform === 'yt-transcript') { 
         title.innerHTML = "YouTube Transcript"; 
         document.getElementById('mediaUrl').placeholder = "Tempel tautan video YouTube di sini..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Ekstrak Teks Sekarang'; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Ekstrak Teks Sekarang'; 
+    } else if (platform === 'qr-gen') { 
+        title.innerHTML = "Buat QR Code"; 
+        document.getElementById('textContent').placeholder = "Ketik link atau teks rahasia di sini..."; 
+        textCont.style.display = 'flex'; btn.innerHTML = 'Generate QR Code'; 
+    } else if (platform === 'shortlink') { 
+        title.innerHTML = "Pemendek URL (Shortlink)"; 
+        document.getElementById('mediaUrl').placeholder = "Tempel tautan panjang yang ingin dipendekkan..."; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Pendekkan Tautan'; 
+    } else if (platform === 'tts') { 
+        title.innerHTML = "Text to Speech AI"; 
+        document.getElementById('textContent').placeholder = "Ketik teks yang ingin dibacakan AI (Maks 200 huruf)..."; 
+        textCont.style.display = 'flex'; btn.innerHTML = 'Ubah ke Suara'; 
     } else if (platform === 'ai-detector') { 
         title.innerHTML = "AI Text Detector"; 
         document.getElementById('textContent').placeholder = "Tempel artikel atau teks di sini..."; 
-        textCont.style.display = 'flex'; 
-        btn.innerHTML = 'Deteksi Teks Sekarang'; 
+        textCont.style.display = 'flex'; btn.innerHTML = 'Deteksi Teks Sekarang'; 
     } else if (platform === 'iqc') { 
         title.innerHTML = "iPhone Quoted"; 
         document.getElementById('textContent').placeholder = "Ketik atau tempel teks pesan di sini..."; 
-        textCont.style.display = 'flex'; 
-        timeInputsCont.style.display = 'flex'; 
-        btn.innerHTML = 'Buat Kutipan iPhone'; 
+        textCont.style.display = 'flex'; timeInputsCont.style.display = 'flex'; btn.innerHTML = 'Buat Kutipan iPhone'; 
     } else if (platform === 'nulis') { 
         title.innerHTML = "Nulis Otomatis"; 
         document.getElementById('textContent').placeholder = "Ketik atau tempel teks yang ingin ditulis tangan..."; 
-        textCont.style.display = 'flex'; 
-        btn.innerHTML = 'Mulai Nulis'; 
+        textCont.style.display = 'flex'; btn.innerHTML = 'Mulai Nulis'; 
     } else if (['hd-foto', 'remove-bg', 'noise-reduce'].includes(platform)) { 
         if (platform === 'hd-foto') title.innerHTML = 'HD Foto Upscaler';
         else if (platform === 'remove-bg') title.innerHTML = 'Hapus Background';
@@ -364,38 +322,31 @@ function setPlatform(platform) {
     } else if (platform === 'roblox-stalk') { 
         title.innerHTML = "Roblox Stalk"; 
         document.getElementById('mediaUrl').placeholder = "Masukkan username Roblox..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Cari Player'; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Cari Player'; 
     } else if (platform === 'dc-stalk') { 
         title.innerHTML = "Discord Stalk"; 
         document.getElementById('mediaUrl').placeholder = "Masukkan ID Discord (angka)..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Cari User'; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Cari User'; 
     } else if (platform === 'tt-stalk') { 
         title.innerHTML = "TikTok Stalk"; 
         document.getElementById('mediaUrl').placeholder = "Masukkan username TikTok..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Cari Akun'; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Cari Akun'; 
     } else if (platform === 'tw-stalk') { 
         title.innerHTML = "Twitter Stalk"; 
         document.getElementById('mediaUrl').placeholder = "Masukkan username Twitter..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Cari Akun'; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Cari Akun'; 
     } else if (platform === 'gh-stalk') { 
         title.innerHTML = "GitHub Stalk"; 
         document.getElementById('mediaUrl').placeholder = "Masukkan username GitHub..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Cari Developer'; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Cari Developer'; 
     } else if (platform === 'ig-stalk') { 
         title.innerHTML = "Instagram Stalk"; 
         document.getElementById('mediaUrl').placeholder = "Masukkan username Instagram..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Cari Akun IG'; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Cari Akun IG'; 
     } else if (platform === 'th-stalk') { 
         title.innerHTML = "Threads Stalk"; 
         document.getElementById('mediaUrl').placeholder = "Masukkan username Threads..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Cari Akun Threads'; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Cari Akun Threads'; 
     }
 
     const mediaUrlInput = document.getElementById('mediaUrl');
@@ -422,6 +373,7 @@ function setPlatform(platform) {
         }, 10);
     }
 
+    // Deteksi Maintenance Mode dari config.js
     if (typeof FITUR !== 'undefined' && btn && platform !== 'kontak') {
         if (FITUR[platform] === false) {
             btn.innerHTML = '<i class="fas fa-tools"></i> Sedang Maintenance';
@@ -491,6 +443,21 @@ function copyLirik() {
             btn.innerHTML = 'Tersalin'; 
             setTimeout(() => { 
                 btn.innerHTML = 'Salin Lirik ke Clipboard'; 
+            }, 2000); 
+        }
+    }); 
+}
+
+function copyShortlink() { 
+    const shortlinkEl = document.getElementById('shortlinkText');
+    if (!shortlinkEl) return;
+    
+    navigator.clipboard.writeText(shortlinkEl.value).then(() => { 
+        const btn = document.getElementById('copyShortlinkBtn'); 
+        if (btn) {
+            btn.innerHTML = '<i class="fas fa-check"></i> Tersalin'; 
+            setTimeout(() => { 
+                btn.innerHTML = '<i class="fas fa-copy"></i> Salin Link'; 
             }, 2000); 
         }
     }); 
@@ -658,7 +625,7 @@ async function forceDownload(url, filename) {
 
     if (isBase64) {
         try {
-            showToast("Memproses gambar...", "info");
+            showToast("Memproses file...", "info");
             const res = await fetch('/api/proses', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -670,7 +637,6 @@ async function forceDownload(url, filename) {
     }
 
     showToast("Membuka untuk download...", "info");
-
     window.location.href = url;
 }
 
@@ -866,7 +832,7 @@ async function processAction(isFromQueue = false) {
         if (urlVal.startsWith('@')) urlVal = urlVal.substring(1);
     }
 
-    if (currentPlatform === 'ai-detector' || currentPlatform === 'iqc' || currentPlatform === 'nulis') {
+    if (['ai-detector', 'iqc', 'nulis', 'qr-gen', 'tts'].includes(currentPlatform)) {
         if (!textVal) return showToast("Harap isi teks terlebih dahulu.", "error");
         
         if (currentPlatform === 'iqc') {
@@ -903,6 +869,8 @@ async function processAction(isFromQueue = false) {
         if (currentPlatform === 'photo-editor' && !urlVal) {
             return showToast("Harap ketik perintah edit.", "error");
         }
+    } else if (currentPlatform === 'shortlink' && !urlVal) {
+        return showToast("Harap masukkan URL tautan.", "error");
     } else if (currentPlatform === 'lirik' && !urlVal) {
         return showToast("Harap masukkan judul lagu.", "error");
     } else if (!['hd-foto', 'remove-bg', 'noise-reduce'].includes(currentPlatform) && !urlVal && !textVal) {
@@ -910,11 +878,7 @@ async function processAction(isFromQueue = false) {
     }
 
     if (!navigator.onLine && currentPlatform !== 'kontak') {
-        offlineQueue.push({ 
-            platform: currentPlatform, 
-            url: urlVal, 
-            text: textVal 
-        });
+        offlineQueue.push({ platform: currentPlatform, url: urlVal, text: textVal });
         localStorage.setItem('moonlight_queue', JSON.stringify(offlineQueue));
         showToast("Disimpan ke antrean offline", "info");
         return;
@@ -952,6 +916,59 @@ async function processAction(isFromQueue = false) {
         if (miniGame) miniGame.style.display = 'none';
         if (loadingText) loadingText.innerText = "Memproses permintaan...";
     }
+
+    // ========================================================
+    // LOGIKA KHUSUS FITUR BARU TANPA NEOXR API (PUBLIC APIs)
+    // ========================================================
+    if (['qr-gen', 'shortlink', 'tts'].includes(currentPlatform)) {
+        setTimeout(async () => {
+            const mainResultCard = document.getElementById('resultCard');
+            if (mainResultCard) mainResultCard.style.display = 'block';
+
+            if (currentPlatform === 'qr-gen') {
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(textVal)}`;
+                document.getElementById('qrResult').style.display = 'block';
+                document.getElementById('qrImage').src = qrUrl;
+                document.getElementById('qrActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${qrUrl}', 'Moonlight_QRCode.png')"><i class="fas fa-download"></i> Simpan QR Code</button>`;
+                saveToHistory(`QR Code`, qrUrl);
+                showToast("Berhasil membuat QR Code!", "success");
+            } 
+            else if (currentPlatform === 'shortlink') {
+                try {
+                    const res = await fetch(`https://is.gd/create.php?format=json&url=${encodeURIComponent(urlVal)}`);
+                    const json = await res.json();
+                    if (json.shorturl) {
+                        document.getElementById('shortlinkResult').style.display = 'block';
+                        document.getElementById('shortlinkText').value = json.shorturl;
+                        saveToHistory(`Shortlink`, json.shorturl);
+                        showToast("Tautan berhasil dipendekkan!", "success");
+                    } else {
+                        throw new Error("Invalid");
+                    }
+                } catch(e) {
+                    if (mainResultCard) mainResultCard.style.display = 'none';
+                    showToast("Gagal memendekkan tautan. Pastikan format URL benar.", "error");
+                }
+            }
+            else if (currentPlatform === 'tts') {
+                const safeText = textVal.substring(0, 200);
+                const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=id&client=tw-ob&q=${encodeURIComponent(safeText)}`;
+                document.getElementById('ttsResult').style.display = 'block';
+                document.getElementById('ttsPlayer').src = ttsUrl;
+                document.getElementById('ttsActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${ttsUrl}', 'Moonlight_Voice.mp3')"><i class="fas fa-download"></i> Simpan Suara</button>`;
+                saveToHistory(`Suara TTS`, ttsUrl);
+                showToast("Berhasil memproses suara!", "success");
+            }
+            
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
+            if (mainBtn) {
+                mainBtn.disabled = false;
+                mainBtn.innerHTML = currentPlatform === 'qr-gen' ? 'Generate QR Code' : currentPlatform === 'shortlink' ? 'Pendekkan Tautan' : 'Ubah ke Suara';
+            }
+        }, 1000);
+        return; // SELESAI, JANGAN LANJUT KE NEOXR
+    }
+    // ========================================================
 
     try {
         let finalInputData = urlVal || textVal;
@@ -1035,25 +1052,25 @@ async function processAction(isFromQueue = false) {
             params = { q: finalInputData }; 
         } else if (currentPlatform === 'roblox-stalk') { 
             action = 'roblox'; 
-            params = { username: finalInputData, q: finalInputData }; 
+            params = { username: finalInputData }; 
         } else if (currentPlatform === 'dc-stalk') { 
             action = 'discord'; 
-            params = { id: finalInputData, q: finalInputData }; 
+            params = { id: finalInputData }; 
         } else if (currentPlatform === 'tt-stalk') { 
             action = 'tiktokstalk'; 
-            params = { username: finalInputData, q: finalInputData }; 
+            params = { username: finalInputData }; 
         } else if (currentPlatform === 'tw-stalk') { 
             action = 'twitterstalk'; 
-            params = { username: finalInputData, q: finalInputData }; 
+            params = { username: finalInputData }; 
         } else if (currentPlatform === 'gh-stalk') { 
             action = 'github'; 
-            params = { username: finalInputData, q: finalInputData }; 
+            params = { username: finalInputData }; 
         } else if (currentPlatform === 'ig-stalk') { 
             action = 'igstalk'; 
-            params = { username: finalInputData, q: finalInputData }; 
+            params = { username: finalInputData }; 
         } else if (currentPlatform === 'th-stalk') { 
             action = 'threadstalk'; 
-            params = { username: finalInputData, q: finalInputData }; 
+            params = { username: finalInputData }; 
         }
 
         const payload = {
@@ -1197,7 +1214,6 @@ async function processAction(isFromQueue = false) {
                     document.getElementById('lirikContentWrapper').style.display = 'block';
                 }
             }
-            // --- SAFE CHECK DOM FIX ---
             else if (currentPlatform === 'photo-editor') {
                 document.getElementById('photoEditorResult').style.display = 'block'; 
                 const infoEl = document.getElementById('photoEditorInfo');
@@ -1228,7 +1244,6 @@ async function processAction(isFromQueue = false) {
                 saveToHistory(`HD Foto`, imgSrc);
                 extractColorAndApply(imgSrc);
             }
-            // --------------------------
             else if (currentPlatform === 'remove-bg') {
                 document.getElementById('removeBgResult').style.display = 'block'; 
                 
@@ -1244,7 +1259,6 @@ async function processAction(isFromQueue = false) {
             }
             else if (currentPlatform === 'noise-reduce') {
                 document.getElementById('audioResult').style.display = 'block'; 
-                // Untuk audio, kita pastikan URL yang di-render sesuai (ditambah parameter fallback agar webview tenang)
                 let audioUrl = data.url;
                 document.getElementById('audioPlayer').src = audioUrl; 
                 document.getElementById('audioActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${audioUrl}', 'Moonlight_CleanAudio.mp3')"><i class="fas fa-download"></i> Simpan Audio</button>`;
@@ -1486,6 +1500,12 @@ async function processAction(isFromQueue = false) {
                 mainBtn.innerHTML = "Buka File TeraBox";
             } else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) {
                 mainBtn.innerHTML = "Cari Sekarang";
+            } else if (currentPlatform === 'qr-gen') {
+                mainBtn.innerHTML = "Generate QR Code";
+            } else if (currentPlatform === 'shortlink') {
+                mainBtn.innerHTML = "Pendekkan Tautan";
+            } else if (currentPlatform === 'tts') {
+                mainBtn.innerHTML = "Ubah ke Suara";
             } else {
                 mainBtn.innerHTML = "Download Sekarang";
             }
