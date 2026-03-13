@@ -28,6 +28,6 @@ const FITUR = {
     "topup": true,
     "kontak": true,
     "qr-gen": true,        
-    "shortlink": true,     
-    "tts": true            
+    "shortlink": false,     
+    "tts": false           
 };
