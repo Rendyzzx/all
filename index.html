@@ -7,8 +7,10 @@
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
+    
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1807/1807350.png">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1807/1807350.png">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <style>
@@ -97,18 +99,16 @@
         @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
 
         /* ==============================================================
-           PERBAIKAN MODAL MENU (GAYA BOTTOM SHEET ALA GOJEK/iOS)
+           MODAL GAYA BOTTOM SHEET ALA GOJEK/iOS
            ============================================================== */
         .modal {
             display: none; position: fixed; z-index: 1000; left: 0; top: 0; 
             width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); 
-            /* Ubah agar konten menempel di bawah pada HP */
             align-items: flex-end; justify-content: center; padding: 0;
         }
         
         .modal-content {
             background-color: #0f172a; 
-            /* Ujung melengkung hanya di atas */
             border-radius: 32px 32px 0 0; 
             border-top: 1px solid var(--border-color);
             padding: 30px 24px 24px; width: 100%; max-width: 600px; 
@@ -130,17 +130,10 @@
             width: 40px; height: 5px; background: rgba(255,255,255,0.2); border-radius: 10px;
         }
 
-        .close-modal {
-            position: absolute; top: 20px; right: 20px; color: var(--text-muted); font-size: 16px; 
-            cursor: pointer; transition: 0.2s; width: 32px; height: 32px; 
-            display: flex; align-items: center; justify-content: center; border-radius: 50%; 
-            background: rgba(255,255,255,0.05); z-index: 10; border: 1px solid var(--border-color);
-        }
-        .close-modal:hover { color: var(--text-main); background: rgba(255,255,255,0.15); }
-
+        /* KONTROL SLIDER KATEGORI */
         .cat-nav-header {
             display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 24px; margin-top: 10px; padding: 0 10px;
+            margin-bottom: 24px; margin-top: 16px; padding: 0 10px;
         }
         
         .cat-nav-btn {
@@ -159,7 +152,7 @@
         .cat-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.15); cursor: pointer; transition: 0.3s; }
         .cat-dot.active { background: var(--text-main); width: 16px; border-radius: 4px; }
 
-        /* GRID MENU PREMIUM (TANPA KOTAK KAKU) */
+        /* GRID MENU PREMIUM */
         .feature-list { 
             list-style: none; display: grid; grid-template-columns: repeat(4, 1fr);
             gap: 20px 10px; background: transparent; border: none; padding: 0 10px;
@@ -260,7 +253,6 @@
         .action-btns a, .action-btns button { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 15px; transition: 0.2s; border: none; cursor: pointer; font-family: var(--font-family-system); text-align: left; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-secondary { background: #334155; color: var(--text-main); }
-        .btn-yt { background: #ef4444; color: white; } 
 
         .profile { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
         .profile img { width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--border-color); object-fit: cover;}
@@ -335,6 +327,7 @@
             /* Modal ditengah untuk PC */
             .modal { align-items: center; padding: 20px; }
             .modal-content { border-radius: 24px; max-width: 500px; animation: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+            .modal-content::before { display: none; }
             .feature-list { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; overflow-x: hidden; }
             #pipOverlay { width: 300px; height: 170px; bottom: 30px; right: 30px; }
         }
@@ -361,7 +354,6 @@
 
     <div id="featuresModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()"><i class="fas fa-times"></i></span>
             
             <div class="cat-nav-header">
                 <button class="cat-nav-btn" onclick="prevCat()"><i class="fas fa-chevron-left"></i></button>
@@ -525,8 +517,7 @@
 
     <div id="historyModal" class="modal">
         <div class="modal-content" style="max-width: 500px;">
-            <span class="close-modal" onclick="closeHistory()"><i class="fas fa-times"></i></span>
-            <h2 style="margin-bottom: 8px;"><i class="fas fa-history" style="color: #60a5fa;"></i> Riwayat Terakhir</h2>
+            <h2 style="margin-bottom: 8px; margin-top: 10px;"><i class="fas fa-history" style="color: #60a5fa;"></i> Riwayat Terakhir</h2>
             <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Menyimpan 10 hasil sukses terakhirmu.</p>
             <div id="historyListContainer"></div>
             <button onclick="clearHistory()" class="btn-secondary" style="width: 100%; padding: 14px; border-radius: 12px; margin-top: 16px; border: none; cursor: pointer; font-weight: 600;">
@@ -655,6 +646,7 @@
                 <audio id="ttsPlayer" controls style="width: 100%; margin-bottom: 16px;"></audio>
                 <div class="action-btns" id="ttsActionBtns"></div>
             </div>
+
             <div id="downloaderResult">
                 <div id="profileSection" class="profile">
                     <img id="authorAvatar" src="" alt="Avatar">
