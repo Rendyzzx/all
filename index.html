@@ -53,45 +53,45 @@
         }
 
         #ambientBackground {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 50% 0%, var(--ambient-glow) 0%, transparent 70%);
-            z-index: -1;
-            pointer-events: none;
-            transition: background 1.5s ease-in-out;
-        }
-
-        #splashScreen {
-            position: fixed;
+            position: fixed; 
             top: 0; 
             left: 0; 
             width: 100%; 
             height: 100%;
-            background-color: var(--bg-body);
+            background: radial-gradient(circle at 50% 0%, var(--ambient-glow) 0%, transparent 70%);
+            z-index: -1; 
+            pointer-events: none; 
+            transition: background 1.5s ease-in-out;
+        }
+
+        #splashScreen {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background-color: var(--bg-body); 
             z-index: 99999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
             justify-content: center;
             transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
         }
         
-        .splash-logo i {
-            font-size: 72px;
-            color: #60a5fa;
-            animation: pulseGlow 1.5s infinite alternate;
+        .splash-logo i { 
+            font-size: 72px; 
+            color: #60a5fa; 
+            animation: pulseGlow 1.5s infinite alternate; 
         }
         
-        .splash-text {
-            margin-top: 20px;
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--text-main);
-            letter-spacing: 3px;
-            text-transform: uppercase;
+        .splash-text { 
+            margin-top: 20px; 
+            font-size: 24px; 
+            font-weight: 800; 
+            color: var(--text-main); 
+            letter-spacing: 3px; 
+            text-transform: uppercase; 
         }
         
         @keyframes pulseGlow {
@@ -99,9 +99,9 @@
             100% { transform: scale(1.05); filter: drop-shadow(0 0 30px rgba(96, 165, 250, 0.8)); }
         }
         
-        .splash-hidden {
-            opacity: 0 !important;
-            visibility: hidden !important;
+        .splash-hidden { 
+            opacity: 0 !important; 
+            visibility: hidden !important; 
         }
 
         .navbar {
@@ -110,11 +110,11 @@
             align-items: center;
             padding: 16px 5%; 
             background-color: rgba(15, 23, 42, 0.85);
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color); 
             position: sticky; 
             top: 0; 
             z-index: 100;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px); 
             -webkit-backdrop-filter: blur(12px);
         }
         
@@ -133,47 +133,40 @@
             align-items: center;
         }
         
-        .nav-btn:hover { 
-            background: rgba(255, 255, 255, 0.1); 
-        }
+        .nav-btn:hover { background: rgba(255, 255, 255, 0.1); }
+        .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
         
-        .nav-btn:disabled { 
-            opacity: 0.4; 
-            cursor: not-allowed; 
-            pointer-events: none; 
-        }
-        
-        .logo {
+        .logo { 
             font-size: 20px; 
             font-weight: 700; 
             color: var(--text-main); 
-            letter-spacing: -0.5px;
+            letter-spacing: -0.5px; 
             display: flex; 
             align-items: center; 
-            gap: 10px;
+            gap: 10px; 
         }
-        
         .logo i { color: #60a5fa; }
 
         #offlineIndicator {
-            display: none;
-            background: #ef4444;
-            color: white;
+            display: none; 
+            background: #ef4444; 
+            color: white; 
             text-align: center;
-            padding: 8px;
-            font-size: 12px;
-            font-weight: 700;
-            position: sticky;
-            top: 74px;
+            padding: 8px; 
+            font-size: 12px; 
+            font-weight: 700; 
+            position: sticky; 
+            top: 74px; 
             z-index: 99;
             animation: slideDown 0.3s ease;
         }
 
-        @keyframes slideDown {
-            from { transform: translateY(-100%); }
-            to { transform: translateY(0); }
+        @keyframes slideDown { 
+            from { transform: translateY(-100%); } 
+            to { transform: translateY(0); } 
         }
 
+        /* MODAL STYLING */
         .modal {
             display: none; 
             position: fixed; 
@@ -181,7 +174,7 @@
             left: 0; 
             top: 0; 
             width: 100%; 
-            height: 100%;
+            height: 100%; 
             background-color: rgba(0, 0, 0, 0.6); 
             align-items: center; 
             justify-content: center; 
@@ -189,18 +182,17 @@
         }
         
         .modal-content {
-            background-color: #0f172a;
-            border: 1px solid var(--border-color);
+            background-color: #0f172a; 
+            border: 1px solid var(--border-color); 
             border-radius: 24px; 
             padding: 24px; 
             width: 100%; 
-            max-width: 440px;
+            max-width: 440px; 
             max-height: 85vh; 
             overflow-y: auto; 
             -webkit-overflow-scrolling: touch; 
             overscroll-behavior-y: contain; 
-            transform: translate3d(0, 0, 0); 
-            -webkit-transform: translate3d(0, 0, 0);
+            position: relative; 
             animation: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
@@ -214,71 +206,139 @@
         
         .close-modal {
             position: absolute; 
-            top: 20px; 
-            right: 20px; 
+            top: 15px; 
+            right: 15px; 
             color: var(--text-muted); 
-            font-size: 28px; 
+            font-size: 24px; 
             cursor: pointer; 
             transition: 0.2s; 
-            line-height: 1;
+            line-height: 1; 
             width: 32px; 
             height: 32px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             border-radius: 50%; 
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.05); 
+            z-index: 10;
         }
-        
         .close-modal:hover { 
             color: var(--text-main); 
             background: rgba(255,255,255,0.1); 
         }
-        
-        .modal-content h2 { 
-            margin-bottom: 24px; 
-            font-size: 20px; 
-            font-weight: 600; 
+
+        /* KONTROL SLIDER KATEGORI */
+        .cat-nav-header {
             display: flex; 
             align-items: center; 
-            gap: 10px; 
-            color: #fff;
+            justify-content: space-between;
+            margin-bottom: 20px; 
+            margin-top: 10px;
         }
-        
-        .modal-category { 
-            font-size: 12px; 
-            color: var(--text-muted); 
+        .cat-nav-btn {
+            background: rgba(255,255,255,0.08); 
+            border: none; 
+            color: white; 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+        }
+        .cat-nav-btn:hover { 
+            background: var(--primary); 
+        }
+        #catTitle { 
+            margin: 0; 
+            font-size: 18px; 
             font-weight: 700; 
-            margin: 24px 0 12px 12px; 
-            letter-spacing: 0.5px; 
-            text-transform: uppercase;
+            text-align: center; 
+            flex: 1; 
+            color: #fff; 
         }
         
-        .modal-category:first-of-type { margin-top: 0; }
+        .cat-page { 
+            display: none; 
+            animation: slideFade 0.3s ease; 
+        }
+        .cat-page.active { 
+            display: block; 
+        }
         
+        @keyframes slideFade {
+            from { opacity: 0; transform: translateX(10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .cat-dots { 
+            display: flex; 
+            justify-content: center; 
+            gap: 6px; 
+            margin-top: 24px; 
+        }
+        .cat-dot { 
+            width: 8px; 
+            height: 8px; 
+            border-radius: 50%; 
+            background: #334155; 
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+        .cat-dot.active { 
+            background: var(--primary); 
+            width: 24px; 
+            border-radius: 4px; 
+        }
+
+        /* GRID MENU (3 KOLOM) */
         .feature-list { 
             list-style: none; 
-            background: #1e293b; 
-            border-radius: 16px; 
-            overflow: hidden; 
-            border: 1px solid var(--border-color);
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px; 
+            background: transparent; 
+            border: none; 
         }
         
         .feature-list li {
-            padding: 16px; 
+            background: rgba(30, 41, 59, 0.6); 
+            border: 1px solid var(--border-color); 
+            border-radius: 16px; 
+            padding: 16px 8px; 
             display: flex; 
+            flex-direction: column; 
             align-items: center; 
-            gap: 16px;
-            border-bottom: 1px solid var(--border-color); 
-            transition: background 0.15s; 
+            justify-content: center;
+            gap: 12px; 
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
             cursor: pointer;
+            text-align: center; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         
-        .feature-list li:last-child { border-bottom: none; }
-        .feature-list li:hover { background-color: rgba(255,255,255,0.05); }
-        .feature-list li i { font-size: 20px; width: 24px; text-align: center; }
-        .feature-list li h4 { margin: 0; font-size: 15px; font-weight: 500; color: #e2e8f0; }
+        .feature-list li:hover { 
+            background-color: rgba(255,255,255,0.1); 
+            transform: translateY(-3px); 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-list li i { 
+            font-size: 28px; 
+            width: auto; 
+        }
+        
+        .feature-list li h4 { 
+            margin: 0; 
+            font-size: 11px; 
+            font-weight: 600; 
+            color: #e2e8f0; 
+            line-height: 1.3; 
+        }
 
+        /* KONTEN UTAMA */
         .hero { 
             flex: 1; 
             padding: 50px 20px; 
@@ -286,7 +346,7 @@
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            position: relative;
+            position: relative; 
         }
         
         .hero h1 { 
@@ -295,7 +355,7 @@
             font-weight: 700; 
             line-height: 1.2; 
             letter-spacing: -0.5px; 
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5); 
         }
 
         .form-group { 
@@ -309,16 +369,34 @@
 
         .input-wrapper, .select-wrapper, .text-wrapper, .time-col {
             background: rgba(15, 23, 42, 0.9); 
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border-color); 
             border-radius: var(--radius); 
-            transition: all 0.2s ease;
+            transition: all 0.2s ease; 
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
             backdrop-filter: blur(8px);
         }
         
-        .input-wrapper { display: flex; align-items: center; padding: 4px 4px 4px 16px; text-align: left; }
-        .select-wrapper { display: none; position: relative; align-items: center; padding: 4px 16px; text-align: left; }
-        .text-wrapper { display: none; position: relative; padding: 16px; text-align: right; }
+        .input-wrapper { 
+            display: flex; 
+            align-items: center; 
+            padding: 4px 4px 4px 16px; 
+            text-align: left; 
+        }
+        
+        .select-wrapper { 
+            display: none; 
+            position: relative; 
+            align-items: center; 
+            padding: 4px 16px; 
+            text-align: left; 
+        }
+        
+        .text-wrapper { 
+            display: none; 
+            position: relative; 
+            padding: 16px; 
+            text-align: right; 
+        }
         
         .input-wrapper:focus-within, .select-wrapper:focus-within, .text-wrapper:focus-within, .time-col:focus-within { 
             border-color: var(--primary); 
@@ -337,28 +415,46 @@
             outline: none; 
             color: var(--text-main); 
             font-family: var(--font-family-system); 
-            width: 100%;
+            width: 100%; 
         }
         
-        .input-wrapper input { padding: 14px 0; margin-right: 8px;}
-        .select-wrapper select { padding: 14px 0; appearance: none; cursor: pointer; }
-        .text-wrapper textarea { resize: vertical; min-height: 120px; margin-bottom: 12px; }
+        .input-wrapper input { 
+            padding: 14px 0; 
+            margin-right: 8px;
+        }
         
-        input[type="file"]::file-selector-button {
+        .select-wrapper select { 
+            padding: 14px 0; 
+            appearance: none; 
+            cursor: pointer; 
+        }
+        
+        .text-wrapper textarea { 
+            resize: vertical; 
+            min-height: 120px; 
+            margin-bottom: 12px; 
+        }
+        
+        input[type="file"]::file-selector-button { 
             background: rgba(255,255,255,0.1); 
             color: var(--text-main); 
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border-color); 
             padding: 10px 16px; 
             border-radius: 10px; 
             margin-right: 12px; 
-            cursor: pointer;
+            cursor: pointer; 
             font-weight: 600; 
             font-family: var(--font-family-system); 
-            transition: 0.2s;
+            transition: 0.2s; 
         }
         
-        input[type="file"]::file-selector-button:hover { background: rgba(255,255,255,0.2); }
-        .input-wrapper input::placeholder, .text-wrapper textarea::placeholder { color: var(--text-muted); }
+        input[type="file"]::file-selector-button:hover { 
+            background: rgba(255,255,255,0.2); 
+        }
+        
+        .input-wrapper input::placeholder, .text-wrapper textarea::placeholder { 
+            color: var(--text-muted); 
+        }
         
         .select-wrapper::after { 
             content: '\f107'; 
@@ -371,26 +467,53 @@
             color: var(--text-muted); 
             pointer-events: none; 
         }
-
-        .time-row { display: none; width: 100%; justify-content: space-between; gap: 12px; }
-        .time-col { flex: 1; padding: 12px 16px; display: flex; flex-direction: column; text-align: left; }
-        .time-col label { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; }
-        .time-col input { background: transparent; border: none; color: var(--text-main); font-size: 16px; outline: none; color-scheme: dark; cursor: pointer; }
         
-        #catboxHelper {
+        .time-row { 
+            display: none; 
+            width: 100%; 
+            justify-content: space-between; 
+            gap: 12px; 
+        }
+        
+        .time-col { 
+            flex: 1; 
+            padding: 12px 16px; 
+            display: flex; 
+            flex-direction: column; 
+            text-align: left; 
+        }
+        
+        .time-col label { 
+            font-size: 12px; 
+            color: var(--text-muted); 
+            font-weight: 600; 
+            margin-bottom: 6px; 
+        }
+        
+        .time-col input { 
+            background: transparent; 
+            border: none; 
+            color: var(--text-main); 
+            font-size: 16px; 
+            outline: none; 
+            color-scheme: dark; 
+            cursor: pointer; 
+        }
+        
+        #catboxHelper { 
             display: none; 
             background: rgba(30, 41, 59, 0.9); 
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border-color); 
             border-radius: var(--radius); 
             padding: 16px; 
             text-align: left; 
             font-size: 13px; 
-            color: #cbd5e1;
+            color: #cbd5e1; 
             line-height: 1.5; 
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px); 
         }
         
-        .paste-btn {
+        .paste-btn { 
             background: rgba(255,255,255,0.08); 
             color: var(--text-muted); 
             border: 1px solid transparent; 
@@ -404,7 +527,7 @@
             align-items: center; 
             transition: 0.2s ease; 
             margin-right: 4px; 
-            flex-shrink: 0;
+            flex-shrink: 0; 
         }
         
         .paste-btn:hover { 
@@ -413,7 +536,7 @@
             border-color: rgba(255,255,255,0.1); 
         }
 
-        .main-action-btn {
+        .main-action-btn { 
             display: flex; 
             justify-content: center; 
             align-items: center; 
@@ -427,11 +550,18 @@
             font-size: 16px; 
             font-weight: 600; 
             cursor: pointer; 
-            transition: 0.2s;
+            transition: 0.2s; 
         }
         
-        .main-action-btn:hover { background: var(--primary-hover); }
-        .main-action-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
+        .main-action-btn:hover { 
+            background: var(--primary-hover); 
+        }
+        
+        .main-action-btn:disabled { 
+            background: #334155; 
+            color: #94a3b8; 
+            cursor: not-allowed; 
+        }
 
         #loadingOverlay { 
             display: none; 
@@ -448,90 +578,92 @@
             margin-bottom: 16px; 
         }
         
-        #miniGame {
+        #miniGame { 
             display: none; 
             background: #1e293b; 
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border-color); 
             border-radius: 16px; 
             padding: 16px; 
             text-align: center; 
-            overflow: hidden;
+            overflow: hidden; 
             position: relative; 
-            box-shadow: inset 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: inset 0 4px 6px rgba(0,0,0,0.1); 
         }
         
         #miniGame p { 
             font-size: 13px; 
             color: #cbd5e1; 
             margin-bottom: 12px; 
-            font-weight: 600;
+            font-weight: 600; 
         }
         
-        #gameArea {
+        #gameArea { 
             width: 100%; 
             height: 120px; 
             background: #0f172a; 
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border-color); 
             border-radius: 8px; 
             position: relative; 
             overflow: hidden; 
-            margin-bottom: 12px;
+            margin-bottom: 12px; 
             cursor: pointer; 
             user-select: none; 
-            -webkit-tap-highlight-color: transparent;
+            -webkit-tap-highlight-color: transparent; 
         }
         
-        #moonPlayer {
+        #moonPlayer { 
             width: 32px; 
             height: 32px; 
-            position: absolute;
+            position: absolute; 
             top: 78px; 
             left: 30px; 
             font-size: 28px; 
-            color: #f8fafc;
+            color: #f8fafc; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            z-index: 2;
+            z-index: 2; 
         }
         
-        #meteorObstacle {
+        #meteorObstacle { 
             width: 24px; 
             height: 24px; 
-            position: absolute;
+            position: absolute; 
             top: 86px; 
             left: 100%; 
             font-size: 24px; 
-            color: #ef4444;
+            color: #ef4444; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            z-index: 1;
+            z-index: 1; 
         }
         
-        .ground-line {
+        .ground-line { 
             position: absolute; 
             bottom: 8px; 
             left: 0; 
             width: 100%; 
-            height: 2px;
-            background: var(--border-color);
+            height: 2px; 
+            background: var(--border-color); 
         }
         
-        @keyframes obstacleMove {
-            0% { left: 100%; transform: rotate(0deg); }
-            100% { left: -40px; transform: rotate(-360deg); }
+        @keyframes obstacleMove { 
+            0% { left: 100%; transform: rotate(0deg); } 
+            100% { left: -40px; transform: rotate(-360deg); } 
         }
         
-        @keyframes jumpAnim {
-            0% { top: 78px; }
-            40% { top: 10px; }
-            50% { top: 10px; }
-            60% { top: 10px; }
-            100% { top: 78px; }
+        @keyframes jumpAnim { 
+            0% { top: 78px; } 
+            40% { top: 10px; } 
+            50% { top: 10px; } 
+            60% { top: 10px; } 
+            100% { top: 78px; } 
         }
         
-        .anim-jump { animation: jumpAnim 0.5s ease-in-out; }
+        .anim-jump { 
+            animation: jumpAnim 0.5s ease-in-out; 
+        }
         
         #gameScore { 
             font-size: 14px; 
@@ -550,7 +682,7 @@
             padding: 24px; 
             text-align: left;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
-            animation: slideUp 0.3s;
+            animation: slideUp 0.3s; 
             backdrop-filter: blur(12px); 
             -webkit-backdrop-filter: blur(12px);
         }
@@ -578,7 +710,12 @@
             position: relative; 
         }
         
-        .video-thumbnail { width: 100%; max-height: 300px; object-fit: contain; display: none; }
+        .video-thumbnail { 
+            width: 100%; 
+            max-height: 300px; 
+            object-fit: contain; 
+            display: none; 
+        }
         
         .thumbnail-fallback { 
             display: flex; 
@@ -589,14 +726,31 @@
             padding: 40px 20px; 
             text-align: center; 
         }
-        .thumbnail-fallback i { font-size: 36px; margin-bottom: 12px; }
+        
+        .thumbnail-fallback i { 
+            font-size: 36px; 
+            margin-bottom: 12px; 
+        }
 
-        .action-btns { display: flex; flex-direction: column; gap: 12px; }
+        .action-btns { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+        }
         
         .action-btns a, .action-btns button { 
-            display: flex; justify-content: center; align-items: center; gap: 8px; 
-            padding: 14px; border-radius: 12px; font-weight: 600; font-size: 15px; 
-            transition: 0.2s; border: none; cursor: pointer; font-family: var(--font-family-system); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 8px; 
+            padding: 14px; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            font-size: 15px; 
+            transition: 0.2s; 
+            border: none; 
+            cursor: pointer; 
+            font-family: var(--font-family-system); 
             text-align: left; 
         }
         
@@ -628,9 +782,17 @@
         }
         
         .transcript-box { 
-            background: #0f172a; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; 
-            color: var(--text-main); font-size: 14px; line-height: 1.6; max-height: 250px; overflow-y: auto; 
-            margin-bottom: 16px; white-space: pre-wrap; 
+            background: #0f172a; 
+            border: 1px solid var(--border-color); 
+            border-radius: 12px; 
+            padding: 16px; 
+            color: var(--text-main); 
+            font-size: 14px; 
+            line-height: 1.6; 
+            max-height: 250px; 
+            overflow-y: auto; 
+            margin-bottom: 16px; 
+            white-space: pre-wrap; 
         }
         
         .invoice-header { text-align: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px dashed var(--border-color); }
@@ -640,10 +802,17 @@
         .qr-container img { width: 100%; height: auto; display: block; }
         
         .history-item { 
-            background: #1e293b; border: 1px solid var(--border-color); border-radius: 12px; 
-            padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; 
-            align-items: center; text-align: left; 
+            background: #1e293b; 
+            border: 1px solid var(--border-color); 
+            border-radius: 12px; 
+            padding: 16px; 
+            margin-bottom: 12px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            text-align: left; 
         }
+        
         .history-info h4 { margin: 0 0 4px 0; font-size: 15px; color: #fff; }
         .history-info p { margin: 0; font-size: 12px; color: var(--text-muted); }
         .history-actions { display: flex; gap: 8px; }
@@ -652,12 +821,27 @@
         .history-empty { text-align: center; color: var(--text-muted); padding: 30px 0; font-size: 14px; }
 
         .toast { 
-            visibility: hidden; min-width: 280px; max-width: 90%; background-color: rgba(30, 41, 59, 0.95); 
-            border: 1px solid var(--border-color); color: #fff; border-radius: 16px; padding: 16px; 
-            position: fixed; z-index: 9999; left: 50%; bottom: 20px; transform: translateX(-50%); 
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5); display: flex; align-items: center; gap: 12px; 
-            opacity: 0; transition: opacity 0.3s, bottom 0.3s; 
+            visibility: hidden; 
+            min-width: 280px; 
+            max-width: 90%; 
+            background-color: rgba(30, 41, 59, 0.95); 
+            border: 1px solid var(--border-color); 
+            color: #fff; 
+            border-radius: 16px; 
+            padding: 16px; 
+            position: fixed; 
+            z-index: 9999; 
+            left: 50%; 
+            bottom: 20px; 
+            transform: translateX(-50%); 
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5); 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            opacity: 0; 
+            transition: opacity 0.3s, bottom 0.3s; 
         }
+        
         .toast.show { visibility: visible; opacity: 1; bottom: 100px; }
         .toast-icon { font-size: 22px; display: flex; align-items: center; justify-content: center; }
         .toast-message { font-size: 14px; font-weight: 500; line-height: 1.4; font-family: var(--font-family-system); }
@@ -666,49 +850,84 @@
         .toast.info .toast-icon { color: #3b82f6; }
         
         .bottom-nav { 
-            position: fixed; bottom: 0; left: 0; width: 100%; 
-            background-color: rgba(15, 23, 42, 0.90); border-top: 1px solid var(--border-color); 
-            display: flex; justify-content: space-around; padding: 12px 10px calc(12px + env(safe-area-inset-bottom)); 
-            z-index: 90; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            background-color: rgba(15, 23, 42, 0.90); 
+            border-top: 1px solid var(--border-color); 
+            display: flex; 
+            justify-content: space-around; 
+            padding: 12px 10px calc(12px + env(safe-area-inset-bottom)); 
+            z-index: 90; 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px); 
         }
+        
         .bnav-item { 
-            background: transparent; border: none; color: var(--text-muted); display: flex; 
-            flex-direction: column; align-items: center; gap: 6px; font-size: 11px; 
-            font-weight: 600; cursor: pointer; transition: color 0.2s ease; width: 25%; 
+            background: transparent; 
+            border: none; 
+            color: var(--text-muted); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 6px; 
+            font-size: 11px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: color 0.2s ease; 
+            width: 25%; 
         }
+        
         .bnav-item i { font-size: 20px; transition: transform 0.2s ease; }
         .bnav-item:hover, .bnav-item.active { color: var(--primary); }
 
-        #pipOverlay {
-            display: none;
-            position: fixed;
-            bottom: 85px;
-            right: 20px;
-            width: 180px;
-            height: 110px;
-            background: #000;
-            border-radius: 12px;
-            border: 2px solid var(--primary);
-            z-index: 1000;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            overflow: hidden;
-            animation: popIn 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+        #pipOverlay { 
+            display: none; 
+            position: fixed; 
+            bottom: 85px; 
+            right: 20px; 
+            width: 180px; 
+            height: 110px; 
+            background: #000; 
+            border-radius: 12px; 
+            border: 2px solid var(--primary); 
+            z-index: 1000; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+            overflow: hidden; 
+            animation: popIn 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67); 
         }
-
+        
         #pipOverlay video { width: 100%; height: 100%; object-fit: cover; }
-
-        .pip-close {
-            position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.5);
-            color: white; border: none; border-radius: 50%; width: 22px; height: 22px;
-            font-size: 12px; cursor: pointer; z-index: 2;
+        
+        .pip-close { 
+            position: absolute; 
+            top: 5px; 
+            right: 5px; 
+            background: rgba(0,0,0,0.5); 
+            color: white; 
+            border: none; 
+            border-radius: 50%; 
+            width: 22px; 
+            height: 22px; 
+            font-size: 12px; 
+            cursor: pointer; 
+            z-index: 2; 
+        }
+        
+        @keyframes popIn { 
+            from { transform: scale(0) translate(50%, 50%); opacity: 0; } 
+            to { transform: scale(1) translate(0, 0); opacity: 1; } 
         }
 
-        @keyframes popIn {
-            from { transform: scale(0) translate(50%, 50%); opacity: 0; }
-            to { transform: scale(1) translate(0, 0); opacity: 1; }
+        footer { 
+            margin-top: auto; 
+            padding: 30px 20px; 
+            text-align: center; 
+            font-size: 13px; 
+            color: var(--text-muted); 
+            background-color: transparent; 
         }
-
-        footer { margin-top: auto; padding: 30px 20px; text-align: center; font-size: 13px; color: var(--text-muted); background-color: transparent; }
 
         @media (max-width: 600px) {
             .hero { padding: 40px 16px; }
@@ -717,7 +936,6 @@
             .input-wrapper input { font-size: 16px; padding-left: 8px; } 
             #resultCard { padding: 20px; }
             .ai-stats-grid { grid-template-columns: 1fr; gap: 12px;} 
-            .feature-list li { padding: 12px; }
         }
 
         @media (min-width: 768px) {
@@ -725,9 +943,20 @@
             body { padding-bottom: 0; }
             .form-group, #resultCard, #loadingOverlay { max-width: 650px; } 
             .modal-content { max-width: 800px; }
-            .feature-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; background: transparent; border: none; }
-            .feature-list li { background: #1e293b; border: 1px solid var(--border-color); border-radius: 16px; }
-            .feature-list li, .feature-list li:last-child { border-bottom: 1px solid var(--border-color); }
+            
+            /* Penyesuaian Grid untuk Desktop (5 Kolom) */
+            .feature-list { 
+                display: grid !important; 
+                grid-template-columns: repeat(5, 1fr) !important; 
+                overflow-x: hidden;
+            }
+            .feature-list li { 
+                min-width: auto; 
+                background: rgba(30, 41, 59, 0.6); 
+                border: 1px solid var(--border-color); 
+                border-radius: 16px; 
+            }
+            
             #pipOverlay { width: 300px; height: 170px; bottom: 30px; right: 30px; }
         }
     </style>
@@ -747,145 +976,171 @@
         <div class="logo"><i class="fas fa-moon"></i> Moonlight</div>
         <div style="display: flex; gap: 10px;">
             <button class="nav-btn" onclick="openHistory()" title="Riwayat"><i class="fas fa-history"></i></button>
-            <button id="menuBtn" class="nav-btn" onclick="openCategory('all', 'bnav-all')"><i class="fas fa-bars"></i></button>
+            <button id="menuBtn" class="nav-btn" onclick="openCategory('current', 'bnav-all')"><i class="fas fa-bars"></i></button>
         </div>
     </nav>
 
     <div id="featuresModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal()">&times;</span>
-            <h2>Pilih Layanan</h2>
             
-            <p class="modal-category" id="cat-downloader">Downloader Media</p>
-            <ul class="feature-list">
-                <li onclick="setPlatform('youtube')">
-                    <i class="fab fa-youtube" style="color: #ef4444;"></i>
-                    <div><h4>YouTube Downloader</h4></div>
-                </li>
-                <li onclick="setPlatform('tiktok')">
-                    <i class="fab fa-tiktok" style="color: #cbd5e1;"></i>
-                    <div><h4>TikTok Downloader</h4></div>
-                </li>
-                <li onclick="setPlatform('ig')">
-                    <i class="fab fa-instagram" style="color: #d946ef;"></i>
-                    <div><h4>Instagram Downloader</h4></div>
-                </li>
-                <li onclick="setPlatform('facebook')">
-                    <i class="fab fa-facebook" style="color: #1877f2;"></i>
-                    <div><h4>Facebook Downloader</h4></div>
-                </li>
-                <li onclick="setPlatform('twitter')">
-                    <i class="fa-brands fa-x-twitter" style="color: #f8fafc;"></i>
-                    <div><h4>Twitter (X) Downloader</h4></div>
-                </li>
-                <li onclick="setPlatform('terabox')">
-                    <i class="fas fa-cloud-download-alt" style="color: #facc15;"></i>
-                    <div><h4>TeraBox Downloader</h4></div>
-                </li>
-                <li onclick="setPlatform('pin')">
-                    <i class="fab fa-pinterest" style="color: #ef4444;"></i>
-                    <div><h4>Pinterest Downloader</h4></div>
-                </li>
-                <li onclick="setPlatform('spotify')">
-                    <i class="fab fa-spotify" style="color: #1db954;"></i>
-                    <div><h4>Spotify Downloader</h4></div>
-                </li>
-            </ul>
+            <div class="cat-nav-header">
+                <button class="cat-nav-btn" onclick="prevCat()"><i class="fas fa-chevron-left"></i></button>
+                <h2 id="catTitle">Downloader Media</h2>
+                <button class="cat-nav-btn" onclick="nextCat()"><i class="fas fa-chevron-right"></i></button>
+            </div>
             
-            <p class="modal-category" id="cat-ai">AI & Tools</p>
-            <ul class="feature-list">
-                <li onclick="setPlatform('qr-gen')">
-                    <i class="fas fa-qrcode" style="color: #10b981;"></i>
-                    <div><h4>QR Code Generator</h4></div>
-                </li>
-                <li onclick="setPlatform('shortlink')">
-                    <i class="fas fa-link" style="color: #3b82f6;"></i>
-                    <div><h4>Shortlink (Pemendek URL)</h4></div>
-                </li>
-                <li onclick="setPlatform('tts')">
-                    <i class="fas fa-volume-up" style="color: #f43f5e;"></i>
-                    <div><h4>Text to Speech (Suara AI)</h4></div>
-                </li>
-                <li onclick="setPlatform('hd-foto')">
-                    <i class="fas fa-image" style="color: #8b5cf6;"></i>
-                    <div><h4>HD Foto (Upscaler)</h4></div>
-                </li>
-                <li onclick="setPlatform('remove-bg')">
-                    <i class="fas fa-eraser" style="color: #ec4899;"></i>
-                    <div><h4>Hapus Background</h4></div>
-                </li>
-                <li onclick="setPlatform('noise-reduce')">
-                    <i class="fas fa-microphone-slash" style="color: #6366f1;"></i>
-                    <div><h4>Audio Noise Reduce</h4></div>
-                </li>
-                <li onclick="setPlatform('lirik')">
-                    <i class="fas fa-music" style="color: #fbbf24;"></i>
-                    <div><h4>Pencarian Lirik Lagu</h4></div>
-                </li>
-                <li onclick="setPlatform('photo-editor')">
-                    <i class="fas fa-magic" style="color: #a855f7;"></i>
-                    <div><h4>Photo Editor AI</h4></div>
-                </li>
-                <li onclick="setPlatform('ai-detector')">
-                    <i class="fas fa-robot" style="color: #4ade80;"></i>
-                    <div><h4>AI Text Detector</h4></div>
-                </li>
-                <li onclick="setPlatform('ss-web')">
-                    <i class="fas fa-laptop" style="color: #14b8a6;"></i>
-                    <div><h4>Screenshot Web</h4></div>
-                </li>
-                <li onclick="setPlatform('yt-transcript')">
-                    <i class="fab fa-youtube" style="color: #ef4444;"></i>
-                    <div><h4>YouTube Transcript</h4></div>
-                </li>
-                <li onclick="setPlatform('iqc')">
-                    <i class="fab fa-apple" style="color: #a8a29e;"></i>
-                    <div><h4>iPhone Quoted</h4></div>
-                </li>
-                <li onclick="setPlatform('nulis')">
-                    <i class="fas fa-pen-nib" style="color: #f59e0b;"></i>
-                    <div><h4>Nulis Otomatis</h4></div>
-                </li>
-            </ul>
+            <div class="cat-page active" id="cat-page-0">
+                <ul class="feature-list">
+                    <li onclick="setPlatform('youtube')">
+                        <i class="fab fa-youtube" style="color: #ef4444;"></i>
+                        <div><h4>YouTube</h4></div>
+                    </li>
+                    <li onclick="setPlatform('tiktok')">
+                        <i class="fab fa-tiktok" style="color: #cbd5e1;"></i>
+                        <div><h4>TikTok</h4></div>
+                    </li>
+                    <li onclick="setPlatform('ig')">
+                        <i class="fab fa-instagram" style="color: #d946ef;"></i>
+                        <div><h4>Instagram</h4></div>
+                    </li>
+                    <li onclick="setPlatform('facebook')">
+                        <i class="fab fa-facebook" style="color: #1877f2;"></i>
+                        <div><h4>Facebook</h4></div>
+                    </li>
+                    <li onclick="setPlatform('twitter')">
+                        <i class="fa-brands fa-x-twitter" style="color: #f8fafc;"></i>
+                        <div><h4>Twitter (X)</h4></div>
+                    </li>
+                    <li onclick="setPlatform('terabox')">
+                        <i class="fas fa-cloud-download-alt" style="color: #facc15;"></i>
+                        <div><h4>TeraBox</h4></div>
+                    </li>
+                    <li onclick="setPlatform('pin')">
+                        <i class="fab fa-pinterest" style="color: #ef4444;"></i>
+                        <div><h4>Pinterest</h4></div>
+                    </li>
+                    <li onclick="setPlatform('spotify')">
+                        <i class="fab fa-spotify" style="color: #1db954;"></i>
+                        <div><h4>Spotify</h4></div>
+                    </li>
+                </ul>
+            </div>
             
-            <p class="modal-category" id="cat-stalker">Stalker / Checker</p>
-            <ul class="feature-list">
-                <li onclick="setPlatform('roblox-stalk')">
-                    <i class="fas fa-gamepad" style="color: #10b981;"></i>
-                    <div><h4>Roblox Stalk</h4></div>
-                </li>
-                <li onclick="setPlatform('dc-stalk')">
-                    <i class="fab fa-discord" style="color: #5865F2;"></i>
-                    <div><h4>Discord Stalk</h4></div>
-                </li>
-                <li onclick="setPlatform('tt-stalk')">
-                    <i class="fab fa-tiktok" style="color: #cbd5e1;"></i>
-                    <div><h4>TikTok Stalk</h4></div>
-                </li>
-                <li onclick="setPlatform('tw-stalk')">
-                    <i class="fa-brands fa-x-twitter" style="color: #f8fafc;"></i>
-                    <div><h4>Twitter (X) Stalk</h4></div>
-                </li>
-                <li onclick="setPlatform('gh-stalk')">
-                    <i class="fab fa-github" style="color: #e2e8f0;"></i>
-                    <div><h4>GitHub Stalk</h4></div>
-                </li>
-                <li onclick="setPlatform('ig-stalk')">
-                    <i class="fab fa-instagram" style="color: #ec4899;"></i>
-                    <div><h4>Instagram Stalk</h4></div>
-                </li>
-                <li onclick="setPlatform('th-stalk')">
-                    <i class="fa-brands fa-threads" style="color: #f8fafc;"></i>
-                    <div><h4>Threads Stalk</h4></div>
-                </li>
-            </ul>
+            <div class="cat-page" id="cat-page-1">
+                <ul class="feature-list">
+                    <li onclick="setPlatform('qr-gen')">
+                        <i class="fas fa-qrcode" style="color: #10b981;"></i>
+                        <div><h4>QR Code</h4></div>
+                    </li>
+                    <li onclick="setPlatform('shortlink')">
+                        <i class="fas fa-link" style="color: #3b82f6;"></i>
+                        <div><h4>Shortlink</h4></div>
+                    </li>
+                    <li onclick="setPlatform('tts')">
+                        <i class="fas fa-volume-up" style="color: #f43f5e;"></i>
+                        <div><h4>Text-to-Speech</h4></div>
+                    </li>
+                    <li onclick="setPlatform('hd-foto')">
+                        <i class="fas fa-image" style="color: #8b5cf6;"></i>
+                        <div><h4>HD Foto</h4></div>
+                    </li>
+                    <li onclick="setPlatform('remove-bg')">
+                        <i class="fas fa-eraser" style="color: #ec4899;"></i>
+                        <div><h4>Hapus BG</h4></div>
+                    </li>
+                    <li onclick="setPlatform('noise-reduce')">
+                        <i class="fas fa-microphone-slash" style="color: #6366f1;"></i>
+                        <div><h4>Clean Audio</h4></div>
+                    </li>
+                    <li onclick="setPlatform('lirik')">
+                        <i class="fas fa-music" style="color: #fbbf24;"></i>
+                        <div><h4>Lirik Lagu</h4></div>
+                    </li>
+                    <li onclick="setPlatform('photo-editor')">
+                        <i class="fas fa-magic" style="color: #a855f7;"></i>
+                        <div><h4>Edit Foto AI</h4></div>
+                    </li>
+                    <li onclick="setPlatform('ai-detector')">
+                        <i class="fas fa-robot" style="color: #4ade80;"></i>
+                        <div><h4>AI Text Detect</h4></div>
+                    </li>
+                    <li onclick="setPlatform('ss-web')">
+                        <i class="fas fa-laptop" style="color: #14b8a6;"></i>
+                        <div><h4>Screenshot</h4></div>
+                    </li>
+                    <li onclick="setPlatform('yt-transcript')">
+                        <i class="fab fa-youtube" style="color: #ef4444;"></i>
+                        <div><h4>Transcript</h4></div>
+                    </li>
+                    <li onclick="setPlatform('iqc')">
+                        <i class="fab fa-apple" style="color: #a8a29e;"></i>
+                        <div><h4>iPhone Quote</h4></div>
+                    </li>
+                    <li onclick="setPlatform('nulis')">
+                        <i class="fas fa-pen-nib" style="color: #f59e0b;"></i>
+                        <div><h4>Nulis Bot</h4></div>
+                    </li>
+                </ul>
+            </div>
             
-            <p class="modal-category">Digital & Info</p>
-            <ul class="feature-list">
-                <li onclick="setPlatform('pulsa')"><i class="fas fa-mobile-alt" style="color: #3b82f6;"></i><div><h4>Beli Pulsa</h4></div></li>
-                <li onclick="setPlatform('topup')"><i class="fas fa-wallet" style="color: #10b981;"></i><div><h4>Topup Wallet</h4></div></li>
-                <li onclick="setPlatform('kontak')"><i class="fas fa-id-badge" style="color: #60a5fa;"></i><div><h4>Kontak Owner</h4></div></li>
-            </ul>
+            <div class="cat-page" id="cat-page-2">
+                <ul class="feature-list">
+                    <li onclick="setPlatform('roblox-stalk')">
+                        <i class="fas fa-gamepad" style="color: #10b981;"></i>
+                        <div><h4>Roblox</h4></div>
+                    </li>
+                    <li onclick="setPlatform('dc-stalk')">
+                        <i class="fab fa-discord" style="color: #5865F2;"></i>
+                        <div><h4>Discord</h4></div>
+                    </li>
+                    <li onclick="setPlatform('tt-stalk')">
+                        <i class="fab fa-tiktok" style="color: #cbd5e1;"></i>
+                        <div><h4>TikTok</h4></div>
+                    </li>
+                    <li onclick="setPlatform('tw-stalk')">
+                        <i class="fa-brands fa-x-twitter" style="color: #f8fafc;"></i>
+                        <div><h4>Twitter (X)</h4></div>
+                    </li>
+                    <li onclick="setPlatform('gh-stalk')">
+                        <i class="fab fa-github" style="color: #e2e8f0;"></i>
+                        <div><h4>GitHub</h4></div>
+                    </li>
+                    <li onclick="setPlatform('ig-stalk')">
+                        <i class="fab fa-instagram" style="color: #ec4899;"></i>
+                        <div><h4>Instagram</h4></div>
+                    </li>
+                    <li onclick="setPlatform('th-stalk')">
+                        <i class="fa-brands fa-threads" style="color: #f8fafc;"></i>
+                        <div><h4>Threads</h4></div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="cat-page" id="cat-page-3">
+                <ul class="feature-list">
+                    <li onclick="setPlatform('pulsa')">
+                        <i class="fas fa-mobile-alt" style="color: #3b82f6;"></i>
+                        <div><h4>Beli Pulsa</h4></div>
+                    </li>
+                    <li onclick="setPlatform('topup')">
+                        <i class="fas fa-wallet" style="color: #10b981;"></i>
+                        <div><h4>Topup Wallet</h4></div>
+                    </li>
+                    <li onclick="setPlatform('kontak')">
+                        <i class="fas fa-id-badge" style="color: #60a5fa;"></i>
+                        <div><h4>Kontak Owner</h4></div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="cat-dots">
+                <span class="cat-dot active" onclick="goToCat(0)"></span>
+                <span class="cat-dot" onclick="goToCat(1)"></span>
+                <span class="cat-dot" onclick="goToCat(2)"></span>
+                <span class="cat-dot" onclick="goToCat(3)"></span>
+            </div>
+
         </div>
     </div>
 
@@ -916,7 +1171,9 @@
             
             <div id="catboxHelper"></div>
             
-            <div id="providerContainer" class="select-wrapper"><select id="pulsaProvider"></select></div>
+            <div id="providerContainer" class="select-wrapper">
+                <select id="pulsaProvider"></select>
+            </div>
             
             <div id="nominalContainer" class="select-wrapper">
                 <select id="pulsaNominal">
@@ -948,8 +1205,14 @@
             </div>
             
             <div id="timeInputsContainer" class="time-row">
-                <div class="time-col"><label>Status HP</label><input type="time" id="phoneTime" value="12:00"></div>
-                <div class="time-col"><label>Jam Chat</label><input type="time" id="chatTime" value="10:15"></div>
+                <div class="time-col">
+                    <label>Status HP</label>
+                    <input type="time" id="phoneTime" value="12:00">
+                </div>
+                <div class="time-col">
+                    <label>Jam Chat</label>
+                    <input type="time" id="chatTime" value="10:15">
+                </div>
             </div>
 
             <div id="contactContainer" style="display: none; width: 100%; flex-direction: column; gap: 16px;">
@@ -972,7 +1235,10 @@
         </div>
 
         <div id="loadingOverlay">
-            <div id="loadingSpinner"><i class="fas fa-circle-notch fa-spin"></i> <span id="loadingText">Memproses permintaan...</span></div>
+            <div id="loadingSpinner">
+                <i class="fas fa-circle-notch fa-spin"></i> 
+                <span id="loadingText">Memproses permintaan...</span>
+            </div>
             <div id="miniGame">
                 <p><i class="fas fa-gamepad" style="color:var(--primary); margin-right:4px;"></i> Main bentar yuk! (Tap untuk lompat)</p>
                 <div id="gameArea" onmousedown="moonJump()" ontouchstart="moonJump()">
@@ -999,7 +1265,9 @@
                     <input type="text" id="shortlinkText" readonly style="color: #60a5fa; font-weight: bold; text-align: center;">
                 </div>
                 <div class="action-btns">
-                    <button class="btn-primary" onclick="copyShortlink()" id="copyShortlinkBtn"><i class="fas fa-copy"></i> Salin Link</button>
+                    <button class="btn-primary" onclick="copyShortlink()" id="copyShortlinkBtn">
+                        <i class="fas fa-copy"></i> Salin Link
+                    </button>
                 </div>
             </div>
 
@@ -1011,12 +1279,18 @@
             <div id="downloaderResult">
                 <div id="profileSection" class="profile">
                     <img id="authorAvatar" src="" alt="Avatar">
-                    <div><h3 id="authorName">Nama</h3><p id="authorId">@username</p></div>
+                    <div>
+                        <h3 id="authorName">Nama</h3>
+                        <p id="authorId">@username</p>
+                    </div>
                 </div>
                 <div class="caption" id="videoCaption">Deskripsi</div>
                 <div id="thumbnailContainer" class="thumbnail-container">
                     <img id="videoThumbnail" src="" alt="Thumbnail" class="video-thumbnail">
-                    <div class="thumbnail-fallback" id="thumbnailFallback"><i class="fas fa-image"></i><p>Preview Tidak Tersedia</p></div>
+                    <div class="thumbnail-fallback" id="thumbnailFallback">
+                        <i class="fas fa-image"></i>
+                        <p>Preview Tidak Tersedia</p>
+                    </div>
                 </div>
                 <div id="actionBtns" class="action-btns"></div>
             </div>
@@ -1024,28 +1298,122 @@
             <div id="aiResult">
                 <div id="aiFeedbackBadge" class="ai-feedback-badge">Menganalisis...</div>
                 <div class="ai-stats-grid">
-                    <div class="ai-stat-box"><h4>Manusia</h4><h4 id="aiScoreHuman">0%</h4><div class="ai-bar-container"><div id="barHuman" class="ai-bar-human"></div></div></div>
-                    <div class="ai-stat-box"><h4>AI</h4><h4 id="aiScoreFake">0%</h4><div class="ai-bar-container"><div id="barFake" class="ai-bar-fake"></div></div></div>
+                    <div class="ai-stat-box">
+                        <h4>Manusia</h4>
+                        <h4 id="aiScoreHuman">0%</h4>
+                        <div class="ai-bar-container"><div id="barHuman" class="ai-bar-human"></div></div>
+                    </div>
+                    <div class="ai-stat-box">
+                        <h4>AI</h4>
+                        <h4 id="aiScoreFake">0%</h4>
+                        <div class="ai-bar-container"><div id="barFake" class="ai-bar-fake"></div></div>
+                    </div>
                 </div>
             </div>
 
-            <div id="hdFotoResult"><h3>Foto HD Berhasil</h3><div class="thumbnail-container" style="display:flex;"><img id="hdImageResult" src="" class="video-thumbnail" style="display:block;"></div><div class="action-btns" id="hdActionBtns"></div></div>
-            <div id="removeBgResult"><h3>Background Terhapus</h3><div class="thumbnail-container" style="display:flex;"><img id="removeBgImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="removeBgActionBtns"></div></div>
-            <div id="audioResult"><h3>Audio Bersih</h3><audio id="audioPlayer" controls style="width: 100%; margin-bottom: 16px;"></audio><div class="action-btns" id="audioActionBtns"></div></div>
-            <div id="ssWebResult"><h3>Tangkapan Layar</h3><div class="thumbnail-container" style="display:flex;"><img id="ssWebImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="ssWebActionBtns"></div></div>
-            <div id="iqcResult"><h3>Kutipan iPhone</h3><div class="thumbnail-container" style="display:flex;"><img id="iqcImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="iqcActionBtns"></div></div>
-            <div id="nulisResult"><h3>Hasil Nulis</h3><div class="thumbnail-container" style="display:flex;"><img id="nulisImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="nulisActionBtns"></div></div>
-            <div id="photoEditorResult"><h3>Hasil Edit AI</h3><div class="thumbnail-container" style="display:flex;"><img id="photoEditorImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="photoEditorActionBtns"></div></div>
-            <div id="ytTranscriptResult"><h3>Teks Video</h3><div class="transcript-box" id="ytTranscriptText"></div><div class="action-btns"><button class="btn-primary" onclick="copyTranscript()" id="copyTranscriptBtn">Salin Teks</button></div></div>
-            <div id="lirikResult"><h3>Hasil Lirik</h3><div id="lirikList" class="action-btns"></div><div id="lirikContentWrapper" style="display:none;"><div class="transcript-box" id="lirikText"></div><div class="action-btns"><button class="btn-primary" onclick="copyLirik()" id="copyLirikBtn">Salin Lirik</button></div></div></div>
+            <div id="hdFotoResult">
+                <h3>Foto HD Berhasil</h3>
+                <div class="thumbnail-container" style="display:flex;">
+                    <img id="hdImageResult" src="" class="video-thumbnail" style="display:block;">
+                </div>
+                <div class="action-btns" id="hdActionBtns"></div>
+            </div>
+
+            <div id="removeBgResult">
+                <h3>Background Terhapus</h3>
+                <div class="thumbnail-container" style="display:flex;">
+                    <img id="removeBgImage" src="" style="width: 100%; object-fit: contain; display:block;">
+                </div>
+                <div class="action-btns" id="removeBgActionBtns"></div>
+            </div>
+
+            <div id="audioResult">
+                <h3>Audio Bersih</h3>
+                <audio id="audioPlayer" controls style="width: 100%; margin-bottom: 16px;"></audio>
+                <div class="action-btns" id="audioActionBtns"></div>
+            </div>
+
+            <div id="ssWebResult">
+                <h3>Tangkapan Layar</h3>
+                <div class="thumbnail-container" style="display:flex;">
+                    <img id="ssWebImage" src="" style="width: 100%; object-fit: contain; display:block;">
+                </div>
+                <div class="action-btns" id="ssWebActionBtns"></div>
+            </div>
+
+            <div id="iqcResult">
+                <h3>Kutipan iPhone</h3>
+                <div class="thumbnail-container" style="display:flex;">
+                    <img id="iqcImage" src="" style="width: 100%; object-fit: contain; display:block;">
+                </div>
+                <div class="action-btns" id="iqcActionBtns"></div>
+            </div>
+
+            <div id="nulisResult">
+                <h3>Hasil Nulis</h3>
+                <div class="thumbnail-container" style="display:flex;">
+                    <img id="nulisImage" src="" style="width: 100%; object-fit: contain; display:block;">
+                </div>
+                <div class="action-btns" id="nulisActionBtns"></div>
+            </div>
+
+            <div id="photoEditorResult">
+                <h3>Hasil Edit AI</h3>
+                <div class="thumbnail-container" style="display:flex;">
+                    <img id="photoEditorImage" src="" style="width: 100%; object-fit: contain; display:block;">
+                </div>
+                <div class="action-btns" id="photoEditorActionBtns"></div>
+            </div>
+
+            <div id="ytTranscriptResult">
+                <h3>Teks Video</h3>
+                <div class="transcript-box" id="ytTranscriptText"></div>
+                <div class="action-btns">
+                    <button class="btn-primary" onclick="copyTranscript()" id="copyTranscriptBtn">Salin Teks</button>
+                </div>
+            </div>
+
+            <div id="lirikResult">
+                <h3 id="lirikTitle">Hasil Lirik</h3>
+                <div id="lirikList" class="action-btns"></div>
+                <div id="lirikContentWrapper" style="display:none;">
+                    <div class="transcript-box" id="lirikText"></div>
+                    <div class="action-btns">
+                        <button class="btn-primary" onclick="copyLirik()" id="copyLirikBtn">Salin Lirik</button>
+                    </div>
+                </div>
+            </div>
+
             <div id="stalkResult">
                 <div style="text-align: center;">
                     <img id="stalkAvatar" src="" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); margin-bottom: 12px; object-fit: cover; background: #1e293b;">
-                    <h3 id="stalkName">Name</h3><p id="stalkUsername">@username</p>
+                    <h3 id="stalkName">Name</h3>
+                    <p id="stalkUsername">@username</p>
                 </div>
-                <div id="stalkStatsGrid" class="ai-stats-grid"></div><div id="stalkExtra"></div>
+                <div id="stalkStatsGrid" class="ai-stats-grid"></div>
+                <div id="stalkExtra"></div>
             </div>
-            <div id="invoiceResult"><div class="invoice-header"><h3>Tagihan</h3><p id="invoiceId">Order ID: -</p></div><div class="invoice-details"><div class="invoice-row"><span>Tujuan</span><span id="invNumber">08xxx</span></div><div class="invoice-row"><span>Total</span><span id="invPrice" style="color:#facc15; font-weight:800;">Rp 0</span></div></div><div class="qr-container"><img id="invQrImage" src=""></div></div>
+
+            <div id="invoiceResult">
+                <div class="invoice-header">
+                    <h3>Tagihan</h3>
+                    <p id="invoiceId">Order ID: -</p>
+                </div>
+                <div class="invoice-details">
+                    <div class="invoice-row">
+                        <span>Tujuan</span>
+                        <span id="invNumber">08xxx</span>
+                    </div>
+                    <div class="invoice-row">
+                        <span>Total</span>
+                        <span id="invPrice" style="color:#facc15; font-weight:800;">Rp 0</span>
+                    </div>
+                </div>
+                <div class="qr-container">
+                    <img id="invQrImage" src="">
+                </div>
+            </div>
+            
         </div>
     </main>
 
@@ -1054,15 +1422,30 @@
         <video id="pipVideo" autoplay loop muted playsinline></video>
     </div>
 
-    <div id="toast" class="toast"><div class="toast-icon"><i id="toastIcon" class="fas fa-info-circle"></i></div><div class="toast-message" id="toastMessage">Pesan</div></div>
+    <div id="toast" class="toast">
+        <div class="toast-icon"><i id="toastIcon" class="fas fa-info-circle"></i></div>
+        <div class="toast-message" id="toastMessage">Pesan</div>
+    </div>
 
     <footer>&copy; Created by RendyZ</footer>
 
     <nav class="bottom-nav">
-        <button id="bnav-all" class="bnav-item active" onclick="openCategory('all', 'bnav-all')"><i class="fas fa-layer-group"></i><span>Semua</span></button>
-        <button id="bnav-dl" class="bnav-item" onclick="openCategory('cat-downloader', 'bnav-dl')"><i class="fas fa-download"></i><span>Media</span></button>
-        <button id="bnav-ai" class="bnav-item" onclick="openCategory('cat-ai', 'bnav-ai')"><i class="fas fa-magic"></i><span>AI Tools</span></button>
-        <button id="bnav-stalk" class="bnav-item" onclick="openCategory('cat-stalker', 'bnav-stalk')"><i class="fas fa-search"></i><span>Stalker</span></button>
+        <button id="bnav-all" class="bnav-item active" onclick="openCategory('current', 'bnav-all')">
+            <i class="fas fa-bars"></i>
+            <span>Menu</span>
+        </button>
+        <button id="bnav-dl" class="bnav-item" onclick="openCategory(0, 'bnav-dl')">
+            <i class="fas fa-download"></i>
+            <span>Media</span>
+        </button>
+        <button id="bnav-ai" class="bnav-item" onclick="openCategory(1, 'bnav-ai')">
+            <i class="fas fa-magic"></i>
+            <span>AI Tools</span>
+        </button>
+        <button id="bnav-stalk" class="bnav-item" onclick="openCategory(2, 'bnav-stalk')">
+            <i class="fas fa-search"></i>
+            <span>Stalker</span>
+        </button>
     </nav>
 
     <script src="config.js"></script>
