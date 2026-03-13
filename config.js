@@ -4,7 +4,7 @@ const FITUR = {
     "youtube": true,
     "facebook": true,
     "twitter": true,
-    "terabox": true,      
+    "terabox": false,      
     "pin": true,
     "spotify": true,
     "lirik": true,
@@ -26,5 +26,8 @@ const FITUR = {
     "th-stalk": true,
     "pulsa": true,
     "topup": true,
-    "kontak": true
+    "kontak": true,
+    "qr-gen": true,        
+    "shortlink": true,     
+    "tts": true            
 };
