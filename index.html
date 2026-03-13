@@ -7,17 +7,14 @@
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
-    
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1807/1807350.png">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1807/1807350.png">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <style>
         :root {
             --bg-body: #0f172a;       
             --bg-card: rgba(15, 23, 42, 0.95);
-            --bg-hover: #1e293b; 
             --text-main: #f8fafc;     
             --text-muted: #94a3b8;    
             --border-color: rgba(255, 255, 255, 0.08);
@@ -28,11 +25,7 @@
             --font-family-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
             font-family: var(--font-family-system);
@@ -53,709 +46,218 @@
         }
 
         #ambientBackground {
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at 50% 0%, var(--ambient-glow) 0%, transparent 70%);
-            z-index: -1; 
-            pointer-events: none; 
-            transition: background 1.5s ease-in-out;
+            z-index: -1; pointer-events: none; transition: background 1.5s ease-in-out;
         }
 
         #splashScreen {
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            background-color: var(--bg-body); 
-            z-index: 99999;
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-body); z-index: 99999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
         }
         
-        .splash-logo i { 
-            font-size: 72px; 
-            color: #60a5fa; 
-            animation: pulseGlow 1.5s infinite alternate; 
-        }
-        
-        .splash-text { 
-            margin-top: 20px; 
-            font-size: 24px; 
-            font-weight: 800; 
-            color: var(--text-main); 
-            letter-spacing: 3px; 
-            text-transform: uppercase; 
-        }
+        .splash-logo i { font-size: 72px; color: #60a5fa; animation: pulseGlow 1.5s infinite alternate; }
+        .splash-text { margin-top: 20px; font-size: 24px; font-weight: 800; color: var(--text-main); letter-spacing: 3px; text-transform: uppercase; }
         
         @keyframes pulseGlow {
             0% { transform: scale(0.95); filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.2)); }
             100% { transform: scale(1.05); filter: drop-shadow(0 0 30px rgba(96, 165, 250, 0.8)); }
         }
         
-        .splash-hidden { 
-            opacity: 0 !important; 
-            visibility: hidden !important; 
-        }
+        .splash-hidden { opacity: 0 !important; visibility: hidden !important; }
 
         .navbar {
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            padding: 16px 5%; 
-            background-color: rgba(15, 23, 42, 0.85);
-            border-bottom: 1px solid var(--border-color); 
-            position: sticky; 
-            top: 0; 
-            z-index: 100;
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 5%; background-color: rgba(15, 23, 42, 0.85);
+            border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
         }
         
         .nav-btn {
-            background: transparent; 
-            color: var(--text-main);
-            border: 1px solid var(--border-color); 
-            border-radius: 10px;
-            width: 42px; 
-            height: 42px; 
-            font-size: 18px; 
-            cursor: pointer;
-            transition: all 0.2s ease; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
+            background: transparent; color: var(--text-main);
+            border: 1px solid var(--border-color); border-radius: 10px;
+            width: 42px; height: 42px; font-size: 18px; cursor: pointer;
+            transition: all 0.2s ease; display: flex; justify-content: center; align-items: center;
         }
         
         .nav-btn:hover { background: rgba(255, 255, 255, 0.1); }
         .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
         
-        .logo { 
-            font-size: 20px; 
-            font-weight: 700; 
-            color: var(--text-main); 
-            letter-spacing: -0.5px; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-        }
+        .logo { font-size: 20px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; }
         .logo i { color: #60a5fa; }
 
         #offlineIndicator {
-            display: none; 
-            background: #ef4444; 
-            color: white; 
-            text-align: center;
-            padding: 8px; 
-            font-size: 12px; 
-            font-weight: 700; 
-            position: sticky; 
-            top: 74px; 
-            z-index: 99;
+            display: none; background: #ef4444; color: white; text-align: center;
+            padding: 8px; font-size: 12px; font-weight: 700; position: sticky; top: 74px; z-index: 99;
             animation: slideDown 0.3s ease;
         }
 
-        @keyframes slideDown { 
-            from { transform: translateY(-100%); } 
-            to { transform: translateY(0); } 
-        }
+        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
 
-        /* MODAL STYLING */
+        /* ==============================================================
+           PERBAIKAN MODAL MENU (GAYA BOTTOM SHEET ALA GOJEK/iOS)
+           ============================================================== */
         .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 1000; 
-            left: 0; 
-            top: 0; 
-            width: 100%; 
-            height: 100%; 
-            background-color: rgba(0, 0, 0, 0.6); 
-            align-items: center; 
-            justify-content: center; 
-            padding: 20px;
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; 
+            width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); 
+            /* Ubah agar konten menempel di bawah pada HP */
+            align-items: flex-end; justify-content: center; padding: 0;
         }
         
         .modal-content {
             background-color: #0f172a; 
-            border: 1px solid var(--border-color); 
-            border-radius: 24px; 
-            padding: 24px; 
-            width: 100%; 
-            max-width: 440px; 
-            max-height: 85vh; 
-            overflow-y: auto; 
-            -webkit-overflow-scrolling: touch; 
-            overscroll-behavior-y: contain; 
-            position: relative; 
-            animation: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            /* Ujung melengkung hanya di atas */
+            border-radius: 32px 32px 0 0; 
+            border-top: 1px solid var(--border-color);
+            padding: 30px 24px 24px; width: 100%; max-width: 600px; 
+            max-height: 85vh; overflow-y: auto; 
+            -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; 
+            position: relative; animation: slideUpModal 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
-        .modal-content::-webkit-scrollbar { width: 4px; }
-        .modal-content::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        .modal-content::-webkit-scrollbar { display: none; }
         
-        @keyframes scaleIn { 
-            from { opacity: 0; transform: scale(0.95) translateY(10px); } 
-            to { opacity: 1; transform: scale(1) translateY(0); } 
+        @keyframes slideUpModal { 
+            from { transform: translateY(100%); opacity: 0; } 
+            to { transform: translateY(0); opacity: 1; } 
         }
         
-        /* PERBAIKAN TOMBOL CLOSE AGAR TIDAK NABRAK */
+        /* Pegangan kecil (pill) di atas bottom sheet */
+        .modal-content::before {
+            content: ''; position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+            width: 40px; height: 5px; background: rgba(255,255,255,0.2); border-radius: 10px;
+        }
+
         .close-modal {
-            position: absolute; 
-            top: 12px;     /* Digeser ke ujung atas */
-            right: 12px;   /* Digeser ke ujung kanan */
-            color: var(--text-muted); 
-            font-size: 24px; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            line-height: 1; 
-            width: 32px; 
-            height: 32px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            border-radius: 50%; 
-            background: rgba(255,255,255,0.05); 
-            z-index: 10;
+            position: absolute; top: 20px; right: 20px; color: var(--text-muted); font-size: 16px; 
+            cursor: pointer; transition: 0.2s; width: 32px; height: 32px; 
+            display: flex; align-items: center; justify-content: center; border-radius: 50%; 
+            background: rgba(255,255,255,0.05); z-index: 10; border: 1px solid var(--border-color);
         }
-        
-        .close-modal:hover { 
-            color: var(--text-main); 
-            background: rgba(255,255,255,0.1); 
-        }
+        .close-modal:hover { color: var(--text-main); background: rgba(255,255,255,0.15); }
 
-        /* KONTROL SLIDER KATEGORI */
         .cat-nav-header {
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between;
-            margin-bottom: 20px; 
-            margin-top: 28px; /* JARAK AMAN agar tombol panah terhindar dari tombol X */
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 24px; margin-top: 10px; padding: 0 10px;
         }
+        
         .cat-nav-btn {
-            background: rgba(255,255,255,0.08); 
-            border: none; 
-            color: white; 
-            width: 36px; 
-            height: 36px; 
-            border-radius: 10px; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
+            background: transparent; border: none; color: var(--text-muted); 
+            width: 32px; height: 32px; border-radius: 50%; cursor: pointer; 
+            transition: 0.2s; display: flex; justify-content: center; align-items: center; font-size: 16px;
         }
-        .cat-nav-btn:hover { 
-            background: var(--primary); 
-        }
-        #catTitle { 
-            margin: 0; 
-            font-size: 18px; 
-            font-weight: 700; 
-            text-align: center; 
-            flex: 1; 
-            color: #fff; 
-        }
+        .cat-nav-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+        #catTitle { margin: 0; font-size: 17px; font-weight: 600; text-align: center; flex: 1; color: #fff; letter-spacing: -0.3px;}
         
-        .cat-page { 
-            display: none; 
-            animation: slideFade 0.3s ease; 
-        }
-        .cat-page.active { 
-            display: block; 
-        }
-        
-        @keyframes slideFade {
-            from { opacity: 0; transform: translateX(10px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
+        .cat-page { display: none; animation: fadeSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .cat-page.active { display: block; }
+        @keyframes fadeSlide { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
-        .cat-dots { 
-            display: flex; 
-            justify-content: center; 
-            gap: 6px; 
-            margin-top: 24px; 
-        }
-        .cat-dot { 
-            width: 8px; 
-            height: 8px; 
-            border-radius: 50%; 
-            background: #334155; 
-            cursor: pointer; 
-            transition: 0.3s; 
-        }
-        .cat-dot.active { 
-            background: var(--primary); 
-            width: 24px; 
-            border-radius: 4px; 
-        }
+        .cat-dots { display: flex; justify-content: center; gap: 6px; margin-top: 24px; padding-bottom: 10px;}
+        .cat-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.15); cursor: pointer; transition: 0.3s; }
+        .cat-dot.active { background: var(--text-main); width: 16px; border-radius: 4px; }
 
-        /* GRID MENU (3 KOLOM) */
+        /* GRID MENU PREMIUM (TANPA KOTAK KAKU) */
         .feature-list { 
-            list-style: none; 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px; 
-            background: transparent; 
-            border: none; 
+            list-style: none; display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 20px 10px; background: transparent; border: none; padding: 0 10px;
         }
         
         .feature-list li {
-            background: rgba(30, 41, 59, 0.6); 
-            border: 1px solid var(--border-color); 
-            border-radius: 16px; 
-            padding: 16px 8px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-            gap: 12px; 
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
-            cursor: pointer;
-            text-align: center; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: flex; flex-direction: column; align-items: center; 
+            justify-content: flex-start; gap: 10px; cursor: pointer; text-align: center; 
         }
         
-        .feature-list li:hover { 
-            background-color: rgba(255,255,255,0.1); 
-            transform: translateY(-3px); 
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        .icon-wrapper {
+            width: 54px; height: 54px; border-radius: 18px; 
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; color: var(--text-muted); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .feature-list li:hover .icon-wrapper { 
+            background: var(--primary); color: #fff; transform: scale(1.08); border-color: transparent;
+            box-shadow: 0 8px 15px -3px var(--primary-hover);
         }
         
-        .feature-list li i { 
-            font-size: 28px; 
-            width: auto; 
-        }
-        
-        .feature-list li h4 { 
-            margin: 0; 
-            font-size: 11px; 
-            font-weight: 600; 
-            color: #e2e8f0; 
-            line-height: 1.3; 
-        }
+        .feature-list li h4 { margin: 0; font-size: 11px; font-weight: 500; color: #cbd5e1; line-height: 1.3; }
 
         /* KONTEN UTAMA */
-        .hero { 
-            flex: 1; 
-            padding: 50px 20px; 
-            text-align: center; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            position: relative; 
-        }
-        
-        .hero h1 { 
-            font-size: clamp(24px, 5vw, 32px); 
-            margin-bottom: 32px; 
-            font-weight: 700; 
-            line-height: 1.2; 
-            letter-spacing: -0.5px; 
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5); 
-        }
+        .hero { flex: 1; padding: 40px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; position: relative; }
+        .hero h1 { font-size: clamp(24px, 5vw, 32px); margin-bottom: 32px; font-weight: 700; line-height: 1.2; letter-spacing: -0.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
 
-        .form-group { 
-            width: 100%; 
-            max-width: 500px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 16px; 
-            margin-bottom: 24px; 
-        }
+        .form-group { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
 
         .input-wrapper, .select-wrapper, .text-wrapper, .time-col {
-            background: rgba(15, 23, 42, 0.9); 
-            border: 1px solid var(--border-color); 
-            border-radius: var(--radius); 
-            transition: all 0.2s ease; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
-            backdrop-filter: blur(8px);
+            background: rgba(15, 23, 42, 0.9); border: 1px solid var(--border-color); border-radius: var(--radius); 
+            transition: all 0.2s ease; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); backdrop-filter: blur(8px);
         }
         
-        .input-wrapper { 
-            display: flex; 
-            align-items: center; 
-            padding: 4px 4px 4px 16px; 
-            text-align: left; 
-        }
+        .input-wrapper { display: flex; align-items: center; padding: 4px 4px 4px 16px; text-align: left; }
+        .select-wrapper { display: none; position: relative; align-items: center; padding: 4px 16px; text-align: left; }
+        .text-wrapper { display: none; position: relative; padding: 16px; text-align: right; }
+        .input-wrapper:focus-within, .select-wrapper:focus-within, .text-wrapper:focus-within, .time-col:focus-within { border-color: var(--primary); }
         
-        .select-wrapper { 
-            display: none; 
-            position: relative; 
-            align-items: center; 
-            padding: 4px 16px; 
-            text-align: left; 
-        }
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         
-        .text-wrapper { 
-            display: none; 
-            position: relative; 
-            padding: 16px; 
-            text-align: right; 
-        }
+        .input-wrapper input, .select-wrapper select, .text-wrapper textarea { flex: 1; border: none; background: transparent; font-size: 16px; outline: none; color: var(--text-main); font-family: var(--font-family-system); width: 100%; }
+        .input-wrapper input { padding: 14px 0; margin-right: 8px;}
+        .select-wrapper select { padding: 14px 0; appearance: none; cursor: pointer; }
+        .text-wrapper textarea { resize: vertical; min-height: 120px; margin-bottom: 12px; }
         
-        .input-wrapper:focus-within, .select-wrapper:focus-within, .text-wrapper:focus-within, .time-col:focus-within { 
-            border-color: var(--primary); 
-        }
+        input[type="file"]::file-selector-button { background: rgba(255,255,255,0.1); color: var(--text-main); border: 1px solid var(--border-color); padding: 10px 16px; border-radius: 10px; margin-right: 12px; cursor: pointer; font-weight: 600; font-family: var(--font-family-system); transition: 0.2s; }
+        input[type="file"]::file-selector-button:hover { background: rgba(255,255,255,0.2); }
+        .input-wrapper input::placeholder, .text-wrapper textarea::placeholder { color: var(--text-muted); }
+        .select-wrapper::after { content: '\f107'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
         
-        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { 
-            -webkit-appearance: none; 
-            margin: 0; 
-        }
+        .time-row { display: none; width: 100%; justify-content: space-between; gap: 12px; }
+        .time-col { flex: 1; padding: 12px 16px; display: flex; flex-direction: column; text-align: left; }
+        .time-col label { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; }
+        .time-col input { background: transparent; border: none; color: var(--text-main); font-size: 16px; outline: none; color-scheme: dark; cursor: pointer; }
         
-        .input-wrapper input, .select-wrapper select, .text-wrapper textarea { 
-            flex: 1; 
-            border: none; 
-            background: transparent; 
-            font-size: 16px; 
-            outline: none; 
-            color: var(--text-main); 
-            font-family: var(--font-family-system); 
-            width: 100%; 
-        }
+        #catboxHelper { display: none; background: rgba(30, 41, 59, 0.9); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 16px; text-align: left; font-size: 13px; color: #cbd5e1; line-height: 1.5; backdrop-filter: blur(8px); }
         
-        .input-wrapper input { 
-            padding: 14px 0; 
-            margin-right: 8px;
-        }
-        
-        .select-wrapper select { 
-            padding: 14px 0; 
-            appearance: none; 
-            cursor: pointer; 
-        }
-        
-        .text-wrapper textarea { 
-            resize: vertical; 
-            min-height: 120px; 
-            margin-bottom: 12px; 
-        }
-        
-        input[type="file"]::file-selector-button { 
-            background: rgba(255,255,255,0.1); 
-            color: var(--text-main); 
-            border: 1px solid var(--border-color); 
-            padding: 10px 16px; 
-            border-radius: 10px; 
-            margin-right: 12px; 
-            cursor: pointer; 
-            font-weight: 600; 
-            font-family: var(--font-family-system); 
-            transition: 0.2s; 
-        }
-        
-        input[type="file"]::file-selector-button:hover { 
-            background: rgba(255,255,255,0.2); 
-        }
-        
-        .input-wrapper input::placeholder, .text-wrapper textarea::placeholder { 
-            color: var(--text-muted); 
-        }
-        
-        .select-wrapper::after { 
-            content: '\f107'; 
-            font-family: 'Font Awesome 6 Free'; 
-            font-weight: 900; 
-            position: absolute; 
-            right: 20px; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            color: var(--text-muted); 
-            pointer-events: none; 
-        }
-        
-        .time-row { 
-            display: none; 
-            width: 100%; 
-            justify-content: space-between; 
-            gap: 12px; 
-        }
-        
-        .time-col { 
-            flex: 1; 
-            padding: 12px 16px; 
-            display: flex; 
-            flex-direction: column; 
-            text-align: left; 
-        }
-        
-        .time-col label { 
-            font-size: 12px; 
-            color: var(--text-muted); 
-            font-weight: 600; 
-            margin-bottom: 6px; 
-        }
-        
-        .time-col input { 
-            background: transparent; 
-            border: none; 
-            color: var(--text-main); 
-            font-size: 16px; 
-            outline: none; 
-            color-scheme: dark; 
-            cursor: pointer; 
-        }
-        
-        #catboxHelper { 
-            display: none; 
-            background: rgba(30, 41, 59, 0.9); 
-            border: 1px solid var(--border-color); 
-            border-radius: var(--radius); 
-            padding: 16px; 
-            text-align: left; 
-            font-size: 13px; 
-            color: #cbd5e1; 
-            line-height: 1.5; 
-            backdrop-filter: blur(8px); 
-        }
-        
-        .paste-btn { 
-            background: rgba(255,255,255,0.08); 
-            color: var(--text-muted); 
-            border: 1px solid transparent; 
-            border-radius: 10px; 
-            width: 38px; 
-            height: 38px; 
-            font-size: 16px; 
-            cursor: pointer; 
-            display: inline-flex; 
-            justify-content: center; 
-            align-items: center; 
-            transition: 0.2s ease; 
-            margin-right: 4px; 
-            flex-shrink: 0; 
-        }
-        
-        .paste-btn:hover { 
-            background: rgba(255,255,255,0.15); 
-            color: var(--text-main); 
-            border-color: rgba(255,255,255,0.1); 
-        }
+        .paste-btn { background: rgba(255,255,255,0.08); color: var(--text-muted); border: 1px solid transparent; border-radius: 10px; width: 38px; height: 38px; font-size: 16px; cursor: pointer; display: inline-flex; justify-content: center; align-items: center; transition: 0.2s ease; margin-right: 4px; flex-shrink: 0; }
+        .paste-btn:hover { background: rgba(255,255,255,0.15); color: var(--text-main); border-color: rgba(255,255,255,0.1); }
 
-        .main-action-btn { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            gap: 10px; 
-            width: 100%; 
-            background: var(--primary); 
-            color: #fff; 
-            border: none; 
-            border-radius: var(--radius); 
-            padding: 16px; 
-            font-size: 16px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: 0.2s; 
-        }
-        
-        .main-action-btn:hover { 
-            background: var(--primary-hover); 
-        }
-        
-        .main-action-btn:disabled { 
-            background: #334155; 
-            color: #94a3b8; 
-            cursor: not-allowed; 
-        }
+        .main-action-btn { display: flex; justify-content: center; align-items: center; gap: 10px; width: 100%; background: var(--primary); color: #fff; border: none; border-radius: var(--radius); padding: 16px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .main-action-btn:hover { background: var(--primary-hover); }
+        .main-action-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
 
-        #loadingOverlay { 
-            display: none; 
-            margin: 16px 0; 
-            width: 100%; 
-            max-width: 500px; 
-            text-align: center; 
-        }
+        #loadingOverlay { display: none; margin: 16px 0; width: 100%; max-width: 500px; text-align: center; }
+        #loadingSpinner { font-size: 14px; color: var(--text-main); font-weight: 500; margin-bottom: 16px; }
         
-        #loadingSpinner { 
-            font-size: 14px; 
-            color: var(--text-main); 
-            font-weight: 500; 
-            margin-bottom: 16px; 
-        }
+        #miniGame { display: none; background: #1e293b; border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; text-align: center; overflow: hidden; position: relative; box-shadow: inset 0 4px 6px rgba(0,0,0,0.1); }
+        #miniGame p { font-size: 13px; color: #cbd5e1; margin-bottom: 12px; font-weight: 600; }
+        #gameArea { width: 100%; height: 120px; background: #0f172a; border: 1px solid var(--border-color); border-radius: 8px; position: relative; overflow: hidden; margin-bottom: 12px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
+        #moonPlayer { width: 32px; height: 32px; position: absolute; top: 78px; left: 30px; font-size: 28px; color: #f8fafc; display: flex; align-items: center; justify-content: center; z-index: 2; }
+        #meteorObstacle { width: 24px; height: 24px; position: absolute; top: 86px; left: 100%; font-size: 24px; color: #ef4444; display: flex; align-items: center; justify-content: center; z-index: 1; }
+        .ground-line { position: absolute; bottom: 8px; left: 0; width: 100%; height: 2px; background: var(--border-color); }
         
-        #miniGame { 
-            display: none; 
-            background: #1e293b; 
-            border: 1px solid var(--border-color); 
-            border-radius: 16px; 
-            padding: 16px; 
-            text-align: center; 
-            overflow: hidden; 
-            position: relative; 
-            box-shadow: inset 0 4px 6px rgba(0,0,0,0.1); 
-        }
-        
-        #miniGame p { 
-            font-size: 13px; 
-            color: #cbd5e1; 
-            margin-bottom: 12px; 
-            font-weight: 600; 
-        }
-        
-        #gameArea { 
-            width: 100%; 
-            height: 120px; 
-            background: #0f172a; 
-            border: 1px solid var(--border-color); 
-            border-radius: 8px; 
-            position: relative; 
-            overflow: hidden; 
-            margin-bottom: 12px; 
-            cursor: pointer; 
-            user-select: none; 
-            -webkit-tap-highlight-color: transparent; 
-        }
-        
-        #moonPlayer { 
-            width: 32px; 
-            height: 32px; 
-            position: absolute; 
-            top: 78px; 
-            left: 30px; 
-            font-size: 28px; 
-            color: #f8fafc; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            z-index: 2; 
-        }
-        
-        #meteorObstacle { 
-            width: 24px; 
-            height: 24px; 
-            position: absolute; 
-            top: 86px; 
-            left: 100%; 
-            font-size: 24px; 
-            color: #ef4444; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            z-index: 1; 
-        }
-        
-        .ground-line { 
-            position: absolute; 
-            bottom: 8px; 
-            left: 0; 
-            width: 100%; 
-            height: 2px; 
-            background: var(--border-color); 
-        }
-        
-        @keyframes obstacleMove { 
-            0% { left: 100%; transform: rotate(0deg); } 
-            100% { left: -40px; transform: rotate(-360deg); } 
-        }
-        
-        @keyframes jumpAnim { 
-            0% { top: 78px; } 
-            40% { top: 10px; } 
-            50% { top: 10px; } 
-            60% { top: 10px; } 
-            100% { top: 78px; } 
-        }
-        
-        .anim-jump { 
-            animation: jumpAnim 0.5s ease-in-out; 
-        }
-        
-        #gameScore { 
-            font-size: 14px; 
-            font-weight: 700; 
-            color: var(--primary); 
-        }
+        @keyframes obstacleMove { 0% { left: 100%; transform: rotate(0deg); } 100% { left: -40px; transform: rotate(-360deg); } }
+        @keyframes jumpAnim { 0% { top: 78px; } 40% { top: 10px; } 50% { top: 10px; } 60% { top: 10px; } 100% { top: 78px; } }
+        .anim-jump { animation: jumpAnim 0.5s ease-in-out; }
+        #gameScore { font-size: 14px; font-weight: 700; color: var(--primary); }
 
         #resultCard {
-            display: none; 
-            width: 100%; 
-            max-width: 500px; 
-            margin-top: 16px; 
-            background: var(--bg-card); 
-            border: 1px solid var(--border-color); 
-            border-radius: 20px; 
-            padding: 24px; 
-            text-align: left;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
-            animation: slideUp 0.3s; 
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px);
+            display: none; width: 100%; max-width: 500px; margin-top: 16px; background: var(--bg-card); 
+            border: 1px solid var(--border-color); border-radius: 20px; padding: 24px; text-align: left;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: slideUp 0.3s; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
         }
-        
-        @keyframes slideUp { 
-            from { opacity: 0; transform: translateY(20px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        #downloaderResult, #aiResult, #hdFotoResult, #ssWebResult, #iqcResult, #nulisResult, #removeBgResult, #audioResult, #ytTranscriptResult, #lirikResult, #invoiceResult, #photoEditorResult, #contactContainer, #stalkResult, #qrResult, #shortlinkResult, #ttsResult { 
-            display: none; 
-        }
+        #downloaderResult, #aiResult, #hdFotoResult, #ssWebResult, #iqcResult, #nulisResult, #removeBgResult, #audioResult, #ytTranscriptResult, #lirikResult, #invoiceResult, #photoEditorResult, #contactContainer, #stalkResult, #qrResult, #shortlinkResult, #ttsResult { display: none; }
         
-        .thumbnail-container { 
-            width: 100%; 
-            background: #0f172a; 
-            border: 1px solid var(--border-color); 
-            border-radius: 12px; 
-            margin-bottom: 20px; 
-            overflow: hidden; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 180px; 
-            position: relative; 
-        }
+        .thumbnail-container { width: 100%; background: #0f172a; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 20px; overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 180px; position: relative; }
+        .video-thumbnail { width: 100%; max-height: 300px; object-fit: contain; display: none; }
         
-        .video-thumbnail { 
-            width: 100%; 
-            max-height: 300px; 
-            object-fit: contain; 
-            display: none; 
-        }
-        
-        .thumbnail-fallback { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            color: #475569; 
-            padding: 40px 20px; 
-            text-align: center; 
-        }
-        
-        .thumbnail-fallback i { 
-            font-size: 36px; 
-            margin-bottom: 12px; 
-        }
+        .thumbnail-fallback { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #475569; padding: 40px 20px; text-align: center; }
+        .thumbnail-fallback i { font-size: 36px; margin-bottom: 12px; }
 
-        .action-btns { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
-        }
-        
-        .action-btns a, .action-btns button { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            gap: 8px; 
-            padding: 14px; 
-            border-radius: 12px; 
-            font-weight: 600; 
-            font-size: 15px; 
-            transition: 0.2s; 
-            border: none; 
-            cursor: pointer; 
-            font-family: var(--font-family-system); 
-            text-align: left; 
-        }
-        
+        .action-btns { display: flex; flex-direction: column; gap: 12px; }
+        .action-btns a, .action-btns button { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 15px; transition: 0.2s; border: none; cursor: pointer; font-family: var(--font-family-system); text-align: left; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-secondary { background: #334155; color: var(--text-main); }
         .btn-yt { background: #ef4444; color: white; } 
@@ -779,23 +281,9 @@
         .ai-bar-human { height: 100%; background: #22c55e; width: 0%; transition: 1s ease-out; }
         .ai-bar-fake { height: 100%; background: #ef4444; width: 0%; transition: 1s ease-out; }
 
-        #hdFotoResult h3, #ssWebResult h3, #iqcResult h3, #nulisResult h3, #removeBgResult h3, #audioResult h3, #ytTranscriptResult h3, #lirikTitle, #photoEditorResult h3, #qrResult h3, #shortlinkResult h3, #ttsResult h3 { 
-            margin-bottom: 12px; color: #fff; font-size: 18px; font-weight: 700; text-align: center; 
-        }
+        #hdFotoResult h3, #ssWebResult h3, #iqcResult h3, #nulisResult h3, #removeBgResult h3, #audioResult h3, #ytTranscriptResult h3, #lirikTitle, #photoEditorResult h3, #qrResult h3, #shortlinkResult h3, #ttsResult h3 { margin-bottom: 12px; color: #fff; font-size: 18px; font-weight: 700; text-align: center; }
         
-        .transcript-box { 
-            background: #0f172a; 
-            border: 1px solid var(--border-color); 
-            border-radius: 12px; 
-            padding: 16px; 
-            color: var(--text-main); 
-            font-size: 14px; 
-            line-height: 1.6; 
-            max-height: 250px; 
-            overflow-y: auto; 
-            margin-bottom: 16px; 
-            white-space: pre-wrap; 
-        }
+        .transcript-box { background: #0f172a; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; color: var(--text-main); font-size: 14px; line-height: 1.6; max-height: 250px; overflow-y: auto; margin-bottom: 16px; white-space: pre-wrap; }
         
         .invoice-header { text-align: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px dashed var(--border-color); }
         .invoice-details { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; background: #0f172a; padding: 16px; border-radius: 12px; border: 1px solid var(--border-color);}
@@ -803,18 +291,7 @@
         .qr-container { text-align: center; background: #fff; padding: 16px; border-radius: 12px; margin: 0 auto 16px auto; width: 220px; }
         .qr-container img { width: 100%; height: auto; display: block; }
         
-        .history-item { 
-            background: #1e293b; 
-            border: 1px solid var(--border-color); 
-            border-radius: 12px; 
-            padding: 16px; 
-            margin-bottom: 12px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            text-align: left; 
-        }
-        
+        .history-item { background: #1e293b; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; text-align: left; }
         .history-info h4 { margin: 0 0 4px 0; font-size: 15px; color: #fff; }
         .history-info p { margin: 0; font-size: 12px; color: var(--text-muted); }
         .history-actions { display: flex; gap: 8px; }
@@ -822,28 +299,7 @@
         .history-actions button:hover { background: var(--primary); }
         .history-empty { text-align: center; color: var(--text-muted); padding: 30px 0; font-size: 14px; }
 
-        .toast { 
-            visibility: hidden; 
-            min-width: 280px; 
-            max-width: 90%; 
-            background-color: rgba(30, 41, 59, 0.95); 
-            border: 1px solid var(--border-color); 
-            color: #fff; 
-            border-radius: 16px; 
-            padding: 16px; 
-            position: fixed; 
-            z-index: 9999; 
-            left: 50%; 
-            bottom: 20px; 
-            transform: translateX(-50%); 
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5); 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            opacity: 0; 
-            transition: opacity 0.3s, bottom 0.3s; 
-        }
-        
+        .toast { visibility: hidden; min-width: 280px; max-width: 90%; background-color: rgba(30, 41, 59, 0.95); border: 1px solid var(--border-color); color: #fff; border-radius: 16px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: 20px; transform: translateX(-50%); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5); display: flex; align-items: center; gap: 12px; opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
         .toast.show { visibility: visible; opacity: 1; bottom: 100px; }
         .toast-icon { font-size: 22px; display: flex; align-items: center; justify-content: center; }
         .toast-message { font-size: 14px; font-weight: 500; line-height: 1.4; font-family: var(--font-family-system); }
@@ -851,85 +307,17 @@
         .toast.success .toast-icon { color: #10b981; }
         .toast.info .toast-icon { color: #3b82f6; }
         
-        .bottom-nav { 
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            width: 100%; 
-            background-color: rgba(15, 23, 42, 0.90); 
-            border-top: 1px solid var(--border-color); 
-            display: flex; 
-            justify-content: space-around; 
-            padding: 12px 10px calc(12px + env(safe-area-inset-bottom)); 
-            z-index: 90; 
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px); 
-        }
-        
-        .bnav-item { 
-            background: transparent; 
-            border: none; 
-            color: var(--text-muted); 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            gap: 6px; 
-            font-size: 11px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: color 0.2s ease; 
-            width: 25%; 
-        }
-        
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: rgba(15, 23, 42, 0.90); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 12px 10px calc(12px + env(safe-area-inset-bottom)); z-index: 90; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .bnav-item { background: transparent; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; cursor: pointer; transition: color 0.2s ease; width: 25%; }
         .bnav-item i { font-size: 20px; transition: transform 0.2s ease; }
         .bnav-item:hover, .bnav-item.active { color: var(--primary); }
 
-        #pipOverlay { 
-            display: none; 
-            position: fixed; 
-            bottom: 85px; 
-            right: 20px; 
-            width: 180px; 
-            height: 110px; 
-            background: #000; 
-            border-radius: 12px; 
-            border: 2px solid var(--primary); 
-            z-index: 1000; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
-            overflow: hidden; 
-            animation: popIn 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67); 
-        }
-        
+        #pipOverlay { display: none; position: fixed; bottom: 85px; right: 20px; width: 180px; height: 110px; background: #000; border-radius: 12px; border: 2px solid var(--primary); z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.5); overflow: hidden; animation: popIn 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
         #pipOverlay video { width: 100%; height: 100%; object-fit: cover; }
-        
-        .pip-close { 
-            position: absolute; 
-            top: 5px; 
-            right: 5px; 
-            background: rgba(0,0,0,0.5); 
-            color: white; 
-            border: none; 
-            border-radius: 50%; 
-            width: 22px; 
-            height: 22px; 
-            font-size: 12px; 
-            cursor: pointer; 
-            z-index: 2; 
-        }
-        
-        @keyframes popIn { 
-            from { transform: scale(0) translate(50%, 50%); opacity: 0; } 
-            to { transform: scale(1) translate(0, 0); opacity: 1; } 
-        }
+        .pip-close { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; cursor: pointer; z-index: 2; }
+        @keyframes popIn { from { transform: scale(0) translate(50%, 50%); opacity: 0; } to { transform: scale(1) translate(0, 0); opacity: 1; } }
 
-        footer { 
-            margin-top: auto; 
-            padding: 30px 20px; 
-            text-align: center; 
-            font-size: 13px; 
-            color: var(--text-muted); 
-            background-color: transparent; 
-        }
+        footer { margin-top: auto; padding: 30px 20px; text-align: center; font-size: 13px; color: var(--text-muted); background-color: transparent; }
 
         @media (max-width: 600px) {
             .hero { padding: 40px 16px; }
@@ -944,21 +332,10 @@
             .bottom-nav { display: none; }
             body { padding-bottom: 0; }
             .form-group, #resultCard, #loadingOverlay { max-width: 650px; } 
-            .modal-content { max-width: 800px; }
-            
-            /* Penyesuaian Grid untuk Desktop (5 Kolom) */
-            .feature-list { 
-                display: grid !important; 
-                grid-template-columns: repeat(5, 1fr) !important; 
-                overflow-x: hidden;
-            }
-            .feature-list li { 
-                min-width: auto; 
-                background: rgba(30, 41, 59, 0.6); 
-                border: 1px solid var(--border-color); 
-                border-radius: 16px; 
-            }
-            
+            /* Modal ditengah untuk PC */
+            .modal { align-items: center; padding: 20px; }
+            .modal-content { border-radius: 24px; max-width: 500px; animation: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+            .feature-list { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; overflow-x: hidden; }
             #pipOverlay { width: 300px; height: 170px; bottom: 30px; right: 30px; }
         }
     </style>
@@ -984,7 +361,7 @@
 
     <div id="featuresModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <span class="close-modal" onclick="closeModal()"><i class="fas fa-times"></i></span>
             
             <div class="cat-nav-header">
                 <button class="cat-nav-btn" onclick="prevCat()"><i class="fas fa-chevron-left"></i></button>
@@ -995,35 +372,35 @@
             <div class="cat-page active" id="cat-page-0">
                 <ul class="feature-list">
                     <li onclick="setPlatform('youtube')">
-                        <i class="fab fa-youtube" style="color: #ef4444;"></i>
+                        <div class="icon-wrapper"><i class="fab fa-youtube"></i></div>
                         <div><h4>YouTube</h4></div>
                     </li>
                     <li onclick="setPlatform('tiktok')">
-                        <i class="fab fa-tiktok" style="color: #cbd5e1;"></i>
+                        <div class="icon-wrapper"><i class="fab fa-tiktok"></i></div>
                         <div><h4>TikTok</h4></div>
                     </li>
                     <li onclick="setPlatform('ig')">
-                        <i class="fab fa-instagram" style="color: #d946ef;"></i>
+                        <div class="icon-wrapper"><i class="fab fa-instagram"></i></div>
                         <div><h4>Instagram</h4></div>
                     </li>
                     <li onclick="setPlatform('facebook')">
-                        <i class="fab fa-facebook" style="color: #1877f2;"></i>
+                        <div class="icon-wrapper"><i class="fab fa-facebook"></i></div>
                         <div><h4>Facebook</h4></div>
                     </li>
                     <li onclick="setPlatform('twitter')">
-                        <i class="fa-brands fa-x-twitter" style="color: #f8fafc;"></i>
+                        <div class="icon-wrapper"><i class="fa-brands fa-x-twitter"></i></div>
                         <div><h4>Twitter (X)</h4></div>
                     </li>
                     <li onclick="setPlatform('terabox')">
-                        <i class="fas fa-cloud-download-alt" style="color: #facc15;"></i>
+                        <div class="icon-wrapper"><i class="fas fa-cloud-download-alt"></i></div>
                         <div><h4>TeraBox</h4></div>
                     </li>
                     <li onclick="setPlatform('pin')">
-                        <i class="fab fa-pinterest" style="color: #ef4444;"></i>
+                        <div class="icon-wrapper"><i class="fab fa-pinterest"></i></div>
                         <div><h4>Pinterest</h4></div>
                     </li>
                     <li onclick="setPlatform('spotify')">
-                        <i class="fab fa-spotify" style="color: #1db954;"></i>
+                        <div class="icon-wrapper"><i class="fab fa-spotify"></i></div>
                         <div><h4>Spotify</h4></div>
                     </li>
                 </ul>
@@ -1032,55 +409,55 @@
             <div class="cat-page" id="cat-page-1">
                 <ul class="feature-list">
                     <li onclick="setPlatform('qr-gen')">
-                        <i class="fas fa-qrcode" style="color: #10b981;"></i>
+                        <div class="icon-wrapper"><i class="fas fa-qrcode"></i></div>
                         <div><h4>QR Code</h4></div>
                     </li>
                     <li onclick="setPlatform('shortlink')">
-                        <i class="fas fa-link" style="color: #3b82f6;"></i>
+                        <div class="icon-wrapper"><i class="fas fa-link"></i></div>
                         <div><h4>Shortlink</h4></div>
                     </li>
                     <li onclick="setPlatform('tts')">
-                        <i class="fas fa-volume-up" style="color: #f43f5e;"></i>
-                        <div><h4>Text-to-Speech</h4></div>
+                        <div class="icon-wrapper"><i class="fas fa-volume-up"></i></div>
+                        <div><h4>Voice AI</h4></div>
                     </li>
                     <li onclick="setPlatform('hd-foto')">
-                        <i class="fas fa-image" style="color: #8b5cf6;"></i>
+                        <div class="icon-wrapper"><i class="fas fa-image"></i></div>
                         <div><h4>HD Foto</h4></div>
                     </li>
                     <li onclick="setPlatform('remove-bg')">
-                        <i class="fas fa-eraser" style="color: #ec4899;"></i>
+                        <div class="icon-wrapper"><i class="fas fa-eraser"></i></div>
                         <div><h4>Hapus BG</h4></div>
                     </li>
                     <li onclick="setPlatform('noise-reduce')">
-                        <i class="fas fa-microphone-slash" style="color: #6366f1;"></i>
+                        <div class="icon-wrapper"><i class="fas fa-microphone-slash"></i></div>
                         <div><h4>Clean Audio</h4></div>
                     </li>
                     <li onclick="setPlatform('lirik')">
-                        <i class="fas fa-music" style="color: #fbbf24;"></i>
+                        <div class="icon-wrapper"><i class="fas fa-music"></i></div>
                         <div><h4>Lirik Lagu</h4></div>
                     </li>
                     <li onclick="setPlatform('photo-editor')">
-                        <i class="fas fa-magic" style="color: #a855f7;"></i>
-                        <div><h4>Edit Foto AI</h4></div>
+                        <div class="icon-wrapper"><i class="fas fa-magic"></i></div>
+                        <div><h4>Edit AI</h4></div>
                     </li>
                     <li onclick="setPlatform('ai-detector')">
-                        <i class="fas fa-robot" style="color: #4ade80;"></i>
-                        <div><h4>AI Text Detect</h4></div>
+                        <div class="icon-wrapper"><i class="fas fa-robot"></i></div>
+                        <div><h4>AI Detect</h4></div>
                     </li>
                     <li onclick="setPlatform('ss-web')">
-                        <i class="fas fa-laptop" style="color: #14b8a6;"></i>
+                        <div class="icon-wrapper"><i class="fas fa-laptop"></i></div>
                         <div><h4>Screenshot</h4></div>
                     </li>
                     <li onclick="setPlatform('yt-transcript')">
-                        <i class="fab fa-youtube" style="color: #ef4444;"></i>
+                        <div class="icon-wrapper"><i class="fas fa-file-alt"></i></div>
                         <div><h4>Transcript</h4></div>
                     </li>
                     <li onclick="setPlatform('iqc')">
-                        <i class="fab fa-apple" style="color: #a8a29e;"></i>
-                        <div><h4>iPhone Quote</h4></div>
+                        <div class="icon-wrapper"><i class="fab fa-apple"></i></div>
+                        <div><h4>iQuote</h4></div>
                     </li>
                     <li onclick="setPlatform('nulis')">
-                        <i class="fas fa-pen-nib" style="color: #f59e0b;"></i>
+                        <div class="icon-wrapper"><i class="fas fa-pen-nib"></i></div>
                         <div><h4>Nulis Bot</h4></div>
                     </li>
                 </ul>
@@ -1089,31 +466,31 @@
             <div class="cat-page" id="cat-page-2">
                 <ul class="feature-list">
                     <li onclick="setPlatform('roblox-stalk')">
-                        <i class="fas fa-gamepad" style="color: #10b981;"></i>
+                        <div class="icon-wrapper"><i class="fas fa-gamepad"></i></div>
                         <div><h4>Roblox</h4></div>
                     </li>
                     <li onclick="setPlatform('dc-stalk')">
-                        <i class="fab fa-discord" style="color: #5865F2;"></i>
+                        <div class="icon-wrapper"><i class="fab fa-discord"></i></div>
                         <div><h4>Discord</h4></div>
                     </li>
                     <li onclick="setPlatform('tt-stalk')">
-                        <i class="fab fa-tiktok" style="color: #cbd5e1;"></i>
+                        <div class="icon-wrapper"><i class="fab fa-tiktok"></i></div>
                         <div><h4>TikTok</h4></div>
                     </li>
                     <li onclick="setPlatform('tw-stalk')">
-                        <i class="fa-brands fa-x-twitter" style="color: #f8fafc;"></i>
+                        <div class="icon-wrapper"><i class="fa-brands fa-x-twitter"></i></div>
                         <div><h4>Twitter (X)</h4></div>
                     </li>
                     <li onclick="setPlatform('gh-stalk')">
-                        <i class="fab fa-github" style="color: #e2e8f0;"></i>
+                        <div class="icon-wrapper"><i class="fab fa-github"></i></div>
                         <div><h4>GitHub</h4></div>
                     </li>
                     <li onclick="setPlatform('ig-stalk')">
-                        <i class="fab fa-instagram" style="color: #ec4899;"></i>
+                        <div class="icon-wrapper"><i class="fab fa-instagram"></i></div>
                         <div><h4>Instagram</h4></div>
                     </li>
                     <li onclick="setPlatform('th-stalk')">
-                        <i class="fa-brands fa-threads" style="color: #f8fafc;"></i>
+                        <div class="icon-wrapper"><i class="fa-brands fa-threads"></i></div>
                         <div><h4>Threads</h4></div>
                     </li>
                 </ul>
@@ -1122,16 +499,16 @@
             <div class="cat-page" id="cat-page-3">
                 <ul class="feature-list">
                     <li onclick="setPlatform('pulsa')">
-                        <i class="fas fa-mobile-alt" style="color: #3b82f6;"></i>
+                        <div class="icon-wrapper"><i class="fas fa-mobile-alt"></i></div>
                         <div><h4>Beli Pulsa</h4></div>
                     </li>
                     <li onclick="setPlatform('topup')">
-                        <i class="fas fa-wallet" style="color: #10b981;"></i>
-                        <div><h4>Topup Wallet</h4></div>
+                        <div class="icon-wrapper"><i class="fas fa-wallet"></i></div>
+                        <div><h4>E-Wallet</h4></div>
                     </li>
                     <li onclick="setPlatform('kontak')">
-                        <i class="fas fa-id-badge" style="color: #60a5fa;"></i>
-                        <div><h4>Kontak Owner</h4></div>
+                        <div class="icon-wrapper"><i class="fas fa-id-badge"></i></div>
+                        <div><h4>Hubungi</h4></div>
                     </li>
                 </ul>
             </div>
@@ -1148,7 +525,7 @@
 
     <div id="historyModal" class="modal">
         <div class="modal-content" style="max-width: 500px;">
-            <span class="close-modal" onclick="closeHistory()">&times;</span>
+            <span class="close-modal" onclick="closeHistory()"><i class="fas fa-times"></i></span>
             <h2 style="margin-bottom: 8px;"><i class="fas fa-history" style="color: #60a5fa;"></i> Riwayat Terakhir</h2>
             <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Menyimpan 10 hasil sukses terakhirmu.</p>
             <div id="historyListContainer"></div>
