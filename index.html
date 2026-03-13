@@ -133,8 +133,15 @@
             align-items: center;
         }
         
-        .nav-btn:hover { background: rgba(255, 255, 255, 0.1); }
-        .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+        .nav-btn:hover { 
+            background: rgba(255, 255, 255, 0.1); 
+        }
+        
+        .nav-btn:disabled { 
+            opacity: 0.4; 
+            cursor: not-allowed; 
+            pointer-events: none; 
+        }
         
         .logo { 
             font-size: 20px; 
@@ -145,6 +152,7 @@
             align-items: center; 
             gap: 10px; 
         }
+        
         .logo i { color: #60a5fa; }
 
         #offlineIndicator {
@@ -204,10 +212,11 @@
             to { opacity: 1; transform: scale(1) translateY(0); } 
         }
         
+        /* PERBAIKAN TOMBOL CLOSE AGAR TIDAK NABRAK */
         .close-modal {
             position: absolute; 
-            top: 15px; 
-            right: 15px; 
+            top: 12px;     /* Digeser ke ujung atas */
+            right: 12px;   /* Digeser ke ujung kanan */
             color: var(--text-muted); 
             font-size: 24px; 
             cursor: pointer; 
@@ -222,6 +231,7 @@
             background: rgba(255,255,255,0.05); 
             z-index: 10;
         }
+        
         .close-modal:hover { 
             color: var(--text-main); 
             background: rgba(255,255,255,0.1); 
@@ -233,8 +243,9 @@
             align-items: center; 
             justify-content: space-between;
             margin-bottom: 20px; 
-            margin-top: 10px;
+            margin-top: 28px; /* JARAK AMAN agar tombol panah terhindar dari tombol X */
         }
+        
         .cat-nav-btn {
             background: rgba(255,255,255,0.08); 
             border: none; 
@@ -248,9 +259,11 @@
             justify-content: center; 
             align-items: center;
         }
+        
         .cat-nav-btn:hover { 
             background: var(--primary); 
         }
+        
         #catTitle { 
             margin: 0; 
             font-size: 18px; 
@@ -264,6 +277,7 @@
             display: none; 
             animation: slideFade 0.3s ease; 
         }
+        
         .cat-page.active { 
             display: block; 
         }
@@ -279,6 +293,7 @@
             gap: 6px; 
             margin-top: 24px; 
         }
+        
         .cat-dot { 
             width: 8px; 
             height: 8px; 
@@ -287,6 +302,7 @@
             cursor: pointer; 
             transition: 0.3s; 
         }
+        
         .cat-dot.active { 
             background: var(--primary); 
             width: 24px; 
