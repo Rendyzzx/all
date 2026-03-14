@@ -100,34 +100,18 @@
 
         .gc-badge { font-size: 11px; letter-spacing: 2px; color: #60a5fa; font-weight: 700; margin-bottom: 8px; display: block; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
         .greeting-card h2 { margin: 0 0 4px 0; font-size: 26px; color: #fff; font-weight: 800; letter-spacing: -0.5px; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
-        .greeting-card p { margin: 0; color: #cbd5e1; font-size: 14px; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+        .greeting-card p { margin: 0; color: #f1f5f9; font-size: 14px; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
         .gc-date { margin-top: 12px; font-size: 11px; color: rgba(255,255,255,0.7); display: inline-block; padding: 4px 10px; background: rgba(255,255,255,0.1); border-radius: 6px; backdrop-filter: blur(4px); }
         .gc-watermark { position: absolute; right: -15px; bottom: -35px; font-size: 120px; font-weight: 900; color: rgba(255,255,255,0.08); line-height: 1; user-select: none; }
         
         .section-title { text-align: left; font-size: 12px; letter-spacing: 1.5px; color: #64748b; font-weight: 700; margin: 0 0 -8px 4px; text-transform: uppercase; }
         
         .quick-access-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        
-        .qa-btn { 
-            background: rgba(255, 255, 255, 0.03); 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            border-radius: 14px; 
-            padding: 12px; 
-            color: #cbd5e1; 
-            font-size: 14px; 
-            font-weight: 600; 
-            display: flex; align-items: center; gap: 12px; 
-            cursor: pointer; 
-            transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
-            text-align: left; 
-            font-family: var(--font-family-system);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.02), 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-        .qa-btn .qa-icon { width: 34px; height: 34px; background: rgba(37, 99, 235, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--primary); transition: 0.3s; }
-        .qa-btn:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); transform: translateY(-3px); color: #fff; box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05), 0 8px 15px rgba(0, 0, 0, 0.3); }
-        .qa-btn:hover .qa-icon { background: var(--primary); color: #fff; box-shadow: 0 0 12px var(--primary); transform: scale(1.05); }
+        .qa-btn { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255,255,255,0.03); border-radius: 12px; padding: 12px; color: #cbd5e1; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s ease; text-align: left; font-family: var(--font-family-system); }
+        .qa-btn .qa-icon { width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #fff; transition: 0.2s; }
+        .qa-btn:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); transform: translateY(-2px); color: #fff; }
+        .qa-btn:hover .qa-icon { background: var(--primary); color: #fff; box-shadow: 0 0 15px var(--primary); }
+        .qa-btn-all .qa-icon { color: var(--primary); background: rgba(37,99,235,0.1); }
 
         .system-status { display: flex; align-items: center; gap: 12px; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px 16px; font-size: 12px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; backdrop-filter: blur(8px); }
         .status-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e; animation: pulseDot 2s infinite; }
@@ -425,8 +409,8 @@
 
             <div class="system-status">
                 <div class="status-dot"></div>
-                <span>System Online • Connected</span>
-                <i class="fas fa-satellite-dish" style="margin-left:auto; color: #64748b;"></i>
+                <span id="systemUptime">UPTIME: 0D 0H 0M 0S</span>
+                <i class="fas fa-server" style="margin-left:auto; color: #64748b;"></i>
             </div>
         </div>
 
