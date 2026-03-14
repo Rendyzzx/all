@@ -404,7 +404,7 @@ function setPlatform(platform) {
         document.getElementById('mediaUrl').placeholder = "Ketik pertanyaan tentang gambar ini...";
         catboxHelper.innerHTML = `<i class="fas fa-info-circle"></i> Pilih foto lalu tanyakan sesuatu pada AI.`; 
         catboxHelper.style.display = 'block'; 
-        btn.innerHTML = 'Tanya Koros'; 
+        btn.innerHTML = 'Tanya AI'; 
     } else if (platform === 'ai-detector') { 
         title.innerHTML = "AI Text Detector"; 
         document.getElementById('textContent').placeholder = "Tempel artikel atau teks di sini..."; 
@@ -1056,6 +1056,7 @@ async function processAction(isFromQueue = false) {
         if (loadingText) loadingText.innerText = "Memproses permintaan...";
     }
 
+    // Logika Bypass untuk Tools Eksternal (Tidak kena Kuota Neoxr)
     if (['qr-gen', 'shortlink', 'tts'].includes(currentPlatform)) {
         setTimeout(async () => {
             const mainResultCard = document.getElementById('resultCard');
@@ -1108,6 +1109,7 @@ async function processAction(isFromQueue = false) {
     try {
         let finalInputData = urlVal || textVal; 
         let fileBase64Obj = null;
+        let uploadedFileUrl = ""; // Menyimpan URL dari pre-upload
 
         if (['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor', 'koros'].includes(currentPlatform)) {
             const file = document.getElementById('mediaFile').files[0];
@@ -1123,6 +1125,26 @@ async function processAction(isFromQueue = false) {
                 mimeType: file.type 
             };
             finalInputData = urlVal; 
+            
+            // =========== SISTEM BYPASS UPLOAD ===========
+            // Mengupload gambar terlebih dahulu agar mendapatkan URL tmpfiles
+            // sehingga API Koros tidak akan pernah error 'parameter "image" is required' lagi!
+            try {
+                const upRes = await fetch(API_BASE, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'upload-only', params: {}, fileData: fileBase64Obj })
+                });
+                const upJson = await upRes.json();
+                if (upJson.url) {
+                    uploadedFileUrl = upJson.url;
+                    // Kosongkan agar proxy tidak mengupload ulang secara ganda
+                    fileBase64Obj = null; 
+                }
+            } catch(e) {
+                console.error("Pre-upload gagal, melanjutkan dengan mode normal.");
+            }
+            // ============================================
         }
 
         let action = ''; 
@@ -1142,16 +1164,12 @@ async function processAction(isFromQueue = false) {
         else if (currentPlatform === 'ai-detector') { action = 'ai-detector'; params = { text: finalInputData }; } 
         else if (currentPlatform === 'iqc') { action = 'iqc'; params = { text: finalInputData, time: phoneTime, chat_time: chatTime }; } 
         else if (currentPlatform === 'nulis') { action = 'nulis'; params = { text: finalInputData }; } 
-        else if (currentPlatform === 'hd-foto') { action = 'upscale'; params = { image: "" }; } 
-        else if (currentPlatform === 'noise-reduce') { action = 'noice-reducer'; params = { file: "" }; } 
-        else if (currentPlatform === 'remove-bg') { action = 'nobg'; params = { image: "" }; } 
-        else if (currentPlatform === 'photo-editor') { action = 'photo-editor'; params = { image: "", q: finalInputData }; } 
         else if (currentPlatform === 'lirik') { action = 'lyric'; params = { q: finalInputData }; } 
-        else if (currentPlatform === 'roblox-stalk') { action = 'roblox-stalk'; params = { username: finalInputData }; } 
-        else if (currentPlatform === 'dc-stalk') { action = 'dcstalk'; params = { id: finalInputData }; } 
-        else if (currentPlatform === 'tt-stalk') { action = 'ttstalk'; params = { username: finalInputData }; } 
-        else if (currentPlatform === 'tw-stalk') { action = 'twstalk'; params = { username: finalInputData }; } 
-        else if (currentPlatform === 'gh-stalk') { action = 'ghstalk'; params = { username: finalInputData }; } 
+        else if (currentPlatform === 'roblox-stalk') { action = 'roblox'; params = { username: finalInputData }; } 
+        else if (currentPlatform === 'dc-stalk') { action = 'discord'; params = { id: finalInputData }; } 
+        else if (currentPlatform === 'tt-stalk') { action = 'tiktokstalk'; params = { username: finalInputData }; } 
+        else if (currentPlatform === 'tw-stalk') { action = 'twitterstalk'; params = { username: finalInputData }; } 
+        else if (currentPlatform === 'gh-stalk') { action = 'github'; params = { username: finalInputData }; } 
         else if (currentPlatform === 'ig-stalk') { action = 'igstalk'; params = { username: finalInputData }; } 
         else if (currentPlatform === 'th-stalk') { action = 'thstalk'; params = { username: finalInputData }; }
         else if (currentPlatform === 'ai-anime') { action = 'ai-anime'; params = { q: finalInputData }; }
@@ -1165,7 +1183,13 @@ async function processAction(isFromQueue = false) {
         else if (currentPlatform === 'waifu') { action = 'waifudiff'; params = { q: finalInputData }; }
         else if (currentPlatform === 'felo') { action = 'felo'; params = { q: finalInputData }; }
         else if (currentPlatform === 'perplexity') { action = 'perplexity'; params = { q: finalInputData }; }
-        else if (currentPlatform === 'koros') { action = 'koros'; params = { image: "", q: finalInputData }; }
+        
+        // PENGGUNAAN BYPASS UPLOAD PADA IMAGE TOOLS
+        else if (currentPlatform === 'hd-foto') { action = 'upscale'; params = { image: uploadedFileUrl || "" }; } 
+        else if (currentPlatform === 'noise-reduce') { action = 'noice-reducer'; params = { file: uploadedFileUrl || "" }; } 
+        else if (currentPlatform === 'remove-bg') { action = 'nobg'; params = { image: uploadedFileUrl || "" }; } 
+        else if (currentPlatform === 'photo-editor') { action = 'photo-editor'; params = { image: uploadedFileUrl || "", q: finalInputData }; } 
+        else if (currentPlatform === 'koros') { action = 'koros'; params = { image: uploadedFileUrl || "", q: finalInputData }; }
 
         const payload = { action: action, params: params };
         if (fileBase64Obj) {
@@ -1199,9 +1223,11 @@ async function processAction(isFromQueue = false) {
             }
             else if (['blackbox', 'gpt4', 'claude', 'bard', 'gemini', 'felo', 'perplexity', 'koros'].includes(currentPlatform)) {
                 document.getElementById('aiChatResult').style.display = 'block';
-                // Koros menggunakan format data.result, yang lain menggunakan data.message
+                
+                // Mengambil nilai respon berdasarkan platform (Koros menggunakan result, yang lain message)
                 let chatResponse = data.message || data.result || "Tidak ada respon dari AI.";
                 
+                // Menghilangkan markdown bold
                 chatResponse = chatResponse.replace(/\*\*/g, '');
                 
                 document.getElementById('aiChatText').innerText = chatResponse;
