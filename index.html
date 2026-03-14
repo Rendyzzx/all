@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Moonlight -About You? N</title>
+    <title>Moonlight - Super App</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1807/1807350.png">
@@ -87,16 +87,65 @@
 
         .hero { flex: 1; padding: 40px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; position: relative; }
         
+        /* =======================================
+           DESAIN BERANDA (DASHBOARD) PREMIUM
+           ======================================= */
         .home-dashboard { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 20px; animation: slideUp 0.4s ease; margin-bottom: 20px; }
-        .greeting-card { background: linear-gradient(135deg, rgba(37,99,235,0.2), rgba(139,92,246,0.2)); border: 1px solid var(--border-color); border-radius: 20px; padding: 24px; text-align: left; backdrop-filter: blur(12px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
-        .greeting-card h2 { margin: 0 0 8px 0; font-size: 24px; color: #fff; font-weight: 800; }
+        
+        /* Kartu Sapaan: Clean Dark Glass */
+        .greeting-card { 
+            background: rgba(255, 255, 255, 0.02); 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            border-top: 2px solid var(--primary); 
+            border-radius: 20px; 
+            padding: 28px 24px; 
+            text-align: left; 
+            backdrop-filter: blur(12px); 
+            position: relative;
+            overflow: hidden;
+        }
+        /* Efek Glow Biru Super Halus di Sudut Kanan Atas */
+        .greeting-card::after {
+            content: ''; position: absolute; top: -30px; right: -30px;
+            width: 120px; height: 120px;
+            background: radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .greeting-card h2 { margin: 0 0 6px 0; font-size: 24px; color: #fff; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .greeting-card h2 i { color: #facc15; font-size: 20px; }
         .greeting-card p { margin: 0; color: var(--text-muted); font-size: 14px; }
-        .section-title { text-align: left; font-size: 15px; color: #cbd5e1; font-weight: 700; margin: 10px 0 0 5px; }
-        .quick-access-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .qa-btn { background: rgba(15,23,42,0.6); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px 16px; color: #f8fafc; font-size: 14px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s cubic-bezier(0.4,0,0.2,1); backdrop-filter: blur(8px); }
-        .qa-btn i { font-size: 28px; color: var(--primary); transition: 0.2s; }
-        .qa-btn:hover { background: var(--primary); transform: translateY(-4px); box-shadow: 0 8px 20px rgba(37,99,235,0.3); border-color: transparent; }
-        .qa-btn:hover i { color: #fff; transform: scale(1.1); }
+        
+        .section-title { text-align: left; font-size: 15px; color: #fff; font-weight: 700; margin: 10px 0 0 5px; }
+        
+        /* Tombol Pintasan: Horizontal Cards ala iOS */
+        .quick-access-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .qa-btn { 
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            border-radius: 16px; 
+            padding: 12px 16px; 
+            color: #e2e8f0; 
+            font-size: 14px; 
+            font-weight: 600; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            cursor: pointer; 
+            transition: all 0.2s cubic-bezier(0.4,0,0.2,1); 
+            text-align: left;
+            font-family: var(--font-family-system);
+        }
+        /* Kotak Ikon di dalam Tombol Pintasan */
+        .qa-btn .qa-icon { 
+            width: 38px; height: 38px; 
+            background: rgba(0, 0, 0, 0.3); 
+            border-radius: 10px; 
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; color: var(--primary);
+            transition: 0.2s;
+        }
+        .qa-btn:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
+        .qa-btn:hover .qa-icon { background: var(--primary); color: #fff; }
 
         .hero h1 { font-size: clamp(24px, 5vw, 32px); margin-bottom: 32px; font-weight: 700; line-height: 1.2; letter-spacing: -0.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); display: none; }
         .form-group { width: 100%; max-width: 500px; display: none; flex-direction: column; gap: 16px; margin-bottom: 24px; }
@@ -239,8 +288,7 @@
     <div id="splashScreen">
         <div class="splash-anim-container">
             <svg class="moon-svg" viewBox="-30 -30 160 160" xmlns="http://www.w3.org/2000/svg">
-                <path class="moon-line glow" d="M54 5 A 45 45 0 1 0 95 50 A 35 35 0 1 1 54 5 Z"></path>
-                <path class="moon-line main" d="M54 5 A 45 45 0 1 0 95 50 A 35 35 0 1 1 54 5 Z"></path>
+                <path class="moon-line" d="M54 5 A 45 45 0 1 0 95 50 A 35 35 0 1 1 54 5 Z"></path>
             </svg>
         </div>
         <div class="splash-text">MOONLIGHT</div>
@@ -355,7 +403,6 @@
                 <span class="cat-dot" onclick="goToCat(4)"></span>
                 <span class="cat-dot" onclick="goToCat(5)"></span>
             </div>
-
         </div>
     </div>
 
@@ -379,10 +426,10 @@
             </div>
             <h3 class="section-title">Pintasan Cepat</h3>
             <div class="quick-access-grid">
-                <button class="qa-btn" onclick="setPlatform('gpt4')"><i class="fas fa-robot"></i> Tanya AI</button>
-                <button class="qa-btn" onclick="setPlatform('film')"><i class="fas fa-film"></i> Nonton Film</button>
-                <button class="qa-btn" onclick="setPlatform('tiktok')"><i class="fab fa-tiktok"></i> TikTok DL</button>
-                <button class="qa-btn" onclick="setPlatform('qr-gen')"><i class="fas fa-qrcode"></i> Buat QR</button>
+                <button class="qa-btn" onclick="setPlatform('gpt4')"><div class="qa-icon"><i class="fas fa-robot"></i></div> Tanya AI</button>
+                <button class="qa-btn" onclick="setPlatform('film')"><div class="qa-icon"><i class="fas fa-film"></i></div> Nonton Film</button>
+                <button class="qa-btn" onclick="setPlatform('tiktok')"><div class="qa-icon"><i class="fab fa-tiktok"></i></div> TikTok DL</button>
+                <button class="qa-btn" onclick="setPlatform('qr-gen')"><div class="qa-icon"><i class="fas fa-qrcode"></i></div> Buat QR</button>
             </div>
         </div>
 
