@@ -17,7 +17,14 @@ let isJumping = false;
 // LOGIKA CAROUSEL KATEGORI (GESER MENU)
 // ==========================================
 let currentCatIndex = 0;
-const categoryTitles = ["Downloader Media", "Tools", "AI", "Stalker / Checker", "Entertainment", "Digital & Info"];
+const categoryTitles = [
+    "Downloader Media", 
+    "Tools", 
+    "AI", 
+    "Stalker / Checker", 
+    "Hiburan & Berita", 
+    "Digital & Info"
+];
 const totalCategories = 6;
 
 function updateCategoryUI() {
@@ -72,6 +79,9 @@ function goToCat(index) {
     }
     updateCategoryUI();
 }
+
+// ==========================================
+// PENGATURAN AWAL
 // ==========================================
 
 if ('serviceWorker' in navigator) {
@@ -90,7 +100,7 @@ window.onload = function () {
 
     setPlatform('youtube');
     renderHistory();
-    updateCategoryUI(); // Inisialisasi tampilan modal pertama kali
+    updateCategoryUI(); 
     
     if (!navigator.onLine) {
         handleOffline();
@@ -152,6 +162,10 @@ function processQueue() {
     }
 }
 
+// ==========================================
+// FUNGSI UMUM DAN UI
+// ==========================================
+
 function extractColorAndApply(imageSrc) {
     if (!imageSrc) return;
     
@@ -174,8 +188,7 @@ function extractColorAndApply(imageSrc) {
         
         try {
             const data = ctx.getImageData(0, 0, 50, 50).data;
-            let r = 0, g = 0, b = 0;
-            let count = 0;
+            let r = 0, g = 0, b = 0, count = 0;
             
             for (let i = 0; i < data.length; i += 16) {
                 r += data[i];
@@ -210,35 +223,27 @@ function applyDynamicTheme(platform) {
     const aiChatTools = ['gpt4', 'claude', 'gemini', 'bard', 'blackbox', 'felo', 'perplexity'];
     
     if (['youtube', 'yt-transcript', 'pin', 'tts'].includes(platform)) { 
-        primary = '#ef4444'; 
-        hover = '#dc2626'; 
+        primary = '#ef4444'; hover = '#dc2626'; 
     } else if (['tiktok', 'tt-stalk', 'shortlink'].includes(platform)) { 
-        primary = '#06b6d4'; 
-        hover = '#0891b2'; 
+        primary = '#06b6d4'; hover = '#0891b2'; 
     } else if (['ig', 'ig-stalk'].includes(platform)) { 
-        primary = '#d946ef'; 
-        hover = '#c026d3'; 
+        primary = '#d946ef'; hover = '#c026d3'; 
     } else if (platform === 'facebook') { 
-        primary = '#1877f2'; 
-        hover = '#1462cb'; 
+        primary = '#1877f2'; hover = '#1462cb'; 
     } else if (['twitter', 'tw-stalk', 'th-stalk'].includes(platform)) { 
-        primary = '#475569'; 
-        hover = '#334155'; 
+        primary = '#475569'; hover = '#334155'; 
     } else if (['spotify', 'lirik', 'qr-gen'].includes(platform)) { 
-        primary = '#10b981'; 
-        hover = '#059669'; 
+        primary = '#10b981'; hover = '#059669'; 
     } else if (aiImageTools.includes(platform)) { 
-        primary = '#8b5cf6'; 
-        hover = '#7c3aed'; 
+        primary = '#8b5cf6'; hover = '#7c3aed'; 
     } else if (aiChatTools.includes(platform)) { 
-        primary = '#14b8a6'; 
-        hover = '#0d9488'; 
+        primary = '#14b8a6'; hover = '#0d9488'; 
     } else if (['pulsa', 'topup', 'roblox-stalk'].includes(platform)) { 
-        primary = '#10b981'; 
-        hover = '#059669'; 
+        primary = '#10b981'; hover = '#059669'; 
     } else if (['nulis', 'iqc', 'ss-web', 'dc-stalk', 'gh-stalk'].includes(platform)) { 
-        primary = '#f59e0b'; 
-        hover = '#d97706'; 
+        primary = '#f59e0b'; hover = '#d97706'; 
+    } else if (['anime', 'anoboy', 'donghua', 'cnn'].includes(platform)) { 
+        primary = '#ef4444'; hover = '#dc2626'; 
     }
 
     root.style.setProperty('--primary', primary);
@@ -250,6 +255,7 @@ function setPlatform(platform) {
     if (navigator.vibrate) {
         navigator.vibrate(15);
     }
+    
     currentPlatform = platform;
     applyDynamicTheme(platform);
 
@@ -293,13 +299,7 @@ function setPlatform(platform) {
     } else if (platform === 'pulsa') { 
         title.innerHTML = "Isi Ulang Pulsa"; 
         document.getElementById('mediaUrl').placeholder = "Masukkan Nomor HP (0812...)"; 
-        document.getElementById('pulsaProvider').innerHTML = `
-            <option value="pulsa-axis">AXIS</option>
-            <option value="pulsa-indosat">INDOSAT (IM3)</option>
-            <option value="pulsa-telkomsel">TELKOMSEL</option>
-            <option value="pulsa-tri">TRI (3)</option>
-            <option value="pulsa-xl">XL AXIATA</option>
-        `;
+        document.getElementById('pulsaProvider').innerHTML = `<option value="pulsa-axis">AXIS</option><option value="pulsa-indosat">INDOSAT (IM3)</option><option value="pulsa-telkomsel">TELKOMSEL</option><option value="pulsa-tri">TRI (3)</option><option value="pulsa-xl">XL AXIATA</option>`;
         urlCont.style.display = 'flex'; 
         providerCont.style.display = 'flex'; 
         nominalCont.style.display = 'flex'; 
@@ -307,12 +307,7 @@ function setPlatform(platform) {
     } else if (platform === 'topup') { 
         title.innerHTML = "Topup E-Wallet"; 
         document.getElementById('mediaUrl').placeholder = "Masukkan Nomor Akun (0812...)"; 
-        document.getElementById('pulsaProvider').innerHTML = `
-            <option value="topup-dana">DANA</option>
-            <option value="topup-gopay">GOPAY</option>
-            <option value="topup-ovo">OVO</option>
-            <option value="topup-shopeepay">SHOPEEPAY</option>
-        `;
+        document.getElementById('pulsaProvider').innerHTML = `<option value="topup-dana">DANA</option><option value="topup-gopay">GOPAY</option><option value="topup-ovo">OVO</option><option value="topup-shopeepay">SHOPEEPAY</option>`;
         urlCont.style.display = 'flex'; 
         providerCont.style.display = 'flex'; 
         customAmountCont.style.display = 'flex'; 
@@ -323,41 +318,15 @@ function setPlatform(platform) {
         urlCont.style.display = 'flex'; 
         ytFormatCont.style.display = 'flex'; 
         btn.innerHTML = 'Download Sekarang'; 
-    } else if (platform === 'tiktok') { 
-        title.innerHTML = "Unduh Video TikTok"; 
-        document.getElementById('mediaUrl').placeholder = "Tempel tautan video TikTok di sini..."; 
+    } else if (['tiktok', 'ig', 'facebook', 'twitter', 'terabox', 'pin', 'spotify'].includes(platform)) {
+        let pName = platform.charAt(0).toUpperCase() + platform.slice(1);
+        if (platform === 'ig') pName = "Instagram"; 
+        if (platform === 'pin') pName = "Pinterest";
+        
+        title.innerHTML = `Unduh ${pName}`;
+        document.getElementById('mediaUrl').placeholder = `Tempel tautan ${pName} di sini...`;
         urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Download Sekarang'; 
-    } else if (platform === 'ig') { 
-        title.innerHTML = "Unduh Media Instagram"; 
-        document.getElementById('mediaUrl').placeholder = "Tempel tautan Post/Reels IG di sini..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Download Sekarang'; 
-    } else if (platform === 'facebook') { 
-        title.innerHTML = "Unduh Video Facebook"; 
-        document.getElementById('mediaUrl').placeholder = "Tempel tautan video/Reels Facebook..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Download Sekarang'; 
-    } else if (platform === 'twitter') { 
-        title.innerHTML = "Unduh Media Twitter (X)"; 
-        document.getElementById('mediaUrl').placeholder = "Tempel tautan postingan Twitter (X)..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Download Sekarang'; 
-    } else if (platform === 'terabox') { 
-        title.innerHTML = "TeraBox Downloader"; 
-        document.getElementById('mediaUrl').placeholder = "Tempel tautan file TeraBox di sini..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Buka File TeraBox'; 
-    } else if (platform === 'pin') { 
-        title.innerHTML = "Unduh Media Pinterest"; 
-        document.getElementById('mediaUrl').placeholder = "Tempel tautan Pin dari Pinterest di sini..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Download Sekarang'; 
-    } else if (platform === 'spotify') { 
-        title.innerHTML = "Unduh Musik Spotify"; 
-        document.getElementById('mediaUrl').placeholder = "Tempel tautan lagu Spotify di sini..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Download Sekarang'; 
+        btn.innerHTML = 'Download Sekarang';
     } else if (platform === 'lirik') { 
         title.innerHTML = "Pencarian Lirik Lagu"; 
         document.getElementById('mediaUrl').placeholder = "Ketik judul lagu (contoh: Komang)..."; 
@@ -402,7 +371,7 @@ function setPlatform(platform) {
         title.innerHTML = "Koros Vision AI"; 
         fileCont.style.display = 'flex'; 
         document.getElementById('mediaFile').accept = "image/*";
-        urlCont.style.display = 'flex';
+        urlCont.style.display = 'flex'; 
         document.getElementById('mediaUrl').placeholder = "Ketik pertanyaan tentang gambar ini...";
         catboxHelper.innerHTML = `<i class="fas fa-info-circle"></i> Pilih foto lalu tanyakan sesuatu pada AI.`; 
         catboxHelper.style.display = 'block'; 
@@ -424,17 +393,16 @@ function setPlatform(platform) {
         textCont.style.display = 'flex'; 
         btn.innerHTML = 'Mulai Nulis'; 
     } else if (['hd-foto', 'remove-bg', 'noise-reduce'].includes(platform)) { 
-        if (platform === 'hd-foto') title.innerHTML = 'HD Foto Upscaler';
-        else if (platform === 'remove-bg') title.innerHTML = 'Hapus Background';
-        else title.innerHTML = 'Audio Noise Reduce';
+        if (platform === 'hd-foto') {
+            title.innerHTML = 'HD Foto Upscaler';
+        } else if (platform === 'remove-bg') {
+            title.innerHTML = 'Hapus Background';
+        } else {
+            title.innerHTML = 'Audio Noise Reduce';
+        }
         
         fileCont.style.display = 'flex'; 
-        const mediaFileInput = document.getElementById('mediaFile');
-        if (platform === 'noise-reduce') {
-            mediaFileInput.accept = "audio/*";
-        } else {
-            mediaFileInput.accept = "image/*";
-        }
+        document.getElementById('mediaFile').accept = platform === 'noise-reduce' ? "audio/*" : "image/*";
         
         catboxHelper.innerHTML = `<i class="fas fa-info-circle"></i> Pilih file dari perangkat. (Maksimal 4MB)`; 
         catboxHelper.style.display = 'block'; 
@@ -443,66 +411,56 @@ function setPlatform(platform) {
         title.innerHTML = "Photo Editor AI"; 
         fileCont.style.display = 'flex'; 
         document.getElementById('mediaFile').accept = "image/*";
-        urlCont.style.display = 'flex';
+        urlCont.style.display = 'flex'; 
         document.getElementById('mediaUrl').placeholder = "Ketik perintah edit...";
         catboxHelper.innerHTML = `<i class="fas fa-info-circle"></i> Pilih foto, lalu ketik perintah. (Maksimal 4MB)`; 
         catboxHelper.style.display = 'block'; 
         btn.innerHTML = 'Edit Foto Sekarang'; 
-    } else if (platform === 'roblox-stalk') { 
-        title.innerHTML = "Roblox Stalk"; 
-        document.getElementById('mediaUrl').placeholder = "Masukkan username Roblox..."; 
+    } else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(platform)) {
+        title.innerHTML = "Pencarian Akun"; 
+        document.getElementById('mediaUrl').placeholder = "Masukkan username atau ID...";
         urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Cari Player'; 
-    } else if (platform === 'dc-stalk') { 
-        title.innerHTML = "Discord Stalk"; 
-        document.getElementById('mediaUrl').placeholder = "Masukkan ID Discord (angka)..."; 
+        btn.innerHTML = 'Cari Akun';
+    } else if (['anime', 'anoboy', 'donghua'].includes(platform)) {
+        let pName = platform === 'donghua' ? 'Donghua' : (platform === 'anime' ? 'AnimeBatch' : 'Anoboy');
+        title.innerHTML = `Nonton ${pName}`;
+        document.getElementById('mediaUrl').placeholder = `Ketik judul anime/donghua...`;
         urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Cari User'; 
-    } else if (platform === 'tt-stalk') { 
-        title.innerHTML = "TikTok Stalk"; 
-        document.getElementById('mediaUrl').placeholder = "Masukkan username TikTok..."; 
+        btn.innerHTML = 'Cari Film';
+    } else if (platform === 'cnn') {
+        title.innerHTML = "CNN Indonesia News";
+        document.getElementById('mediaUrl').placeholder = "Ketik topik pencarian (opsional)...";
         urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Cari Akun'; 
-    } else if (platform === 'tw-stalk') { 
-        title.innerHTML = "Twitter Stalk"; 
-        document.getElementById('mediaUrl').placeholder = "Masukkan username Twitter..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Cari Akun'; 
-    } else if (platform === 'gh-stalk') { 
-        title.innerHTML = "GitHub Stalk"; 
-        document.getElementById('mediaUrl').placeholder = "Masukkan username GitHub..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Cari Developer'; 
-    } else if (platform === 'ig-stalk') { 
-        title.innerHTML = "Instagram Stalk"; 
-        document.getElementById('mediaUrl').placeholder = "Masukkan username Instagram..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Cari Akun IG'; 
-    } else if (platform === 'th-stalk') { 
-        title.innerHTML = "Threads Stalk"; 
-        document.getElementById('mediaUrl').placeholder = "Masukkan username Threads..."; 
-        urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Cari Akun Threads'; 
+        btn.innerHTML = 'Baca Berita Terkini';
     }
 
     const mediaUrlInput = document.getElementById('mediaUrl'); 
-    if (mediaUrlInput) mediaUrlInput.value = '';
+    if (mediaUrlInput) {
+        mediaUrlInput.value = '';
+    }
     
     const textContentInput = document.getElementById('textContent'); 
-    if (textContentInput) textContentInput.value = '';
+    if (textContentInput) {
+        textContentInput.value = '';
+    }
     
     const mediaFileInput = document.getElementById('mediaFile'); 
-    if (mediaFileInput) mediaFileInput.value = '';
+    if (mediaFileInput) {
+        mediaFileInput.value = '';
+    }
     
     const customAmountInput = document.getElementById('customAmount'); 
-    if (customAmountInput) customAmountInput.value = '';
+    if (customAmountInput) {
+        customAmountInput.value = '';
+    }
     
     const formGroup = document.querySelector('.form-group');
     const mainTitleEl = document.getElementById('mainTitle');
     
     if (formGroup && mainTitleEl) {
-        formGroup.style.animation = 'none';
+        formGroup.style.animation = 'none'; 
         mainTitleEl.style.animation = 'none';
+        
         setTimeout(() => { 
             formGroup.style.animation = ''; 
             mainTitleEl.style.animation = ''; 
@@ -512,13 +470,13 @@ function setPlatform(platform) {
     if (typeof FITUR !== 'undefined' && btn && platform !== 'kontak') {
         if (FITUR[platform] === false) {
             btn.innerHTML = '<i class="fas fa-tools"></i> Sedang Maintenance';
-            btn.disabled = true;
-            btn.style.background = '#475569';
+            btn.disabled = true; 
+            btn.style.background = '#475569'; 
             btn.style.color = '#94a3b8';
             showToast("Maaf, fitur ini sedang dalam pemeliharaan.", "info");
         } else {
-            btn.disabled = false;
-            btn.style.background = '';
+            btn.disabled = false; 
+            btn.style.background = ''; 
             btn.style.color = '';
         }
     }
@@ -531,8 +489,8 @@ document.getElementById('mediaFile').addEventListener('change', function(event) 
         const file = event.target.files[0];
         if (file.type.startsWith('image/')) {
             const reader = new FileReader();
-            reader.onload = function(e) {
-                extractColorAndApply(e.target.result);
+            reader.onload = function(e) { 
+                extractColorAndApply(e.target.result); 
             };
             reader.readAsDataURL(file);
         }
@@ -616,9 +574,15 @@ async function fetchLirik(url) {
     const loadingText = document.getElementById('loadingText');
     const miniGame = document.getElementById('miniGame');
     
-    if (loadingOverlay) loadingOverlay.style.display = 'block'; 
-    if (miniGame) miniGame.style.display = 'none';
-    if (loadingText) loadingText.innerText = "Mengambil lirik...";
+    if (loadingOverlay) {
+        loadingOverlay.style.display = 'block'; 
+    }
+    if (miniGame) {
+        miniGame.style.display = 'none';
+    }
+    if (loadingText) {
+        loadingText.innerText = "Mengambil lirik...";
+    }
     
     try {
         const payload = { action: 'lyric', params: { q: url } };
@@ -631,23 +595,33 @@ async function fetchLirik(url) {
         
         if (json.status === true) {
             const listContainer = document.getElementById('lirikList');
-            if (listContainer) listContainer.style.display = 'none';
+            if (listContainer) {
+                listContainer.style.display = 'none';
+            }
             
             const lirikTitleEl = document.getElementById('lirikTitle') || document.querySelector('#lirikResult h3');
-            if (lirikTitleEl) lirikTitleEl.innerText = json.data.title || "Lirik Lagu";
+            if (lirikTitleEl) {
+                lirikTitleEl.innerText = json.data.title || "Lirik Lagu";
+            }
             
             const lirikText = document.getElementById('lirikText');
-            if (lirikText) lirikText.innerText = json.data.lyric || "Lirik tidak tersedia.";
+            if (lirikText) {
+                lirikText.innerText = json.data.lyric || "Lirik tidak tersedia.";
+            }
             
             const lirikWrapper = document.getElementById('lirikContentWrapper');
-            if (lirikWrapper) lirikWrapper.style.display = 'block';
+            if (lirikWrapper) {
+                lirikWrapper.style.display = 'block';
+            }
         } else { 
             showToast("Gagal memuat lirik.", "error"); 
         }
     } catch (error) { 
         showToast("Gangguan jaringan.", "error"); 
     } finally { 
-        if (loadingOverlay) loadingOverlay.style.display = 'none'; 
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'none'; 
+        }
     }
 }
 
@@ -655,7 +629,7 @@ function showToast(message, type = 'error') {
     const toast = document.getElementById("toast");
     const toastIcon = document.getElementById("toastIcon");
     const toastMessage = document.getElementById("toastMessage");
-
+    
     if (!toast || !toastIcon || !toastMessage) return;
 
     toast.className = "toast"; 
@@ -678,7 +652,7 @@ function showToast(message, type = 'error') {
     }
 
     clearTimeout(toastTimeout);
-    toastTimeout = setTimeout(function(){ 
+    toastTimeout = setTimeout(function() { 
         toast.classList.remove("show"); 
     }, 3000);
 }
@@ -690,14 +664,12 @@ function saveToHistory(title, link) {
     if (link.length > 1000 && !link.startsWith('http') && !link.startsWith('data:image')) {
         finalLink = 'data:image/png;base64,' + link;
     }
-
-    const newItem = {
+    
+    const newItem = { 
         id: Date.now(), 
         title: title, 
-        link: finalLink,
-        date: new Date().toLocaleString('id-ID', { 
-            day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit' 
-        })
+        link: finalLink, 
+        date: new Date().toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit' }) 
     };
     
     historyList.unshift(newItem);
@@ -705,19 +677,19 @@ function saveToHistory(title, link) {
         historyList.pop(); 
     }
     
-    localStorage.setItem('moonlight_history', JSON.stringify(historyList));
+    localStorage.setItem('moonlight_history', JSON.stringify(historyList)); 
     renderHistory();
 }
 
 function renderHistory() {
     const container = document.getElementById('historyListContainer');
     if (!container) return;
-
+    
     if (historyList.length === 0) {
         container.innerHTML = `<div class="history-empty"><i class="fas fa-folder-open" style="font-size:32px; margin-bottom:12px; color:#475569;"></i><br>Belum ada riwayat unduhan.</div>`;
         return;
     }
-
+    
     container.innerHTML = '';
     historyList.forEach(item => {
         container.innerHTML += `
@@ -736,32 +708,38 @@ function renderHistory() {
 }
 
 function clearHistory() {
-    if (confirm("Yakin ingin menghapus semua riwayat?")) {
-        historyList = [];
-        localStorage.removeItem('moonlight_history');
-        renderHistory();
-        showToast("Riwayat berhasil dibersihkan", "success");
+    if (confirm("Yakin ingin menghapus semua riwayat?")) { 
+        historyList = []; 
+        localStorage.removeItem('moonlight_history'); 
+        renderHistory(); 
+        showToast("Riwayat berhasil dibersihkan", "success"); 
     }
 }
 
 function openHistory() { 
-    if (navigator.vibrate) navigator.vibrate(15);
+    if (navigator.vibrate) {
+        navigator.vibrate(15);
+    }
     renderHistory(); 
-    const modal = document.getElementById('historyModal');
-    if (modal) modal.style.display = 'flex'; 
+    const modal = document.getElementById('historyModal'); 
+    if (modal) {
+        modal.style.display = 'flex'; 
+    }
 }
 
 function closeHistory() { 
-    const modal = document.getElementById('historyModal');
-    if (modal) modal.style.display = 'none'; 
+    const modal = document.getElementById('historyModal'); 
+    if (modal) {
+        modal.style.display = 'none'; 
+    }
 }
 
 async function forceDownload(url, filename) {
     if (!url) return showToast("URL tidak valid", "error");
     if (navigator.vibrate) navigator.vibrate(20);
-
+    
     const isBase64 = url.startsWith('data:image') || (url.length > 500 && !url.startsWith('http'));
-
+    
     if (isBase64) {
         try {
             showToast("Memproses file...", "info");
@@ -779,81 +757,103 @@ async function forceDownload(url, filename) {
                 })
             });
             const json = await res.json();
-            if (json.url) url = json.url;
-        } catch(e) { }
+            if (json.url) {
+                url = json.url;
+            }
+        } catch(e) { 
+            console.error(e);
+        }
     }
-
-    showToast("Membuka untuk download...", "info");
+    
+    showToast("Membuka untuk download...", "info"); 
     window.location.href = url;
 }
 
 function openPip(url) {
-    const overlay = document.getElementById('pipOverlay');
+    const overlay = document.getElementById('pipOverlay'); 
     const video = document.getElementById('pipVideo');
-    if (overlay && video) {
+    if (overlay && video) { 
         video.src = url; 
         overlay.style.display = 'block'; 
-        video.play();
+        video.play(); 
     }
 }
 
-function closePip() {
-    const video = document.getElementById('pipVideo');
-    const overlay = document.getElementById('pipOverlay');
-    if (video) video.pause();
-    if (overlay) overlay.style.display = 'none';
+function closePip() { 
+    const video = document.getElementById('pipVideo'); 
+    const overlay = document.getElementById('pipOverlay'); 
+    if (video) {
+        video.pause(); 
+    }
+    if (overlay) {
+        overlay.style.display = 'none'; 
+    }
 }
 
 function openCategory(catIndexOrCurrent, btnId) {
-    if (navigator.vibrate) navigator.vibrate(15);
+    if (navigator.vibrate) {
+        navigator.vibrate(15);
+    }
     
     document.querySelectorAll('.bnav-item').forEach(btn => { 
         btn.classList.remove('active'); 
     });
     
-    if (btnId) {
-        const targetBtn = document.getElementById(btnId);
-        if (targetBtn) targetBtn.classList.add('active');
+    if (btnId) { 
+        const targetBtn = document.getElementById(btnId); 
+        if (targetBtn) {
+            targetBtn.classList.add('active'); 
+        }
     }
-
-    const modal = document.getElementById('featuresModal');
-    if (modal) modal.style.display = 'flex';
-
+    
+    const modal = document.getElementById('featuresModal'); 
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+    
     if (catIndexOrCurrent !== 'current') {
-        goToCat(parseInt(catIndexOrCurrent));
+        goToCat(parseInt(catIndexOrCurrent)); 
     } else {
         updateCategoryUI();
     }
 }
 
 function closeModal() { 
-    const modal = document.getElementById('featuresModal');
-    if (modal) modal.style.display = 'none'; 
+    const modal = document.getElementById('featuresModal'); 
+    if (modal) {
+        modal.style.display = 'none'; 
+    }
     
     document.querySelectorAll('.bnav-item').forEach(btn => { 
         btn.classList.remove('active'); 
     });
     
-    const defaultBtn = document.getElementById('bnav-all');
-    if (defaultBtn) defaultBtn.classList.add('active');
+    const defaultBtn = document.getElementById('bnav-all'); 
+    if (defaultBtn) {
+        defaultBtn.classList.add('active');
+    }
 }
 
 window.onclick = function (event) { 
-    const featuresModal = document.getElementById('featuresModal');
+    const featuresModal = document.getElementById('featuresModal'); 
     const historyModal = document.getElementById('historyModal');
     
-    if (event.target == featuresModal) closeModal(); 
-    if (event.target == historyModal) closeHistory(); 
+    if (event.target == featuresModal) {
+        closeModal(); 
+    }
+    if (event.target == historyModal) {
+        closeHistory(); 
+    }
 };
 
 function checkCooldown() {
     const lastAction = localStorage.getItem('lastMoonlightAction');
     if (lastAction) {
         const diff = Date.now() - parseInt(lastAction, 10);
-        if (diff < COOLDOWN_TIME) {
-            const remaining = Math.ceil((COOLDOWN_TIME - diff) / 1000);
-            showToast(`Tunggu ${remaining} detik.`, 'info');
-            return false;
+        if (diff < COOLDOWN_TIME) { 
+            const remaining = Math.ceil((COOLDOWN_TIME - diff) / 1000); 
+            showToast(`Tunggu ${remaining} detik.`, 'info'); 
+            return false; 
         }
     }
     return true;
@@ -866,10 +866,12 @@ function setCooldown() {
 function moonJump() {
     const player = document.getElementById('moonPlayer');
     if (player && !isJumping) {
-        isJumping = true;
-        player.classList.add('anim-jump');
+        isJumping = true; 
+        player.classList.add('anim-jump'); 
         
-        if (navigator.vibrate) navigator.vibrate(30);
+        if (navigator.vibrate) {
+            navigator.vibrate(30);
+        }
         
         setTimeout(() => { 
             player.classList.remove('anim-jump'); 
@@ -879,8 +881,8 @@ function moonJump() {
 }
 
 function startGameLoop() {
-    const player = document.getElementById('moonPlayer');
-    const obstacle = document.getElementById('meteorObstacle');
+    const player = document.getElementById('moonPlayer'); 
+    const obstacle = document.getElementById('meteorObstacle'); 
     const scoreEl = document.getElementById('gameScore');
     
     if (!player || !obstacle || !scoreEl) return;
@@ -897,13 +899,13 @@ function startGameLoop() {
     
     obstacle.style.animation = `obstacleMove 1.2s infinite linear`;
     
-    scoreInterval = setInterval(() => {
+    scoreInterval = setInterval(() => { 
         gameScore += 10; 
-        scoreEl.innerText = `Skor: ${gameScore}`;
+        scoreEl.innerText = `Skor: ${gameScore}`; 
     }, 100);
 
     gameInterval = setInterval(() => {
-        const playerRect = player.getBoundingClientRect();
+        const playerRect = player.getBoundingClientRect(); 
         const obstacleRect = obstacle.getBoundingClientRect();
         
         if (
@@ -921,12 +923,14 @@ function startGameLoop() {
             scoreEl.innerText = `Skor Akhir: ${gameScore} | Memuat ulang...`; 
             scoreEl.style.color = '#ef4444';
             
-            if (navigator.vibrate) navigator.vibrate([50,50,50]);
+            if (navigator.vibrate) {
+                navigator.vibrate([50,50,50]);
+            }
             
-            setTimeout(() => {
-                const overlay = document.getElementById('loadingOverlay');
+            setTimeout(() => { 
+                const overlay = document.getElementById('loadingOverlay'); 
                 if (overlay && overlay.style.display === 'block') {
-                    startGameLoop();
+                    startGameLoop(); 
                 }
             }, 1500);
         }
@@ -936,14 +940,240 @@ function startGameLoop() {
 function stopGameLoop() {
     clearInterval(gameInterval); 
     clearInterval(scoreInterval);
-    const obstacle = document.getElementById('meteorObstacle');
+    const obstacle = document.getElementById('meteorObstacle'); 
     if (obstacle) {
         obstacle.style.animation = "none";
     }
 }
 
+// ========================================================
+// FUNGSI RENDER ENTERTAINMENT (ANIME, ANOBOY, DONGHUA, CNN)
+// ========================================================
+
+function renderEntList(items, type) {
+    document.querySelectorAll('#resultCard > div').forEach(el => {
+        el.style.display = 'none';
+    });
+    
+    const resultCard = document.getElementById('resultCard'); 
+    resultCard.style.display = 'block';
+
+    let html = `<h3 style="margin-bottom:16px; color:#fff; font-size:18px;">Pilih Artikel / Film:</h3>
+                <div style="display:flex; flex-direction:column; gap:12px;">`;
+    
+    if (!Array.isArray(items) || items.length === 0) {
+        html += `<p style="text-align:center; color:var(--text-muted);">Tidak ada hasil ditemukan.</p>`;
+    } else {
+        items.forEach(item => {
+            let thumb = item.thumbnail || 'https://via.placeholder.com/150x200?text=No+Image';
+            // CNN biasanya tidak me-return thumbnail saat list search biasa
+            let showImg = type !== 'cnn' && type !== 'anime'; 
+            
+            html += `
+            <div style="display:flex; background:#1e293b; border-radius:12px; overflow:hidden; border:1px solid var(--border-color);">
+                ${showImg ? `<img src="${thumb}" style="width:90px; object-fit:cover;">` : ''}
+                <div style="padding:16px; flex:1; display:flex; flex-direction:column; justify-content:center;">
+                    <h4 style="font-size:14px; margin:0 0 8px 0; color:#fff;">${item.title}</h4>
+                    ${item.type ? `<span style="font-size:11px; color:#fff; background:var(--primary); padding:4px 8px; border-radius:6px; align-self:flex-start; margin-bottom:12px; font-weight:600;">${item.type}</span>` : ''}
+                    <button class="btn-primary" style="padding:10px; font-size:13px; width:100%; border-radius:8px;" onclick="fetchEntDetails('${item.url}', '${type}')">
+                        <i class="fas ${type==='cnn' ? 'fa-book-open' : 'fa-play'}"></i> 
+                        ${type==='cnn' ? 'Baca Berita' : 'Pilih Ini'}
+                    </button>
+                </div>
+            </div>`;
+        });
+    }
+    
+    html += `</div>`;
+    
+    let container = document.getElementById('entertainmentResult');
+    container.innerHTML = html; 
+    container.style.display = 'block';
+}
+
+async function fetchEntDetails(url, type) {
+    if (navigator.vibrate) navigator.vibrate(15);
+    
+    document.getElementById('loadingOverlay').style.display = 'block';
+    document.getElementById('resultCard').style.display = 'none';
+
+    let action = '';
+    if (type === 'anime') action = 'anime-get';
+    else if (type === 'anoboy') action = 'anoboy-get';
+    else if (type === 'donghua') action = 'donghua-get';
+    else if (type === 'cnn') action = 'cnn';
+
+    try {
+        const res = await fetch(API_BASE, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ action: action, params: { url: url } }) 
+        });
+        
+        const json = await res.json();
+        
+        if (json.status) {
+            renderEntDetails(json.data, type);
+        } else {
+            showToast("Gagal mengambil data detail.", "error");
+            document.getElementById('resultCard').style.display = 'block';
+        }
+    } catch(e) {
+        showToast("Error jaringan.", "error");
+        document.getElementById('resultCard').style.display = 'block';
+    } finally {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+}
+
+function renderEntDetails(data, type) {
+    let container = document.getElementById('entertainmentResult');
+    let html = `<button onclick="document.getElementById('mainBtn').click()" style="background:transparent; border:none; color:var(--primary); font-size:14px; margin-bottom:16px; cursor:pointer; display:flex; align-items:center; gap:6px; font-weight:600;"><i class="fas fa-arrow-left"></i> Kembali</button>`;
+    
+    if (type === 'cnn') {
+        html += `
+            <img src="${data.thumbnail}" style="width:100%; border-radius:12px; margin-bottom:16px;">
+            <h3 style="margin-bottom:8px; font-size:18px; text-align:left; color:#fff;">${data.title}</h3>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">Oleh: ${data.author} | ${data.posted_at}</p>
+            <div style="font-size:14px; line-height:1.6; color:#cbd5e1; white-space:pre-wrap; background:#1e293b; padding:16px; border-radius:12px; margin-bottom:16px;">${data.content}</div>
+            <a href="${data.source}" target="_blank" class="btn-primary" style="margin-top:16px; text-align:center; display:block; text-decoration:none;"><i class="fas fa-external-link-alt"></i> Baca Sumber Asli</a>
+        `;
+    } else {
+        let epList = data.episode || data.episodes || [];
+        
+        html += `
+            <div style="display:flex; gap:16px; margin-bottom:16px; align-items:flex-start;">
+                <img src="${data.thumbnail}" style="width:110px; border-radius:12px; object-fit:cover; border:1px solid var(--border-color);">
+                <div style="flex:1;">
+                    <h3 style="font-size:16px; margin:0 0 10px 0; text-align:left; color:#fff; line-height:1.3;">${data.title}</h3>
+                    <p style="font-size:12px; color:var(--text-muted); margin:0 0 6px 0;"><strong>Status:</strong> ${data.status || data.metadata?.status || 'Unknown'}</p>
+                    <p style="font-size:12px; color:var(--text-muted); margin:0 0 6px 0;"><strong>Tipe:</strong> ${data.type || data.metadata?.type || '-'}</p>
+                    <p style="font-size:12px; color:var(--text-muted); margin:0;"><strong>Eps:</strong> ${epList.length}</p>
+                </div>
+            </div>
+            <div style="font-size:12px; color:#cbd5e1; margin-bottom:24px; max-height:100px; overflow-y:auto; background:#1e293b; padding:12px; border-radius:12px; line-height:1.5;">${data.synopsis || data.description || 'Tidak ada deskripsi.'}</div>
+            
+            <h4 style="margin-bottom:16px; color:#fff;">Pilih Episode:</h4>
+            <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(70px, 1fr)); gap:8px;">
+        `;
+
+        epList.forEach(ep => {
+            let epText = ep.episode || "EP";
+            if (epText.length > 5) {
+                let match = epText.match(/(\d+)/);
+                if (match) epText = match[1];
+            }
+            
+            if (type === 'anime') {
+                let epId = 'anime_ep_' + Math.random().toString(36).substr(2, 9);
+                window[epId] = ep.link;
+                html += `<button class="btn-secondary" style="padding:10px; font-size:13px; border-radius:8px;" onclick="renderAnimeLinks('${epId}', '${data.title} Eps ${epText}')">${epText}</button>`;
+            } else {
+                html += `<button class="btn-secondary" style="padding:10px; font-size:13px; border-radius:8px;" onclick="fetchEntVideo('${ep.url}', '${type}')">${epText}</button>`;
+            }
+        });
+
+        html += `</div>`;
+        html += `<div id="videoLinkContainer" style="margin-top:24px;"></div>`;
+    }
+
+    container.innerHTML = html;
+    document.getElementById('resultCard').style.display = 'block';
+    container.style.display = 'block';
+}
+
+function renderAnimeLinks(epId, titleLabel) {
+    if (navigator.vibrate) navigator.vibrate(10);
+    
+    let links = window[epId] || [];
+    let html = `<h4 style="margin-bottom:12px; color:var(--primary); font-size:15px;"><i class="fas fa-film"></i> Streaming & Download <br><span style="font-size:12px; color:var(--text-muted);">${titleLabel}</span></h4>`;
+    
+    links.forEach(q => {
+        html += `
+        <div style="margin-bottom:12px; background:#1e293b; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">
+            <strong style="display:block; margin-bottom:10px; color:#fff; font-size:13px;">${q.quality}</strong>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">`;
+            
+        q.url.forEach(link => {
+            html += `<a href="${link.url}" target="_blank" class="btn-primary" style="padding:8px 12px; font-size:12px; text-decoration:none; border-radius:8px; flex-grow:1; text-align:center;">${link.server}</a>`;
+        });
+        
+        html += `</div></div>`;
+    });
+    
+    const vCont = document.getElementById('videoLinkContainer');
+    vCont.innerHTML = html;
+    vCont.scrollIntoView({behavior: 'smooth'});
+}
+
+async function fetchEntVideo(url, type) {
+    if (navigator.vibrate) navigator.vibrate(10);
+    
+    const vCont = document.getElementById('videoLinkContainer');
+    vCont.innerHTML = `
+        <div style="text-align:center; padding:20px;">
+            <i class="fas fa-spinner fa-spin" style="font-size:24px; color:var(--primary);"></i>
+            <p style="margin-top:10px; font-size:13px; color:var(--text-muted);">Menyiapkan server...</p>
+        </div>`;
+        
+    vCont.scrollIntoView({behavior: 'smooth'});
+
+    let action = type === 'anoboy' ? 'anoboy-episode' : 'donghua-episode';
+    
+    try {
+        const res = await fetch(API_BASE, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ action: action, params: { url: url } }) 
+        });
+        const json = await res.json();
+        
+        if (json.status) {
+            let data = json.data;
+            let html = `<h4 style="margin-bottom:12px; color:var(--primary); font-size:15px;"><i class="fas fa-play-circle"></i> Tonton Sekarang</h4>`;
+            
+            if (data.streaming && data.streaming.length > 0) {
+                html += `<div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;">`;
+                data.streaming.forEach((s, idx) => {
+                    let serverName = s.server || `Server ${idx + 1}`;
+                    html += `<a href="${s.url}" target="_blank" class="btn-primary" style="padding:12px; flex:1; text-align:center; text-decoration:none; font-size:13px; border-radius:8px; min-width:45%;"><i class="fas fa-play"></i> Play (${serverName})</a>`;
+                });
+                html += `</div>`;
+            }
+
+            if (data.download) {
+                if (typeof data.download === 'string') {
+                    html += `<a href="${data.download}" target="_blank" class="btn-secondary" style="padding:12px; display:block; text-align:center; text-decoration:none; font-size:13px; border-radius:8px;"><i class="fas fa-download"></i> Download Video</a>`;
+                } else {
+                    html += `
+                    <div style="background:#1e293b; padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">
+                        <strong style="display:block; margin-bottom:10px; color:#fff; font-size:13px;">Download Servers:</strong>
+                        <div style="display:flex; flex-wrap:wrap; gap:8px;">`;
+                        
+                    for (let key in data.download) {
+                        html += `<a href="${data.download[key]}" target="_blank" class="btn-secondary" style="padding:8px 12px; font-size:12px; text-decoration:none; border-radius:8px;">${key}</a>`;
+                    }
+                    
+                    html += `</div></div>`;
+                }
+            }
+            vCont.innerHTML = html;
+        } else {
+            vCont.innerHTML = `<p style="color:#ef4444; text-align:center; padding:16px; background:rgba(239,68,68,0.1); border-radius:12px;">Gagal mengambil link video.</p>`;
+        }
+    } catch (e) {
+        vCont.innerHTML = `<p style="color:#ef4444; text-align:center; padding:16px; background:rgba(239,68,68,0.1); border-radius:12px;">Error jaringan saat memuat server.</p>`;
+    }
+}
+
+// ========================================================
+// FUNGSI UTAMA (TOMBOL DOWNLOAD / CARI DIKLIK)
+// ========================================================
+
 async function processAction(isFromQueue = false) {
-    if (navigator.vibrate) navigator.vibrate(20);
+    if (navigator.vibrate) {
+        navigator.vibrate(20);
+    }
     
     if (typeof FITUR !== 'undefined' && FITUR[currentPlatform] === false) {
         return showToast("Fitur ini sedang dalam pemeliharaan.", "error");
@@ -1014,7 +1244,9 @@ async function processAction(isFromQueue = false) {
         return showToast("Harap masukkan URL tautan.", "error");
     } else if (currentPlatform === 'lirik' && !urlVal) { 
         return showToast("Harap masukkan judul lagu.", "error");
-    } else if (!['hd-foto', 'remove-bg', 'noise-reduce'].includes(currentPlatform) && !urlVal && !textVal) {
+    } else if (['anime', 'anoboy', 'donghua'].includes(currentPlatform) && !urlVal) { 
+        return showToast("Harap ketik judul yang ingin dicari.", "error");
+    } else if (!['hd-foto', 'remove-bg', 'noise-reduce', 'cnn'].includes(currentPlatform) && !urlVal && !textVal) {
         return showToast("Harap isi kolom terlebih dahulu.", "error");
     }
 
@@ -1036,10 +1268,14 @@ async function processAction(isFromQueue = false) {
     }
     
     const loadingOverlay = document.getElementById('loadingOverlay'); 
-    if (loadingOverlay) loadingOverlay.style.display = 'block'; 
+    if (loadingOverlay) {
+        loadingOverlay.style.display = 'block'; 
+    }
     
     const resultCard = document.getElementById('resultCard'); 
-    if (resultCard) resultCard.style.display = 'none'; 
+    if (resultCard) {
+        resultCard.style.display = 'none'; 
+    }
     
     document.querySelectorAll('#resultCard > div').forEach(el => { 
         el.style.display = 'none'; 
@@ -1058,6 +1294,7 @@ async function processAction(isFromQueue = false) {
         if (loadingText) loadingText.innerText = "Memproses permintaan...";
     }
 
+    // Eksekusi Lokal (Tanpa Hit API Neoxr)
     if (['qr-gen', 'shortlink', 'tts'].includes(currentPlatform)) {
         setTimeout(async () => {
             const mainResultCard = document.getElementById('resultCard');
@@ -1101,7 +1338,9 @@ async function processAction(isFromQueue = false) {
             if (loadingOverlay) loadingOverlay.style.display = 'none';
             if (mainBtn) {
                 mainBtn.disabled = false;
-                mainBtn.innerHTML = currentPlatform === 'qr-gen' ? 'Generate QR Code' : currentPlatform === 'shortlink' ? 'Pendekkan Tautan' : 'Ubah ke Suara';
+                if (currentPlatform === 'qr-gen') mainBtn.innerHTML = 'Generate QR Code';
+                else if (currentPlatform === 'shortlink') mainBtn.innerHTML = 'Pendekkan Tautan';
+                else if (currentPlatform === 'tts') mainBtn.innerHTML = 'Ubah ke Suara';
             }
         }, 1000);
         return; 
@@ -1110,7 +1349,7 @@ async function processAction(isFromQueue = false) {
     try {
         let finalInputData = urlVal || textVal; 
         let fileBase64Obj = null;
-        let uploadedFileUrl = "";
+        let uploadedFileUrl = ""; 
 
         if (['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor', 'koros'].includes(currentPlatform)) {
             const file = document.getElementById('mediaFile').files[0];
@@ -1120,6 +1359,7 @@ async function processAction(isFromQueue = false) {
                 reader.onerror = () => reject(new Error("Gagal membaca file")); 
                 reader.readAsDataURL(file); 
             });
+            
             fileBase64Obj = { 
                 base64: base64String, 
                 fileName: file.name, 
@@ -1127,7 +1367,7 @@ async function processAction(isFromQueue = false) {
             };
             finalInputData = urlVal; 
             
-            // =========== SISTEM BYPASS UPLOAD UNTUK KOROS DAN LAINNYA ===========
+            // Bypass Upload
             try {
                 const upRes = await fetch(API_BASE, {
                     method: 'POST',
@@ -1137,59 +1377,146 @@ async function processAction(isFromQueue = false) {
                 const upJson = await upRes.json();
                 if (upJson.url) {
                     uploadedFileUrl = upJson.url;
-                    // Hilangkan fileData agar proxy tidak mengirim ulang data base64 mentah
                     fileBase64Obj = null; 
                 }
             } catch(e) {
                 console.error("Pre-upload gagal, melanjutkan dengan mode normal.");
             }
-            // ====================================================================
         }
 
         let action = ''; 
         let params = {};
         
-        if (currentPlatform === 'pulsa' || currentPlatform === 'topup') { action = providerData; params = { number: finalInputData, amount: amountData }; } 
-        else if (currentPlatform === 'youtube') { action = 'youtube'; params = { url: finalInputData, type: ytType, quality: ytQuality }; } 
-        else if (currentPlatform === 'tiktok') { action = 'snaptik-v2'; params = { url: finalInputData }; } 
-        else if (currentPlatform === 'ig') { action = 'ig'; params = { url: finalInputData }; } 
-        else if (currentPlatform === 'facebook') { action = 'fb'; params = { url: finalInputData }; } 
-        else if (currentPlatform === 'twitter') { action = 'twitter'; params = { url: finalInputData }; } 
-        else if (currentPlatform === 'terabox') { action = 'terabox'; params = { url: finalInputData }; } 
-        else if (currentPlatform === 'pin') { action = 'pin'; params = { url: finalInputData }; } 
-        else if (currentPlatform === 'spotify') { action = 'spotify'; params = { url: finalInputData }; } 
-        else if (currentPlatform === 'ss-web') { action = 'ss'; params = { url: finalInputData, device: 'desktop' }; } 
-        else if (currentPlatform === 'yt-transcript') { action = 'transcript'; params = { url: finalInputData }; } 
-        else if (currentPlatform === 'ai-detector') { action = 'ai-detector'; params = { text: finalInputData }; } 
-        else if (currentPlatform === 'iqc') { action = 'iqc'; params = { text: finalInputData, time: phoneTime, chat_time: chatTime }; } 
-        else if (currentPlatform === 'nulis') { action = 'nulis'; params = { text: finalInputData }; } 
-        else if (currentPlatform === 'lirik') { action = 'lyric'; params = { q: finalInputData }; } 
-        else if (currentPlatform === 'roblox-stalk') { action = 'roblox'; params = { username: finalInputData }; } 
-        else if (currentPlatform === 'dc-stalk') { action = 'discord'; params = { id: finalInputData }; } 
-        else if (currentPlatform === 'tt-stalk') { action = 'tiktokstalk'; params = { username: finalInputData }; } 
-        else if (currentPlatform === 'tw-stalk') { action = 'twitterstalk'; params = { username: finalInputData }; } 
-        else if (currentPlatform === 'gh-stalk') { action = 'github'; params = { username: finalInputData }; } 
-        else if (currentPlatform === 'ig-stalk') { action = 'igstalk'; params = { username: finalInputData }; } 
-        else if (currentPlatform === 'th-stalk') { action = 'thstalk'; params = { username: finalInputData }; }
-        else if (currentPlatform === 'ai-anime') { action = 'ai-anime'; params = { q: finalInputData }; }
-        else if (currentPlatform === 'blackbox') { action = 'blackbox'; params = { q: finalInputData }; }
-        else if (currentPlatform === 'gpt4') { action = 'gpt4'; params = { q: finalInputData }; }
-        else if (currentPlatform === 'claude') { action = 'claude'; params = { q: finalInputData }; }
-        else if (currentPlatform === 'genimg') { action = 'genimg'; params = { prompt: finalInputData }; }
-        else if (currentPlatform === 'bard') { action = 'bard'; params = { q: finalInputData }; }
-        else if (currentPlatform === 'gemini') { action = 'gemini-chat'; params = { q: finalInputData }; }
-        else if (currentPlatform === 'ai-real') { action = 'ai-real'; params = { q: finalInputData }; }
-        else if (currentPlatform === 'waifu') { action = 'waifudiff'; params = { q: finalInputData }; }
-        else if (currentPlatform === 'felo') { action = 'felo'; params = { q: finalInputData }; }
-        else if (currentPlatform === 'perplexity') { action = 'perplexity'; params = { q: finalInputData }; }
-        
-        else if (currentPlatform === 'hd-foto') { action = 'upscale'; params = { image: uploadedFileUrl || "" }; } 
-        else if (currentPlatform === 'noise-reduce') { action = 'noice-reducer'; params = { file: uploadedFileUrl || "" }; } 
-        else if (currentPlatform === 'remove-bg') { action = 'nobg'; params = { image: uploadedFileUrl || "" }; } 
-        else if (currentPlatform === 'photo-editor') { action = 'photo-editor'; params = { image: uploadedFileUrl || "", q: finalInputData }; } 
-        else if (currentPlatform === 'koros') { action = 'koros'; params = { image: uploadedFileUrl || "", q: finalInputData }; }
+        if (currentPlatform === 'pulsa' || currentPlatform === 'topup') { 
+            action = providerData; 
+            params = { number: finalInputData, amount: amountData }; 
+        } else if (currentPlatform === 'youtube') { 
+            action = 'youtube'; 
+            params = { url: finalInputData, type: ytType, quality: ytQuality }; 
+        } else if (currentPlatform === 'tiktok') { 
+            action = 'snaptik-v2'; 
+            params = { url: finalInputData }; 
+        } else if (currentPlatform === 'ig') { 
+            action = 'ig'; 
+            params = { url: finalInputData }; 
+        } else if (currentPlatform === 'facebook') { 
+            action = 'fb'; 
+            params = { url: finalInputData }; 
+        } else if (currentPlatform === 'twitter') { 
+            action = 'twitter'; 
+            params = { url: finalInputData }; 
+        } else if (currentPlatform === 'terabox') { 
+            action = 'terabox'; 
+            params = { url: finalInputData }; 
+        } else if (currentPlatform === 'pin') { 
+            action = 'pin'; 
+            params = { url: finalInputData }; 
+        } else if (currentPlatform === 'spotify') { 
+            action = 'spotify'; 
+            params = { url: finalInputData }; 
+        } else if (currentPlatform === 'ss-web') { 
+            action = 'ss'; 
+            params = { url: finalInputData, device: 'desktop' }; 
+        } else if (currentPlatform === 'yt-transcript') { 
+            action = 'transcript'; 
+            params = { url: finalInputData }; 
+        } else if (currentPlatform === 'ai-detector') { 
+            action = 'ai-detector'; 
+            params = { text: finalInputData }; 
+        } else if (currentPlatform === 'iqc') { 
+            action = 'iqc'; 
+            params = { text: finalInputData, time: phoneTime, chat_time: chatTime }; 
+        } else if (currentPlatform === 'nulis') { 
+            action = 'nulis'; 
+            params = { text: finalInputData }; 
+        } else if (currentPlatform === 'lirik') { 
+            action = 'lyric'; 
+            params = { q: finalInputData }; 
+        } else if (currentPlatform === 'roblox-stalk') { 
+            action = 'roblox'; 
+            params = { username: finalInputData }; 
+        } else if (currentPlatform === 'dc-stalk') { 
+            action = 'discord'; 
+            params = { id: finalInputData }; 
+        } else if (currentPlatform === 'tt-stalk') { 
+            action = 'tiktokstalk'; 
+            params = { username: finalInputData }; 
+        } else if (currentPlatform === 'tw-stalk') { 
+            action = 'twitterstalk'; 
+            params = { username: finalInputData }; 
+        } else if (currentPlatform === 'gh-stalk') { 
+            action = 'github'; 
+            params = { username: finalInputData }; 
+        } else if (currentPlatform === 'ig-stalk') { 
+            action = 'igstalk'; 
+            params = { username: finalInputData }; 
+        } else if (currentPlatform === 'th-stalk') { 
+            action = 'thstalk'; 
+            params = { username: finalInputData }; 
+        } else if (currentPlatform === 'ai-anime') { 
+            action = 'ai-anime'; 
+            params = { q: finalInputData }; 
+        } else if (currentPlatform === 'blackbox') { 
+            action = 'blackbox'; 
+            params = { q: finalInputData }; 
+        } else if (currentPlatform === 'gpt4') { 
+            action = 'gpt4'; 
+            params = { q: finalInputData }; 
+        } else if (currentPlatform === 'claude') { 
+            action = 'claude'; 
+            params = { q: finalInputData }; 
+        } else if (currentPlatform === 'genimg') { 
+            action = 'genimg'; 
+            params = { prompt: finalInputData }; 
+        } else if (currentPlatform === 'bard') { 
+            action = 'bard'; 
+            params = { q: finalInputData }; 
+        } else if (currentPlatform === 'gemini') { 
+            action = 'gemini-chat'; 
+            params = { q: finalInputData }; 
+        } else if (currentPlatform === 'ai-real') { 
+            action = 'ai-real'; 
+            params = { q: finalInputData }; 
+        } else if (currentPlatform === 'waifu') { 
+            action = 'waifudiff'; 
+            params = { q: finalInputData }; 
+        } else if (currentPlatform === 'felo') { 
+            action = 'felo'; 
+            params = { q: finalInputData }; 
+        } else if (currentPlatform === 'perplexity') { 
+            action = 'perplexity'; 
+            params = { q: finalInputData }; 
+        } else if (currentPlatform === 'hd-foto') { 
+            action = 'upscale'; 
+            params = { image: uploadedFileUrl || "" }; 
+        } else if (currentPlatform === 'noise-reduce') { 
+            action = 'noice-reducer'; 
+            params = { file: uploadedFileUrl || "" }; 
+        } else if (currentPlatform === 'remove-bg') { 
+            action = 'nobg'; 
+            params = { image: uploadedFileUrl || "" }; 
+        } else if (currentPlatform === 'photo-editor') { 
+            action = 'photo-editor'; 
+            params = { image: uploadedFileUrl || "", q: finalInputData }; 
+        } else if (currentPlatform === 'koros') { 
+            action = 'koros'; 
+            params = { image: uploadedFileUrl || "", q: finalInputData }; 
+        } else if (currentPlatform === 'anime') { 
+            action = 'anime'; 
+            params = { q: finalInputData }; 
+        } else if (currentPlatform === 'anoboy') { 
+            action = 'anoboy'; 
+            params = { q: finalInputData }; 
+        } else if (currentPlatform === 'donghua') { 
+            action = 'donghub'; 
+            params = { q: finalInputData }; 
+        } else if (currentPlatform === 'cnn') { 
+            action = 'cnn'; 
+            params = finalInputData ? { q: finalInputData } : {}; 
+        }
 
         const payload = { action: action, params: params };
+        
         if (fileBase64Obj) {
             payload.fileData = fileBase64Obj;
         }
@@ -1205,17 +1532,29 @@ async function processAction(isFromQueue = false) {
         if (json.status === true) {
             showToast("Sukses!", "success");
             const data = json.data || json;
+            
+            // RESULT ENTERTAINMENT (List Anime, Anoboy, Donghua, CNN)
+            if (['anime', 'anoboy', 'donghua', 'cnn'].includes(currentPlatform)) {
+                renderEntList(data, currentPlatform);
+                return; 
+            }
+
             const mainResultCard = document.getElementById('resultCard');
-            if (mainResultCard) mainResultCard.style.display = 'block';
+            if (mainResultCard) {
+                mainResultCard.style.display = 'block';
+            }
 
             if (['ai-anime', 'genimg', 'ai-real', 'waifu'].includes(currentPlatform)) {
                 document.getElementById('aiImageResult').style.display = 'block';
                 let imgSrc = data.url;
+                
                 if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
+                
                 document.getElementById('aiGeneratedImage').src = imgSrc;
                 document.getElementById('aiImageActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_AIGen.jpg')"><i class="fas fa-download"></i> Simpan Gambar</button>`;
+                
                 saveToHistory(`${currentPlatform.toUpperCase()} Image`, imgSrc);
                 extractColorAndApply(imgSrc);
             }
@@ -1244,6 +1583,7 @@ async function processAction(isFromQueue = false) {
             }
             else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) {
                 document.getElementById('stalkResult').style.display = 'block';
+                
                 const avatarImg = document.getElementById('stalkAvatar'); 
                 const nameEl = document.getElementById('stalkName'); 
                 const userEl = document.getElementById('stalkUsername'); 
@@ -1253,9 +1593,12 @@ async function processAction(isFromQueue = false) {
                 
                 gridEl.innerHTML = ''; 
                 extraEl.innerHTML = ''; 
-                if (bioEl) bioEl.innerText = ''; 
+                if (bioEl) {
+                    bioEl.innerText = ''; 
+                }
                 
                 const profilePic = data.photo || data.avatar || data.avatar_url || data.profile_pic_url || (data.hd_profile_pic_versions && data.hd_profile_pic_versions[0].url) || 'https://i.ibb.co/30Z1W4z/user.png';
+                
                 avatarImg.src = profilePic; 
                 extractColorAndApply(profilePic);
                 
@@ -1324,7 +1667,9 @@ async function processAction(isFromQueue = false) {
                 const listContainer = document.getElementById('lirikList'); 
                 const lirikTitleEl = document.getElementById('lirikTitle') || document.querySelector('#lirikResult h3');
                 
-                if (lirikTitleEl) lirikTitleEl.innerText = "Pilih Versi Lagu:"; 
+                if (lirikTitleEl) {
+                    lirikTitleEl.innerText = "Pilih Versi Lagu:"; 
+                }
                 
                 listContainer.style.display = 'flex'; 
                 document.getElementById('lirikContentWrapper').style.display = 'none'; 
@@ -1336,7 +1681,9 @@ async function processAction(isFromQueue = false) {
                         listContainer.innerHTML += `<button class="btn-secondary" onclick="fetchLirik('${safeUrl}')"><i class="fas fa-music"></i> ${item.title}</button>`; 
                     });
                 } else if (data && data.lyric) {
-                    if (lirikTitleEl) lirikTitleEl.innerText = data.title || "Hasil Lirik";
+                    if (lirikTitleEl) {
+                        lirikTitleEl.innerText = data.title || "Hasil Lirik";
+                    }
                     listContainer.style.display = 'none';
                     document.getElementById('lirikText').innerText = data.lyric;
                     document.getElementById('lirikContentWrapper').style.display = 'block';
@@ -1345,42 +1692,55 @@ async function processAction(isFromQueue = false) {
             else if (currentPlatform === 'photo-editor') {
                 document.getElementById('photoEditorResult').style.display = 'block'; 
                 const infoEl = document.getElementById('photoEditorInfo'); 
-                if (infoEl) infoEl.innerText = `Ukuran: ${data.size || 'HD'}`; 
+                
+                if (infoEl) {
+                    infoEl.innerText = `Ukuran: ${data.size || 'HD'}`; 
+                }
                 
                 let imgSrc = data.url; 
                 if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
+                
                 _imgStore['photoEditor'] = imgSrc; 
                 document.getElementById('photoEditorImage').src = imgSrc; 
                 document.getElementById('photoEditorActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload(_imgStore['photoEditor'], 'Moonlight_EditAI.png')"><i class="fas fa-download"></i> Simpan Gambar</button>`;
+                
                 saveToHistory(`Edit AI`, imgSrc); 
                 extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'hd-foto') {
                 document.getElementById('hdFotoResult').style.display = 'block'; 
                 const infoEl = document.getElementById('hdFotoInfo'); 
-                if (infoEl) infoEl.innerText = `Ukuran: ${data.size || 'HD'}`; 
+                
+                if (infoEl) {
+                    infoEl.innerText = `Ukuran: ${data.size || 'HD'}`; 
+                }
                 
                 let imgSrc = data.url; 
                 if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
+                
                 _imgStore['hdFoto'] = imgSrc; 
                 document.getElementById('hdImageResult').src = imgSrc; 
                 document.getElementById('hdActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload(_imgStore['hdFoto'], 'Moonlight_HDFoto.png')"><i class="fas fa-download"></i> Simpan Gambar HD</button>`;
+                
                 saveToHistory(`HD Foto`, imgSrc); 
                 extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'remove-bg') {
                 document.getElementById('removeBgResult').style.display = 'block'; 
+                
                 let imgSrc = data.no_background || data.url || data.image; 
                 if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
+                
                 _imgStore['removeBg'] = imgSrc; 
                 document.getElementById('removeBgImage').src = imgSrc; 
                 document.getElementById('removeBgActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload(_imgStore['removeBg'], 'Moonlight_NoBG.png')"><i class="fas fa-download"></i> Simpan Transparan</button>`;
+                
                 saveToHistory(`Hapus BG`, imgSrc); 
                 extractColorAndApply(imgSrc);
             }
@@ -1393,30 +1753,36 @@ async function processAction(isFromQueue = false) {
             }
             else if (currentPlatform === 'ss-web') {
                 document.getElementById('ssWebResult').style.display = 'block'; 
+                
                 let imgSrc = data.url; 
                 if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
+                
                 document.getElementById('ssWebImage').src = imgSrc; 
                 document.getElementById('ssWebActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_Screenshot.png')"><i class="fas fa-download"></i> Simpan Screenshot</button>`;
                 extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'iqc') {
                 document.getElementById('iqcResult').style.display = 'block'; 
+                
                 let imgSrc = data.url; 
                 if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
+                
                 document.getElementById('iqcImage').src = imgSrc; 
                 document.getElementById('iqcActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_Kutipan.png')"><i class="fas fa-download"></i> Simpan Kutipan</button>`;
                 extractColorAndApply(imgSrc);
             }
             else if (currentPlatform === 'nulis') {
                 document.getElementById('nulisResult').style.display = 'block'; 
+                
                 let imgSrc = data.url; 
                 if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
                     imgSrc = 'data:image/png;base64,' + imgSrc;
                 }
+                
                 document.getElementById('nulisImage').src = imgSrc; 
                 document.getElementById('nulisActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_Nulis.png')"><i class="fas fa-download"></i> Simpan Buku</button>`;
                 extractColorAndApply(imgSrc);
@@ -1424,6 +1790,7 @@ async function processAction(isFromQueue = false) {
             else if (currentPlatform === 'ai-detector') {
                 document.getElementById('aiResult').style.display = 'block'; 
                 const badge = document.getElementById('aiFeedbackBadge'); 
+                
                 badge.innerText = data.feedback || "Selesai Dianalisis"; 
                 badge.className = "ai-feedback-badge"; 
                 
@@ -1534,6 +1901,7 @@ async function processAction(isFromQueue = false) {
                         extractColorAndApply(data.photo[0]);
                     } else { 
                         thumbCon.style.display = 'none'; 
+                        
                         if (data.video) { 
                             actionBtns.innerHTML += `<button class="btn-secondary" onclick="openPip('${data.video}')"><i class="fas fa-play"></i> Pratinjau PiP</button>`; 
                             actionBtns.innerHTML += `<button class="btn-primary" onclick="forceDownload('${data.video}', 'TikTok.mp4')"><i class="fas fa-video"></i> Download Video</button>`; 
@@ -1559,6 +1927,7 @@ async function processAction(isFromQueue = false) {
                         }
                         actionBtns.innerHTML += `<button class="btn-primary" onclick="forceDownload('${item.url}', 'IG_${i}.mp4')"><i class="fas fa-download"></i> Download File ${i+1}</button>`; 
                     }); 
+                    
                     if (data.length > 0) {
                         saveToHistory(`Media Instagram`, data[0].url); 
                     }
@@ -1620,6 +1989,10 @@ async function processAction(isFromQueue = false) {
                 mainBtn.innerHTML = "Pendekkan Tautan";
             } else if (['tts', 'gpt4', 'claude', 'bard', 'gemini', 'blackbox', 'felo', 'perplexity', 'koros'].includes(currentPlatform)) {
                 mainBtn.innerHTML = "Tanya AI";
+            } else if (['anime', 'anoboy', 'donghua'].includes(currentPlatform)) {
+                mainBtn.innerHTML = "Cari Film";
+            } else if (currentPlatform === 'cnn') {
+                mainBtn.innerHTML = "Baca Berita Terkini";
             } else {
                 mainBtn.innerHTML = "Download Sekarang";
             }
