@@ -14,11 +14,11 @@ let gameScore = 0;
 let isJumping = false;
 
 // ==========================================
-// LOGIKA CAROUSEL KATEGORI (5 HALAMAN)
+// LOGIKA CAROUSEL KATEGORI (GESER MENU)
 // ==========================================
 let currentCatIndex = 0;
-const categoryTitles = ["Downloader Media", "Tools", "AI", "Stalker / Checker", "Digital & Info"];
-const totalCategories = 5;
+const categoryTitles = ["Downloader Media", "Tools", "AI", "Stalker / Checker", "Entertainment", "Digital & Info"];
+const totalCategories = 6;
 
 function updateCategoryUI() {
     const titleEl = document.getElementById('catTitle');
@@ -26,6 +26,7 @@ function updateCategoryUI() {
         titleEl.innerText = categoryTitles[currentCatIndex];
     }
     
+    // Tampilkan hanya halaman yang aktif
     for (let i = 0; i < totalCategories; i++) {
         const page = document.getElementById('cat-page-' + i);
         if (page) {
@@ -37,6 +38,7 @@ function updateCategoryUI() {
         }
     }
     
+    // Update warna titik indikator
     const dots = document.querySelectorAll('.cat-dot');
     dots.forEach((dot, index) => {
         if (index === currentCatIndex) {
@@ -88,7 +90,7 @@ window.onload = function () {
 
     setPlatform('youtube');
     renderHistory();
-    updateCategoryUI(); 
+    updateCategoryUI(); // Inisialisasi tampilan modal pertama kali
     
     if (!navigator.onLine) {
         handleOffline();
@@ -1056,7 +1058,6 @@ async function processAction(isFromQueue = false) {
         if (loadingText) loadingText.innerText = "Memproses permintaan...";
     }
 
-    // Logika Bypass untuk Tools Eksternal (Tidak kena Kuota Neoxr)
     if (['qr-gen', 'shortlink', 'tts'].includes(currentPlatform)) {
         setTimeout(async () => {
             const mainResultCard = document.getElementById('resultCard');
@@ -1109,7 +1110,7 @@ async function processAction(isFromQueue = false) {
     try {
         let finalInputData = urlVal || textVal; 
         let fileBase64Obj = null;
-        let uploadedFileUrl = ""; // Menyimpan URL dari pre-upload
+        let uploadedFileUrl = "";
 
         if (['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor', 'koros'].includes(currentPlatform)) {
             const file = document.getElementById('mediaFile').files[0];
@@ -1126,9 +1127,7 @@ async function processAction(isFromQueue = false) {
             };
             finalInputData = urlVal; 
             
-            // =========== SISTEM BYPASS UPLOAD ===========
-            // Mengupload gambar terlebih dahulu agar mendapatkan URL tmpfiles
-            // sehingga API Koros tidak akan pernah error 'parameter "image" is required' lagi!
+            // =========== SISTEM BYPASS UPLOAD UNTUK KOROS DAN LAINNYA ===========
             try {
                 const upRes = await fetch(API_BASE, {
                     method: 'POST',
@@ -1138,13 +1137,13 @@ async function processAction(isFromQueue = false) {
                 const upJson = await upRes.json();
                 if (upJson.url) {
                     uploadedFileUrl = upJson.url;
-                    // Kosongkan agar proxy tidak mengupload ulang secara ganda
+                    // Hilangkan fileData agar proxy tidak mengirim ulang data base64 mentah
                     fileBase64Obj = null; 
                 }
             } catch(e) {
                 console.error("Pre-upload gagal, melanjutkan dengan mode normal.");
             }
-            // ============================================
+            // ====================================================================
         }
 
         let action = ''; 
@@ -1184,7 +1183,6 @@ async function processAction(isFromQueue = false) {
         else if (currentPlatform === 'felo') { action = 'felo'; params = { q: finalInputData }; }
         else if (currentPlatform === 'perplexity') { action = 'perplexity'; params = { q: finalInputData }; }
         
-        // PENGGUNAAN BYPASS UPLOAD PADA IMAGE TOOLS
         else if (currentPlatform === 'hd-foto') { action = 'upscale'; params = { image: uploadedFileUrl || "" }; } 
         else if (currentPlatform === 'noise-reduce') { action = 'noice-reducer'; params = { file: uploadedFileUrl || "" }; } 
         else if (currentPlatform === 'remove-bg') { action = 'nobg'; params = { image: uploadedFileUrl || "" }; } 
@@ -1224,10 +1222,7 @@ async function processAction(isFromQueue = false) {
             else if (['blackbox', 'gpt4', 'claude', 'bard', 'gemini', 'felo', 'perplexity', 'koros'].includes(currentPlatform)) {
                 document.getElementById('aiChatResult').style.display = 'block';
                 
-                // Mengambil nilai respon berdasarkan platform (Koros menggunakan result, yang lain message)
                 let chatResponse = data.message || data.result || "Tidak ada respon dari AI.";
-                
-                // Menghilangkan markdown bold
                 chatResponse = chatResponse.replace(/\*\*/g, '');
                 
                 document.getElementById('aiChatText').innerText = chatResponse;
