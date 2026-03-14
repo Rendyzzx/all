@@ -25,10 +25,9 @@ const totalCategories = 6;
 function showHome() {
     if(navigator.vibrate) navigator.vibrate(10);
     const hour = new Date().getHours();
-    let greeting = "Good Night!";
-    if(hour >= 5 && hour < 12) greeting = "Good Morning!";
-    else if(hour >= 12 && hour < 17) greeting = "Good Afternoon!";
-    else if(hour >= 17 && hour < 20) greeting = "Good Evening!";
+    let greeting = "Good Evening";
+    if(hour >= 5 && hour < 12) greeting = "Good Morning";
+    else if(hour >= 12 && hour < 17) greeting = "Good Afternoon";
     const greetEl = document.getElementById('greetingText');
     if(greetEl) greetEl.innerText = greeting;
 
