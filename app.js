@@ -12,8 +12,6 @@ let gameScore = 0;
 let isJumping = false;
 let currentCatIndex = 0;
 
-let serverUptimeSec = 4193200;
-
 const categoryTitles = [
     "Media Downloader", 
     "Tools", 
@@ -53,6 +51,14 @@ function showHome() {
     if (defaultBtn) defaultBtn.classList.add('active');
     
     currentPlatform = '';
+}
+
+function updateUserStats() {
+    const el = document.getElementById('userStats');
+    if(el) {
+        const count = historyList.length;
+        el.innerText = 'LOCAL STORAGE: ' + count + ' FILE' + (count !== 1 ? 'S' : '') + ' SAVED';
+    }
 }
 
 function updateCategoryUI() {
@@ -96,16 +102,6 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-function updateUptime() {
-    serverUptimeSec++;
-    let d = Math.floor(serverUptimeSec / 86400);
-    let h = Math.floor((serverUptimeSec % 86400) / 3600);
-    let m = Math.floor((serverUptimeSec % 3600) / 60);
-    let s = serverUptimeSec % 60;
-    const el = document.getElementById('systemUptime');
-    if(el) el.innerText = `UPTIME: ${d}D ${h}H ${m}M ${s}S`;
-}
-
 window.onload = function () {
     setTimeout(() => {
         const splash = document.getElementById('splashScreen');
@@ -114,10 +110,8 @@ window.onload = function () {
 
     showHome();
     renderHistory();
+    updateUserStats();
     updateCategoryUI(); 
-    
-    setInterval(updateUptime, 1000);
-    updateUptime();
     
     if (!navigator.onLine) handleOffline();
     window.addEventListener('online', handleOnline);
@@ -439,7 +433,9 @@ function saveToHistory(title, link) {
     const newItem = { id: Date.now(), title: title, link: finalLink, date: new Date().toLocaleString('en-US', { day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit' }) };
     historyList.unshift(newItem);
     if (historyList.length > 10) historyList.pop(); 
-    localStorage.setItem('moonlight_history', JSON.stringify(historyList)); renderHistory();
+    localStorage.setItem('moonlight_history', JSON.stringify(historyList)); 
+    renderHistory();
+    updateUserStats();
 }
 
 function renderHistory() {
@@ -456,7 +452,11 @@ function renderHistory() {
 }
 
 function clearHistory() {
-    if (confirm("Are you sure you want to clear all history?")) { historyList = []; localStorage.removeItem('moonlight_history'); renderHistory(); showToast("History cleared successfully", "success"); }
+    if (confirm("Are you sure you want to clear all history?")) { 
+        historyList = []; localStorage.removeItem('moonlight_history'); 
+        renderHistory(); updateUserStats();
+        showToast("History cleared successfully", "success"); 
+    }
 }
 
 function openHistory() { if (navigator.vibrate) navigator.vibrate(15); renderHistory(); const modal = document.getElementById('historyModal'); if (modal) modal.style.display = 'flex'; }
