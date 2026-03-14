@@ -757,7 +757,12 @@ async function processAction(isFromQueue = false) {
                 saveToHistory(`Voice TTS`, ttsUrl); showToast("Successfully processed voice!", "success");
             }
             if (loadingOverlay) loadingOverlay.style.display = 'none';
-            if (mainBtn) { mainBtn.disabled = false; if (currentPlatform === 'qr-gen') mainBtn.innerHTML = 'Generate QR Code'; else if (currentPlatform === 'shortlink') mainBtn.innerHTML = 'Shorten Link'; else if (currentPlatform === 'tts') mainBtn.innerHTML = 'Convert to Voice'; }
+            if (mainBtn) { 
+                mainBtn.disabled = false; 
+                if (currentPlatform === 'qr-gen') mainBtn.innerHTML = 'Generate QR Code'; 
+                else if (currentPlatform === 'shortlink') mainBtn.innerHTML = 'Shorten Link'; 
+                else if (currentPlatform === 'tts') mainBtn.innerHTML = 'Convert to Voice'; 
+            }
         }, 1000);
         return; 
     }
