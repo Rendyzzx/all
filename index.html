@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Moonlight - About you? N</title>
+    <title>Moonlight - Super App</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1807/1807350.png">
@@ -83,10 +83,12 @@
         
         .home-dashboard { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 24px; animation: slideUp 0.4s ease; margin-bottom: 20px; }
         
+        /* Kartu Sapaan: Custom Banner dengan Gelap 50% */
         .greeting-card {
-            background-image: linear-gradient(rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.2) 100%), url('/api/2d7af96cf6a1753b2abb1df4e1afad1b.jpg');
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('api/2d7af96cf6a1753b2abb1df4e1afad1b.jpg');
             background-size: cover;
             background-position: center;
+            background-color: #1e293b;
             border: 1px solid rgba(255,255,255,0.05);
             border-left: 4px solid var(--primary);
             border-radius: 12px;
@@ -97,10 +99,10 @@
             text-align: left;
         }
 
-        .gc-badge { font-size: 11px; letter-spacing: 2px; color: var(--primary); font-weight: 700; margin-bottom: 8px; display: block; }
-        .greeting-card h2 { margin: 0 0 4px 0; font-size: 26px; color: #fff; font-weight: 800; letter-spacing: -0.5px; }
-        .greeting-card p { margin: 0; color: #cbd5e1; font-size: 14px; font-weight: 400; }
-        .gc-watermark { position: absolute; right: -15px; bottom: -35px; font-size: 120px; font-weight: 900; color: rgba(255,255,255,0.02); line-height: 1; user-select: none; }
+        .gc-badge { font-size: 11px; letter-spacing: 2px; color: #60a5fa; font-weight: 700; margin-bottom: 8px; display: block; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+        .greeting-card h2 { margin: 0 0 4px 0; font-size: 26px; color: #fff; font-weight: 800; letter-spacing: -0.5px; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
+        .greeting-card p { margin: 0; color: #f1f5f9; font-size: 14px; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+        .gc-watermark { position: absolute; right: -15px; bottom: -35px; font-size: 120px; font-weight: 900; color: rgba(255,255,255,0.08); line-height: 1; user-select: none; }
         
         .section-title { text-align: left; font-size: 12px; letter-spacing: 1.5px; color: #64748b; font-weight: 700; margin: 0 0 -8px 4px; text-transform: uppercase; }
         
