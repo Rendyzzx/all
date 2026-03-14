@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Moonlight - Super App</title>
+    <title>Moonlight - About You</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1807/1807350.png">
@@ -85,10 +85,19 @@
         
         .greeting-card {
             background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('2d7af96cf6a1753b2abb1df4e1afad1b.jpg');
-            background-size: cover; background-position: center; background-color: #1e293b;
-            border: 1px solid rgba(255,255,255,0.05); border-left: 4px solid var(--primary); border-radius: 12px;
-            padding: 24px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: left;
+            background-size: cover;
+            background-position: center;
+            background-color: #1e293b;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-left: 4px solid var(--primary);
+            border-radius: 12px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: left;
         }
+
         .gc-badge { font-size: 11px; letter-spacing: 2px; color: #60a5fa; font-weight: 700; margin-bottom: 8px; display: block; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
         .greeting-card h2 { margin: 0 0 4px 0; font-size: 26px; color: #fff; font-weight: 800; letter-spacing: -0.5px; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
         .greeting-card p { margin: 0; color: #f1f5f9; font-size: 14px; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
@@ -101,12 +110,12 @@
         .qa-btn { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255,255,255,0.03); border-radius: 12px; padding: 12px; color: #cbd5e1; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s ease; text-align: left; font-family: var(--font-family-system); }
         .qa-btn .qa-icon { width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #fff; transition: 0.2s; }
         .qa-btn:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); transform: translateY(-2px); color: #fff; }
-        .qa-btn:hover .qa-icon { background: var(--primary); color: #fff; box-shadow: 0 0 15px var(--primary); }
-        .qa-btn-all .qa-icon { color: var(--primary); background: rgba(37,99,235,0.1); }
+        .qa-btn:hover .qa-icon { background: var(--primary); color: #fff; box-shadow: 0 0 15px var(--primary); transform: scale(1.05); }
 
-        .system-status { display: flex; align-items: center; gap: 10px; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px 16px; font-size: 12px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; backdrop-filter: blur(8px); }
-        .status-moon { font-size: 13px; color: #60a5fa; filter: drop-shadow(0 0 5px #60a5fa); animation: pulseMoon 2.5s infinite ease-in-out; }
-        @keyframes pulseMoon { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.9); } }
+        .system-status { display: flex; align-items: center; gap: 10px; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px 16px; font-size: 12px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; backdrop-filter: blur(8px); transition: 0.3s; cursor: default; }
+        .system-status:hover { background: rgba(15, 23, 42, 0.8); border-color: rgba(255,255,255,0.15); color: #fff; }
+        .status-moon { font-size: 14px; color: #a78bfa; filter: drop-shadow(0 0 5px #a78bfa); animation: pulseMoon 2s infinite ease-in-out; }
+        @keyframes pulseMoon { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.85); } }
 
         .hero h1 { font-size: clamp(24px, 5vw, 32px); margin-bottom: 32px; font-weight: 700; line-height: 1.2; letter-spacing: -0.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); display: none; }
         .form-group { width: 100%; max-width: 500px; display: none; flex-direction: column; gap: 16px; margin-bottom: 24px; }
@@ -395,13 +404,13 @@
                 <button class="qa-btn" onclick="setPlatform('gpt4')"><div class="qa-icon"><i class="fas fa-robot"></i></div> Ask AI</button>
                 <button class="qa-btn" onclick="setPlatform('film')"><div class="qa-icon"><i class="fas fa-film"></i></div> Movies</button>
                 <button class="qa-btn" onclick="setPlatform('tiktok')"><div class="qa-icon"><i class="fab fa-tiktok"></i></div> TikTok DL</button>
-                <button class="qa-btn qa-btn-all" onclick="openCategory('current', 'bnav-all')"><div class="qa-icon"><i class="fas fa-th-large"></i></div> All Menus</button>
+                <button class="qa-btn" onclick="setPlatform('remove-bg')"><div class="qa-icon"><i class="fas fa-eraser"></i></div> Remove BG</button>
             </div>
 
             <div class="system-status">
-                <i class="fas fa-moon status-moon"></i>
-                <span id="systemUptime">UPTIME: 0D 0H 0M 0S</span>
-                <i class="fas fa-server" style="margin-left:auto; color: #64748b;"></i>
+                <i class="fas fa-sd-card status-moon"></i>
+                <span id="userStats">LOCAL STORAGE: 0 FILES SAVED</span>
+                <i class="fas fa-check-circle" style="margin-left:auto; color: #22c55e;"></i>
             </div>
         </div>
 
