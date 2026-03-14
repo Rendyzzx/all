@@ -12,6 +12,8 @@ let gameScore = 0;
 let isJumping = false;
 let currentCatIndex = 0;
 
+let serverUptimeSec = 4193200;
+
 const categoryTitles = [
     "Media Downloader", 
     "Tools", 
@@ -94,6 +96,16 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+function updateUptime() {
+    serverUptimeSec++;
+    let d = Math.floor(serverUptimeSec / 86400);
+    let h = Math.floor((serverUptimeSec % 86400) / 3600);
+    let m = Math.floor((serverUptimeSec % 3600) / 60);
+    let s = serverUptimeSec % 60;
+    const el = document.getElementById('systemUptime');
+    if(el) el.innerText = `UPTIME: ${d}D ${h}H ${m}M ${s}S`;
+}
+
 window.onload = function () {
     setTimeout(() => {
         const splash = document.getElementById('splashScreen');
@@ -103,6 +115,9 @@ window.onload = function () {
     showHome();
     renderHistory();
     updateCategoryUI(); 
+    
+    setInterval(updateUptime, 1000);
+    updateUptime();
     
     if (!navigator.onLine) handleOffline();
     window.addEventListener('online', handleOnline);
