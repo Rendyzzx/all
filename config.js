@@ -39,7 +39,11 @@ const FITUR = {
     "gemini": true,
     "ai-real": true,
     "waifu": true,
-    "felo": true,          
-    "perplexity": true,    
-    "koros": true          
+    "felo": true,
+    "perplexity": true,
+    "koros": true,
+    "anime": true,         
+    "anoboy": true,        
+    "donghua": true,       
+    "cnn": true            
 };
