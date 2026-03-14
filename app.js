@@ -17,14 +17,7 @@ let isJumping = false;
 // LOGIKA CAROUSEL KATEGORI (GESER MENU)
 // ==========================================
 let currentCatIndex = 0;
-const categoryTitles = [
-    "Downloader Media", 
-    "Tools", 
-    "AI", 
-    "Stalker / Checker", 
-    "Hiburan & Berita", 
-    "Digital & Info"
-];
+const categoryTitles = ["Downloader Media", "Tools", "AI", "Stalker / Checker", "Hiburan & Berita", "Digital & Info"];
 const totalCategories = 6;
 
 function updateCategoryUI() {
@@ -421,12 +414,14 @@ function setPlatform(platform) {
         document.getElementById('mediaUrl').placeholder = "Masukkan username atau ID...";
         urlCont.style.display = 'flex'; 
         btn.innerHTML = 'Cari Akun';
-    } else if (['anime', 'anoboy', 'donghua'].includes(platform)) {
+    } 
+    // REVISI NAMA TOMBOL KHUSUS ANIME & DONGHUA
+    else if (['anime', 'anoboy', 'donghua'].includes(platform)) {
         let pName = platform === 'donghua' ? 'Donghua' : (platform === 'anime' ? 'AnimeBatch' : 'Anoboy');
         title.innerHTML = `Nonton ${pName}`;
-        document.getElementById('mediaUrl').placeholder = `Ketik judul anime/donghua...`;
+        document.getElementById('mediaUrl').placeholder = `Ketik judul ${platform === 'donghua' ? 'donghua' : 'anime'}...`;
         urlCont.style.display = 'flex'; 
-        btn.innerHTML = 'Cari Film';
+        btn.innerHTML = platform === 'donghua' ? 'Cari Donghua' : 'Cari Anime';
     } else if (platform === 'cnn') {
         title.innerHTML = "CNN Indonesia News";
         document.getElementById('mediaUrl').placeholder = "Ketik topik pencarian (opsional)...";
@@ -961,12 +956,17 @@ function renderEntList(items, type) {
     let html = `<h3 style="margin-bottom:16px; color:#fff; font-size:18px;">Pilih Artikel / Film:</h3>
                 <div style="display:flex; flex-direction:column; gap:12px;">`;
     
+    // PENANGANAN JIKA HASIL PENCARIAN KOSONG / TIDAK DITEMUKAN
     if (!Array.isArray(items) || items.length === 0) {
-        html += `<p style="text-align:center; color:var(--text-muted);">Tidak ada hasil ditemukan.</p>`;
+        html += `
+        <div style="text-align:center; padding:40px 20px; background:#1e293b; border-radius:12px; border:1px solid var(--border-color);">
+            <i class="fas fa-search-minus" style="font-size:40px; color:#ef4444; margin-bottom:16px;"></i>
+            <p style="color:#f8fafc; font-weight:600; margin:0; font-size: 16px;">Tidak ditemukan</p>
+            <p style="color:var(--text-muted); font-size:13px; margin-top:8px;">Masukkan nama yang benar atau coba kata kunci pencarian yang lain.</p>
+        </div>`;
     } else {
         items.forEach(item => {
             let thumb = item.thumbnail || 'https://via.placeholder.com/150x200?text=No+Image';
-            // CNN biasanya tidak me-return thumbnail saat list search biasa
             let showImg = type !== 'cnn' && type !== 'anime'; 
             
             html += `
@@ -1941,7 +1941,12 @@ async function processAction(isFromQueue = false) {
                 }
             }
         } else {
-            showToast(json.message || json.msg || "Gagal memproses data dari server.", "error");
+            // Jika hasil tidak ditemukan untuk anime, anoboy, donghua
+            if (['anime', 'anoboy', 'donghua'].includes(currentPlatform)) {
+                renderEntList([], currentPlatform);
+            } else {
+                showToast(json.message || json.msg || "Gagal memproses data dari server.", "error");
+            }
         }
     } catch (error) {
         console.error(error); 
@@ -1989,8 +1994,10 @@ async function processAction(isFromQueue = false) {
                 mainBtn.innerHTML = "Pendekkan Tautan";
             } else if (['tts', 'gpt4', 'claude', 'bard', 'gemini', 'blackbox', 'felo', 'perplexity', 'koros'].includes(currentPlatform)) {
                 mainBtn.innerHTML = "Tanya AI";
-            } else if (['anime', 'anoboy', 'donghua'].includes(currentPlatform)) {
-                mainBtn.innerHTML = "Cari Film";
+            } else if (['anime', 'anoboy'].includes(currentPlatform)) {
+                mainBtn.innerHTML = "Cari Anime";
+            } else if (currentPlatform === 'donghua') {
+                mainBtn.innerHTML = "Cari Donghua";
             } else if (currentPlatform === 'cnn') {
                 mainBtn.innerHTML = "Baca Berita Terkini";
             } else {
