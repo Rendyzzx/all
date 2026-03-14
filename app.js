@@ -17,7 +17,7 @@ let isJumping = false;
 // LOGIKA CAROUSEL KATEGORI (5 HALAMAN)
 // ==========================================
 let currentCatIndex = 0;
-const categoryTitles = ["Downloader Media", "Tools", "Kecerdasan Buatan (AI)", "Stalker / Checker", "Digital & Info"];
+const categoryTitles = ["Downloader Media", "Tools", "AI", "Stalker / Checker", "Digital & Info"];
 const totalCategories = 5;
 
 function updateCategoryUI() {
@@ -204,8 +204,8 @@ function applyDynamicTheme(platform) {
     let primary = '#2563eb';
     let hover = '#1d4ed8';
     
-    const aiImageTools = ['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor', 'ai-detector', 'ai-anime', 'genimg', 'ai-real', 'waifu'];
-    const aiChatTools = ['gpt4', 'claude', 'gemini', 'bard', 'blackbox'];
+    const aiImageTools = ['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor', 'ai-detector', 'ai-anime', 'genimg', 'ai-real', 'waifu', 'koros'];
+    const aiChatTools = ['gpt4', 'claude', 'gemini', 'bard', 'blackbox', 'felo', 'perplexity'];
     
     if (['youtube', 'yt-transcript', 'pin', 'tts'].includes(platform)) { 
         primary = '#ef4444'; 
@@ -391,11 +391,20 @@ function setPlatform(platform) {
         document.getElementById('textContent').placeholder = "Ketik prompt / perintah (bahasa inggris)..."; 
         textCont.style.display = 'flex'; 
         btn.innerHTML = 'Generate Gambar'; 
-    } else if (['gpt4', 'claude', 'gemini', 'bard', 'blackbox'].includes(platform)) { 
+    } else if (['gpt4', 'claude', 'gemini', 'bard', 'blackbox', 'felo', 'perplexity'].includes(platform)) { 
         title.innerHTML = "AI Chatbot Assistant"; 
         document.getElementById('textContent').placeholder = "Ketik pertanyaan atau tugasmu di sini..."; 
         textCont.style.display = 'flex'; 
         btn.innerHTML = 'Tanya AI'; 
+    } else if (platform === 'koros') { 
+        title.innerHTML = "Koros Vision AI"; 
+        fileCont.style.display = 'flex'; 
+        document.getElementById('mediaFile').accept = "image/*";
+        urlCont.style.display = 'flex';
+        document.getElementById('mediaUrl').placeholder = "Ketik pertanyaan tentang gambar ini...";
+        catboxHelper.innerHTML = `<i class="fas fa-info-circle"></i> Pilih foto lalu tanyakan sesuatu pada AI.`; 
+        catboxHelper.style.display = 'block'; 
+        btn.innerHTML = 'Tanya Koros'; 
     } else if (platform === 'ai-detector') { 
         title.innerHTML = "AI Text Detector"; 
         document.getElementById('textContent').placeholder = "Tempel artikel atau teks di sini..."; 
@@ -959,7 +968,7 @@ async function processAction(isFromQueue = false) {
         }
     }
 
-    if (['ai-detector', 'iqc', 'nulis', 'qr-gen', 'tts', 'ai-anime', 'blackbox', 'gpt4', 'claude', 'genimg', 'bard', 'gemini', 'ai-real', 'waifu'].includes(currentPlatform)) {
+    if (['ai-detector', 'iqc', 'nulis', 'qr-gen', 'tts', 'ai-anime', 'blackbox', 'gpt4', 'claude', 'genimg', 'bard', 'gemini', 'ai-real', 'waifu', 'felo', 'perplexity'].includes(currentPlatform)) {
         if (!textVal) return showToast("Harap isi teks terlebih dahulu.", "error");
         
         if (currentPlatform === 'iqc') {
@@ -985,7 +994,7 @@ async function processAction(isFromQueue = false) {
         const formatVal = document.getElementById('ytFormat').value.split('|'); 
         ytType = formatVal[0]; 
         ytQuality = formatVal[1];
-    } else if (['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor'].includes(currentPlatform)) {
+    } else if (['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor', 'koros'].includes(currentPlatform)) {
         const fileInput = document.getElementById('mediaFile');
         if (!fileInput || fileInput.files.length === 0) {
             return showToast("Harap pilih file terlebih dahulu.", "error");
@@ -995,6 +1004,9 @@ async function processAction(isFromQueue = false) {
         }
         if (currentPlatform === 'photo-editor' && !urlVal) {
             return showToast("Harap ketik perintah edit.", "error");
+        }
+        if (currentPlatform === 'koros' && !urlVal) {
+            return showToast("Harap ketik pertanyaan untuk gambar ini.", "error");
         }
     } else if (currentPlatform === 'shortlink' && !urlVal) { 
         return showToast("Harap masukkan URL tautan.", "error");
@@ -1031,7 +1043,7 @@ async function processAction(isFromQueue = false) {
         el.style.display = 'none'; 
     });
 
-    const aiTools = ['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor', 'ai-anime', 'blackbox', 'gpt4', 'claude', 'genimg', 'bard', 'gemini', 'ai-real', 'waifu'];
+    const aiTools = ['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor', 'ai-anime', 'blackbox', 'gpt4', 'claude', 'genimg', 'bard', 'gemini', 'ai-real', 'waifu', 'felo', 'perplexity', 'koros'];
     const miniGame = document.getElementById('miniGame'); 
     const loadingText = document.getElementById('loadingText');
     
@@ -1097,7 +1109,7 @@ async function processAction(isFromQueue = false) {
         let finalInputData = urlVal || textVal; 
         let fileBase64Obj = null;
 
-        if (['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor'].includes(currentPlatform)) {
+        if (['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor', 'koros'].includes(currentPlatform)) {
             const file = document.getElementById('mediaFile').files[0];
             const base64String = await new Promise((resolve, reject) => { 
                 const reader = new FileReader(); 
@@ -1142,7 +1154,6 @@ async function processAction(isFromQueue = false) {
         else if (currentPlatform === 'gh-stalk') { action = 'ghstalk'; params = { username: finalInputData }; } 
         else if (currentPlatform === 'ig-stalk') { action = 'igstalk'; params = { username: finalInputData }; } 
         else if (currentPlatform === 'th-stalk') { action = 'thstalk'; params = { username: finalInputData }; }
-        // NEW AI TOOLS:
         else if (currentPlatform === 'ai-anime') { action = 'ai-anime'; params = { q: finalInputData }; }
         else if (currentPlatform === 'blackbox') { action = 'blackbox'; params = { q: finalInputData }; }
         else if (currentPlatform === 'gpt4') { action = 'gpt4'; params = { q: finalInputData }; }
@@ -1152,6 +1163,9 @@ async function processAction(isFromQueue = false) {
         else if (currentPlatform === 'gemini') { action = 'gemini-chat'; params = { q: finalInputData }; }
         else if (currentPlatform === 'ai-real') { action = 'ai-real'; params = { q: finalInputData }; }
         else if (currentPlatform === 'waifu') { action = 'waifudiff'; params = { q: finalInputData }; }
+        else if (currentPlatform === 'felo') { action = 'felo'; params = { q: finalInputData }; }
+        else if (currentPlatform === 'perplexity') { action = 'perplexity'; params = { q: finalInputData }; }
+        else if (currentPlatform === 'koros') { action = 'koros'; params = { image: "", q: finalInputData }; }
 
         const payload = { action: action, params: params };
         if (fileBase64Obj) {
@@ -1172,7 +1186,6 @@ async function processAction(isFromQueue = false) {
             const mainResultCard = document.getElementById('resultCard');
             if (mainResultCard) mainResultCard.style.display = 'block';
 
-            // RENDER HASIL AI IMAGE GENERATOR BARU
             if (['ai-anime', 'genimg', 'ai-real', 'waifu'].includes(currentPlatform)) {
                 document.getElementById('aiImageResult').style.display = 'block';
                 let imgSrc = data.url;
@@ -1184,12 +1197,11 @@ async function processAction(isFromQueue = false) {
                 saveToHistory(`${currentPlatform.toUpperCase()} Image`, imgSrc);
                 extractColorAndApply(imgSrc);
             }
-            // RENDER HASIL AI CHAT BARU
-            else if (['blackbox', 'gpt4', 'claude', 'bard', 'gemini'].includes(currentPlatform)) {
+            else if (['blackbox', 'gpt4', 'claude', 'bard', 'gemini', 'felo', 'perplexity', 'koros'].includes(currentPlatform)) {
                 document.getElementById('aiChatResult').style.display = 'block';
-                let chatResponse = data.message || "Tidak ada respon dari AI.";
+                // Koros menggunakan format data.result, yang lain menggunakan data.message
+                let chatResponse = data.message || data.result || "Tidak ada respon dari AI.";
                 
-                // Hapus bold markdown agar rapi di plain text
                 chatResponse = chatResponse.replace(/\*\*/g, '');
                 
                 document.getElementById('aiChatText').innerText = chatResponse;
@@ -1585,7 +1597,7 @@ async function processAction(isFromQueue = false) {
                 mainBtn.innerHTML = "Generate QR Code";
             } else if (currentPlatform === 'shortlink') {
                 mainBtn.innerHTML = "Pendekkan Tautan";
-            } else if (['tts', 'gpt4', 'claude', 'bard', 'gemini', 'blackbox'].includes(currentPlatform)) {
+            } else if (['tts', 'gpt4', 'claude', 'bard', 'gemini', 'blackbox', 'felo', 'perplexity', 'koros'].includes(currentPlatform)) {
                 mainBtn.innerHTML = "Tanya AI";
             } else {
                 mainBtn.innerHTML = "Download Sekarang";
