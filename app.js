@@ -1019,7 +1019,7 @@ async function fetchEntDetails(url, type) {
     if (type === 'anime') action = 'anime-get';
     else if (type === 'anoboy') action = 'anoboy-get';
     else if (type === 'donghua') action = 'donghua-get';
-    else if (type === 'film') action = 'film-get'; // AKSI FILM BARU
+    else if (type === 'film') action = 'film-get'; 
     else if (type === 'cnn') action = 'cnn';
 
     try {
@@ -1032,7 +1032,15 @@ async function fetchEntDetails(url, type) {
         const json = await res.json();
         
         if (json.status) {
-            renderEntDetails(json.data, type);
+            let detailData = json.data;
+            
+            // PATCH KHUSUS FILM: Karena stream dan download berada di luar objek "data"
+            if (type === 'film') {
+                detailData.stream = json.stream || [];
+                detailData.download = json.download || [];
+            }
+            
+            renderEntDetails(detailData, type);
         } else {
             showToast("Gagal mengambil data detail.", "error");
             document.getElementById('resultCard').style.display = 'block';
