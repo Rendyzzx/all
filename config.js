@@ -28,6 +28,18 @@ const FITUR = {
     "topup": true,
     "kontak": true,
     "qr-gen": true,        
-    "shortlink": false,     
-    "tts": false           
+    "shortlink": true,     
+    "tts": true,
+    "ai-anime": true,
+    "blackbox": true,
+    "gpt4": true,
+    "claude": true,
+    "genimg": true,
+    "bard": true,
+    "gemini": true,
+    "ai-real": true,
+    "waifu": true,
+    "felo": true,          
+    "perplexity": true,    
+    "koros": true          
 };
