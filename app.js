@@ -31,6 +31,11 @@ function showHome() {
     const greetEl = document.getElementById('greetingText');
     if(greetEl) greetEl.innerText = greeting;
 
+    const dateOptions = { weekday: 'long', month: 'long', day: 'numeric' };
+    const dateStr = new Date().toLocaleDateString('en-US', dateOptions);
+    const dateEl = document.getElementById('currentDate');
+    if(dateEl) dateEl.innerText = dateStr;
+
     document.getElementById('homeDashboard').style.display = 'flex';
     document.getElementById('mainTitle').style.display = 'none';
     document.querySelector('.form-group').style.display = 'none';
