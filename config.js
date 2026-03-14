@@ -42,8 +42,9 @@ const FITUR = {
     "felo": true,
     "perplexity": true,
     "koros": true,
-    "anime": true,         
-    "anoboy": true,        
-    "donghua": true,       
-    "cnn": true            
+    "anime": true,
+    "anoboy": true,
+    "donghua": true,
+    "cnn": true,
+    "film": true           
 };
