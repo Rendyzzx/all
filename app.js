@@ -14,7 +14,7 @@ let gameScore = 0;
 let isJumping = false;
 
 // ==========================================
-// LOGIKA CAROUSEL KATEGORI (GESER MENU)
+// LOGIKA CAROUSEL KATEGORI
 // ==========================================
 let currentCatIndex = 0;
 const categoryTitles = [
@@ -33,7 +33,6 @@ function updateCategoryUI() {
         titleEl.innerText = categoryTitles[currentCatIndex];
     }
     
-    // Tampilkan hanya halaman yang aktif
     for (let i = 0; i < totalCategories; i++) {
         const page = document.getElementById('cat-page-' + i);
         if (page) {
@@ -45,7 +44,6 @@ function updateCategoryUI() {
         }
     }
     
-    // Update warna titik indikator
     const dots = document.querySelectorAll('.cat-dot');
     dots.forEach((dot, index) => {
         if (index === currentCatIndex) {
@@ -961,7 +959,6 @@ function renderEntList(items, type) {
     let html = `<h3 style="margin-bottom:16px; color:#fff; font-size:18px;">Pilih Artikel / Film:</h3>
                 <div style="display:flex; flex-direction:column; gap:12px;">`;
     
-    // JIKA HASIL PENCARIAN KOSONG / TIDAK DITEMUKAN
     if (!Array.isArray(items) || items.length === 0) {
         html += `
         <div style="text-align:center; padding:40px 20px; background:#1e293b; border-radius:12px; border:1px solid var(--border-color);">
@@ -973,14 +970,13 @@ function renderEntList(items, type) {
         items.forEach(item => {
             let thumb = item.thumbnail || 'https://via.placeholder.com/150x200?text=No+Image';
             
-            // Pencarian CNN dan Film (Movie biasa) tidak memiliki thumbnail di list awal
+            // Tampilkan image hanya jika ada thumbnail (Film dari Neoxr list biasanya ga ada thumbnail)
             let showImg = !!item.thumbnail && type !== 'cnn' && type !== 'film'; 
             
             let tagsHtml = '';
             if (item.type) {
                 tagsHtml = `<span style="font-size:11px; color:#fff; background:var(--primary); padding:4px 8px; border-radius:6px; align-self:flex-start; margin-bottom:12px; font-weight:600;">${item.type}</span>`;
             } else if (item.quality || item.rating) {
-                // Khusus untuk tampilan List Nonton Film (ada Quality & Rating)
                 tagsHtml = `<div style="display:flex; gap:6px; margin-bottom:12px;">
                     ${item.quality ? `<span style="font-size:11px; color:#fff; background:var(--primary); padding:4px 8px; border-radius:6px; font-weight:600;">${item.quality}</span>` : ''}
                     ${item.rating ? `<span style="font-size:11px; color:#fff; background:#f59e0b; padding:4px 8px; border-radius:6px; font-weight:600;"><i class="fas fa-star"></i> ${item.rating}</span>` : ''}
@@ -1066,7 +1062,6 @@ function renderEntDetails(data, type) {
             <a href="${data.source}" target="_blank" class="btn-primary" style="margin-top:16px; text-align:center; display:block; text-decoration:none;"><i class="fas fa-external-link-alt"></i> Baca Sumber Asli</a>
         `;
     } else if (type === 'film') {
-        // TAMPILAN KHUSUS UNTUK DETAIL NONTON FILM
         html += `
             <div style="display:flex; gap:16px; margin-bottom:16px; align-items:flex-start;">
                 <img src="${data.thumbnail}" style="width:110px; border-radius:12px; object-fit:cover; border:1px solid var(--border-color);">
@@ -1080,7 +1075,6 @@ function renderEntDetails(data, type) {
             <div style="font-size:12px; color:#cbd5e1; margin-bottom:24px; max-height:100px; overflow-y:auto; background:#1e293b; padding:12px; border-radius:12px; line-height:1.5;">${data.synopsis || 'Tidak ada deskripsi.'}</div>
         `;
 
-        // Area Link Streaming (Jika Ada)
         if (data.stream && data.stream.length > 0) {
             html += `<h4 style="margin-bottom:12px; color:var(--primary); font-size:15px;"><i class="fas fa-play-circle"></i> Tonton Sekarang</h4>`;
             html += `<div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;">`;
@@ -1090,7 +1084,6 @@ function renderEntDetails(data, type) {
             html += `</div>`;
         }
 
-        // Area Link Download (Jika Ada)
         if (data.download && data.download.length > 0) {
             html += `<h4 style="margin-bottom:12px; color:var(--primary); font-size:15px;"><i class="fas fa-download"></i> Link Download</h4>`;
             html += `<div style="display:flex; flex-wrap:wrap; gap:8px;">`;
@@ -1101,7 +1094,6 @@ function renderEntDetails(data, type) {
         }
         
     } else {
-        // TAMPILAN ANIME & DONGHUA
         let epList = data.episode || data.episodes || [];
         
         html += `
@@ -1473,7 +1465,7 @@ async function processAction(isFromQueue = false) {
         
         if (currentPlatform === 'pulsa' || currentPlatform === 'topup') { 
             action = providerData; 
-            params = { number: finalInputData, amount: amountData }; 
+            params = { number: finalInputData, amount: parseInt(amountData, 10) }; 
         } else if (currentPlatform === 'youtube') { 
             action = 'youtube'; 
             params = { url: finalInputData, type: ytType, quality: ytQuality }; 
@@ -1656,17 +1648,28 @@ async function processAction(isFromQueue = false) {
             }
             else if (currentPlatform === 'pulsa' || currentPlatform === 'topup') {
                 document.getElementById('invoiceResult').style.display = 'block';
-                document.getElementById('invoiceId').innerText = `Order ID: ${data.code}`;
-                document.getElementById('invService').innerText = `${data.product.service} - ${data.product.type}`;
-                document.getElementById('invNumber').innerText = data.number;
-                document.getElementById('invExpired').innerText = data.expired_at;
-                document.getElementById('invPrice').innerText = data.price_format;
                 
-                let qrData = data.qr_image; 
-                if (!qrData.startsWith('data:image')) {
-                    qrData = `data:image/png;base64,${qrData}`;
+                // MENGGUNAKAN IF UNTUK MENGHINDARI ERROR
+                const invId = document.getElementById('invoiceId');
+                if (invId) invId.innerText = `Order ID: ${data.code || '-'}`;
+                
+                const invNum = document.getElementById('invNumber');
+                if (invNum) invNum.innerText = data.number || finalInputData;
+                
+                const invPrice = document.getElementById('invPrice');
+                if (invPrice) invPrice.innerText = data.price_format || `Rp ${amountData}`;
+                
+                const invQr = document.getElementById('invQrImage');
+                if (invQr && data.qr_image) {
+                    let qrData = data.qr_image; 
+                    if (!qrData.startsWith('data:image')) {
+                        qrData = `data:image/png;base64,${qrData}`;
+                    }
+                    invQr.src = qrData;
+                    invQr.parentElement.style.display = 'block';
+                } else if (invQr) {
+                    invQr.parentElement.style.display = 'none';
                 }
-                document.getElementById('invQrImage').src = qrData;
             }
             else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) {
                 document.getElementById('stalkResult').style.display = 'block';
