@@ -14,12 +14,11 @@ let gameScore = 0;
 let isJumping = false;
 
 // ==========================================
-// LOGIKA CAROUSEL KATEGORI (GESER MENU)
+// LOGIKA CAROUSEL KATEGORI (5 HALAMAN)
 // ==========================================
 let currentCatIndex = 0;
-// NAMA KATEGORI BARU DI SINI
 const categoryTitles = ["Downloader Media", "Tools", "Kecerdasan Buatan (AI)", "Stalker / Checker", "Digital & Info"];
-const totalCategories = 5; // BERUBAH MENJADI 5 HALAMAN
+const totalCategories = 5;
 
 function updateCategoryUI() {
     const titleEl = document.getElementById('catTitle');
@@ -205,10 +204,8 @@ function applyDynamicTheme(platform) {
     let primary = '#2563eb';
     let hover = '#1d4ed8';
     
-    const aiTools = [
-        'hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor', 'ai-detector',
-        'qr-gen', 'shortlink', 'tts'
-    ];
+    const aiImageTools = ['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor', 'ai-detector', 'ai-anime', 'genimg', 'ai-real', 'waifu'];
+    const aiChatTools = ['gpt4', 'claude', 'gemini', 'bard', 'blackbox'];
     
     if (['youtube', 'yt-transcript', 'pin', 'tts'].includes(platform)) { 
         primary = '#ef4444'; 
@@ -228,12 +225,12 @@ function applyDynamicTheme(platform) {
     } else if (['spotify', 'lirik', 'qr-gen'].includes(platform)) { 
         primary = '#10b981'; 
         hover = '#059669'; 
-    } else if (platform === 'terabox') { 
-        primary = '#eab308'; 
-        hover = '#ca8a04'; 
-    } else if (aiTools.includes(platform)) { 
+    } else if (aiImageTools.includes(platform)) { 
         primary = '#8b5cf6'; 
         hover = '#7c3aed'; 
+    } else if (aiChatTools.includes(platform)) { 
+        primary = '#14b8a6'; 
+        hover = '#0d9488'; 
     } else if (['pulsa', 'topup', 'roblox-stalk'].includes(platform)) { 
         primary = '#10b981'; 
         hover = '#059669'; 
@@ -389,6 +386,16 @@ function setPlatform(platform) {
         document.getElementById('textContent').placeholder = "Ketik teks yang ingin dibacakan AI (Maks 200 huruf)..."; 
         textCont.style.display = 'flex'; 
         btn.innerHTML = 'Ubah ke Suara'; 
+    } else if (['ai-anime', 'genimg', 'ai-real', 'waifu'].includes(platform)) { 
+        title.innerHTML = "Generate Image AI"; 
+        document.getElementById('textContent').placeholder = "Ketik prompt / perintah (bahasa inggris)..."; 
+        textCont.style.display = 'flex'; 
+        btn.innerHTML = 'Generate Gambar'; 
+    } else if (['gpt4', 'claude', 'gemini', 'bard', 'blackbox'].includes(platform)) { 
+        title.innerHTML = "AI Chatbot Assistant"; 
+        document.getElementById('textContent').placeholder = "Ketik pertanyaan atau tugasmu di sini..."; 
+        textCont.style.display = 'flex'; 
+        btn.innerHTML = 'Tanya AI'; 
     } else if (platform === 'ai-detector') { 
         title.innerHTML = "AI Text Detector"; 
         document.getElementById('textContent').placeholder = "Tempel artikel atau teks di sini..."; 
@@ -573,6 +580,21 @@ function copyShortlink() {
             btn.innerHTML = '<i class="fas fa-check"></i> Tersalin'; 
             setTimeout(() => { 
                 btn.innerHTML = '<i class="fas fa-copy"></i> Salin Link'; 
+            }, 2000); 
+        }
+    }); 
+}
+
+function copyAiChat() { 
+    const chatEl = document.getElementById('aiChatText');
+    if (!chatEl) return;
+    
+    navigator.clipboard.writeText(chatEl.innerText).then(() => { 
+        const btn = document.getElementById('copyAiChatBtn'); 
+        if (btn) { 
+            btn.innerHTML = '<i class="fas fa-check"></i> Tersalin'; 
+            setTimeout(() => { 
+                btn.innerHTML = '<i class="fas fa-copy"></i> Salin Jawaban'; 
             }, 2000); 
         }
     }); 
@@ -937,7 +959,7 @@ async function processAction(isFromQueue = false) {
         }
     }
 
-    if (['ai-detector', 'iqc', 'nulis', 'qr-gen', 'tts'].includes(currentPlatform)) {
+    if (['ai-detector', 'iqc', 'nulis', 'qr-gen', 'tts', 'ai-anime', 'blackbox', 'gpt4', 'claude', 'genimg', 'bard', 'gemini', 'ai-real', 'waifu'].includes(currentPlatform)) {
         if (!textVal) return showToast("Harap isi teks terlebih dahulu.", "error");
         
         if (currentPlatform === 'iqc') {
@@ -1009,7 +1031,7 @@ async function processAction(isFromQueue = false) {
         el.style.display = 'none'; 
     });
 
-    const aiTools = ['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor'];
+    const aiTools = ['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor', 'ai-anime', 'blackbox', 'gpt4', 'claude', 'genimg', 'bard', 'gemini', 'ai-real', 'waifu'];
     const miniGame = document.getElementById('miniGame'); 
     const loadingText = document.getElementById('loadingText');
     
@@ -1075,7 +1097,7 @@ async function processAction(isFromQueue = false) {
         let finalInputData = urlVal || textVal; 
         let fileBase64Obj = null;
 
-        if (aiTools.includes(currentPlatform)) {
+        if (['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor'].includes(currentPlatform)) {
             const file = document.getElementById('mediaFile').files[0];
             const base64String = await new Promise((resolve, reject) => { 
                 const reader = new FileReader(); 
@@ -1113,13 +1135,23 @@ async function processAction(isFromQueue = false) {
         else if (currentPlatform === 'remove-bg') { action = 'nobg'; params = { image: "" }; } 
         else if (currentPlatform === 'photo-editor') { action = 'photo-editor'; params = { image: "", q: finalInputData }; } 
         else if (currentPlatform === 'lirik') { action = 'lyric'; params = { q: finalInputData }; } 
-        else if (currentPlatform === 'roblox-stalk') { action = 'roblox'; params = { username: finalInputData }; } 
-        else if (currentPlatform === 'dc-stalk') { action = 'discord'; params = { id: finalInputData }; } 
-        else if (currentPlatform === 'tt-stalk') { action = 'tiktokstalk'; params = { username: finalInputData }; } 
-        else if (currentPlatform === 'tw-stalk') { action = 'twitterstalk'; params = { username: finalInputData }; } 
-        else if (currentPlatform === 'gh-stalk') { action = 'github'; params = { username: finalInputData }; } 
+        else if (currentPlatform === 'roblox-stalk') { action = 'roblox-stalk'; params = { username: finalInputData }; } 
+        else if (currentPlatform === 'dc-stalk') { action = 'dcstalk'; params = { id: finalInputData }; } 
+        else if (currentPlatform === 'tt-stalk') { action = 'ttstalk'; params = { username: finalInputData }; } 
+        else if (currentPlatform === 'tw-stalk') { action = 'twstalk'; params = { username: finalInputData }; } 
+        else if (currentPlatform === 'gh-stalk') { action = 'ghstalk'; params = { username: finalInputData }; } 
         else if (currentPlatform === 'ig-stalk') { action = 'igstalk'; params = { username: finalInputData }; } 
         else if (currentPlatform === 'th-stalk') { action = 'thstalk'; params = { username: finalInputData }; }
+        // NEW AI TOOLS:
+        else if (currentPlatform === 'ai-anime') { action = 'ai-anime'; params = { q: finalInputData }; }
+        else if (currentPlatform === 'blackbox') { action = 'blackbox'; params = { q: finalInputData }; }
+        else if (currentPlatform === 'gpt4') { action = 'gpt4'; params = { q: finalInputData }; }
+        else if (currentPlatform === 'claude') { action = 'claude'; params = { q: finalInputData }; }
+        else if (currentPlatform === 'genimg') { action = 'genimg'; params = { prompt: finalInputData }; }
+        else if (currentPlatform === 'bard') { action = 'bard'; params = { q: finalInputData }; }
+        else if (currentPlatform === 'gemini') { action = 'gemini-chat'; params = { q: finalInputData }; }
+        else if (currentPlatform === 'ai-real') { action = 'ai-real'; params = { q: finalInputData }; }
+        else if (currentPlatform === 'waifu') { action = 'waifudiff'; params = { q: finalInputData }; }
 
         const payload = { action: action, params: params };
         if (fileBase64Obj) {
@@ -1140,7 +1172,30 @@ async function processAction(isFromQueue = false) {
             const mainResultCard = document.getElementById('resultCard');
             if (mainResultCard) mainResultCard.style.display = 'block';
 
-            if (currentPlatform === 'pulsa' || currentPlatform === 'topup') {
+            // RENDER HASIL AI IMAGE GENERATOR BARU
+            if (['ai-anime', 'genimg', 'ai-real', 'waifu'].includes(currentPlatform)) {
+                document.getElementById('aiImageResult').style.display = 'block';
+                let imgSrc = data.url;
+                if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) {
+                    imgSrc = 'data:image/png;base64,' + imgSrc;
+                }
+                document.getElementById('aiGeneratedImage').src = imgSrc;
+                document.getElementById('aiImageActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_AIGen.jpg')"><i class="fas fa-download"></i> Simpan Gambar</button>`;
+                saveToHistory(`${currentPlatform.toUpperCase()} Image`, imgSrc);
+                extractColorAndApply(imgSrc);
+            }
+            // RENDER HASIL AI CHAT BARU
+            else if (['blackbox', 'gpt4', 'claude', 'bard', 'gemini'].includes(currentPlatform)) {
+                document.getElementById('aiChatResult').style.display = 'block';
+                let chatResponse = data.message || "Tidak ada respon dari AI.";
+                
+                // Hapus bold markdown agar rapi di plain text
+                chatResponse = chatResponse.replace(/\*\*/g, '');
+                
+                document.getElementById('aiChatText').innerText = chatResponse;
+                saveToHistory(`Chat ${currentPlatform.toUpperCase()}`, "Teks Percakapan AI");
+            }
+            else if (currentPlatform === 'pulsa' || currentPlatform === 'topup') {
                 document.getElementById('invoiceResult').style.display = 'block';
                 document.getElementById('invoiceId').innerText = `Order ID: ${data.code}`;
                 document.getElementById('invService').innerText = `${data.product.service} - ${data.product.type}`;
@@ -1512,8 +1567,8 @@ async function processAction(isFromQueue = false) {
                 mainBtn.innerHTML = "Buat Kutipan iPhone";
             } else if (currentPlatform === 'nulis') {
                 mainBtn.innerHTML = "Mulai Nulis";
-            } else if (currentPlatform === 'hd-foto') {
-                mainBtn.innerHTML = "Tingkatkan Kualitas Foto";
+            } else if (['hd-foto', 'ai-anime', 'genimg', 'ai-real', 'waifu'].includes(currentPlatform)) {
+                mainBtn.innerHTML = "Generate Gambar";
             } else if (currentPlatform === 'remove-bg') {
                 mainBtn.innerHTML = "Hapus Background Gambar";
             } else if (currentPlatform === 'noise-reduce') {
@@ -1530,8 +1585,8 @@ async function processAction(isFromQueue = false) {
                 mainBtn.innerHTML = "Generate QR Code";
             } else if (currentPlatform === 'shortlink') {
                 mainBtn.innerHTML = "Pendekkan Tautan";
-            } else if (currentPlatform === 'tts') {
-                mainBtn.innerHTML = "Ubah ke Suara";
+            } else if (['tts', 'gpt4', 'claude', 'bard', 'gemini', 'blackbox'].includes(currentPlatform)) {
+                mainBtn.innerHTML = "Tanya AI";
             } else {
                 mainBtn.innerHTML = "Download Sekarang";
             }
