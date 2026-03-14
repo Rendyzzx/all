@@ -98,9 +98,7 @@
 
         @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
 
-        /* ==============================================================
-           MODAL GAYA BOTTOM SHEET ALA GOJEK/iOS
-           ============================================================== */
+        /* MODAL GAYA BOTTOM SHEET */
         .modal {
             display: none; position: fixed; z-index: 1000; left: 0; top: 0; 
             width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); 
@@ -124,13 +122,11 @@
             to { transform: translateY(0); opacity: 1; } 
         }
         
-        /* Pegangan kecil (pill) di atas bottom sheet */
         .modal-content::before {
             content: ''; position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
             width: 40px; height: 5px; background: rgba(255,255,255,0.2); border-radius: 10px;
         }
 
-        /* KONTROL SLIDER KATEGORI */
         .cat-nav-header {
             display: flex; align-items: center; justify-content: space-between;
             margin-bottom: 24px; margin-top: 16px; padding: 0 10px;
@@ -241,7 +237,8 @@
         }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        #downloaderResult, #aiResult, #hdFotoResult, #ssWebResult, #iqcResult, #nulisResult, #removeBgResult, #audioResult, #ytTranscriptResult, #lirikResult, #invoiceResult, #photoEditorResult, #contactContainer, #stalkResult, #qrResult, #shortlinkResult, #ttsResult { display: none; }
+        /* Penambahan Display None untuk Result AI Baru */
+        #downloaderResult, #aiResult, #hdFotoResult, #ssWebResult, #iqcResult, #nulisResult, #removeBgResult, #audioResult, #ytTranscriptResult, #lirikResult, #invoiceResult, #photoEditorResult, #contactContainer, #stalkResult, #qrResult, #shortlinkResult, #ttsResult, #aiImageResult, #aiChatResult { display: none; }
         
         .thumbnail-container { width: 100%; background: #0f172a; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 20px; overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 180px; position: relative; }
         .video-thumbnail { width: 100%; max-height: 300px; object-fit: contain; display: none; }
@@ -273,7 +270,7 @@
         .ai-bar-human { height: 100%; background: #22c55e; width: 0%; transition: 1s ease-out; }
         .ai-bar-fake { height: 100%; background: #ef4444; width: 0%; transition: 1s ease-out; }
 
-        #hdFotoResult h3, #ssWebResult h3, #iqcResult h3, #nulisResult h3, #removeBgResult h3, #audioResult h3, #ytTranscriptResult h3, #lirikTitle, #photoEditorResult h3, #qrResult h3, #shortlinkResult h3, #ttsResult h3 { margin-bottom: 12px; color: #fff; font-size: 18px; font-weight: 700; text-align: center; }
+        #hdFotoResult h3, #ssWebResult h3, #iqcResult h3, #nulisResult h3, #removeBgResult h3, #audioResult h3, #ytTranscriptResult h3, #lirikTitle, #photoEditorResult h3, #qrResult h3, #shortlinkResult h3, #ttsResult h3, #aiImageResult h3, #aiChatResult h3 { margin-bottom: 12px; color: #fff; font-size: 18px; font-weight: 700; text-align: center; }
         
         .transcript-box { background: #0f172a; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; color: var(--text-main); font-size: 14px; line-height: 1.6; max-height: 250px; overflow-y: auto; margin-bottom: 16px; white-space: pre-wrap; }
         
@@ -299,7 +296,6 @@
         .toast.success .toast-icon { color: #10b981; }
         .toast.info .toast-icon { color: #3b82f6; }
         
-        /* BOTTOM NAV: Diubah menjadi 20% agar bisa memuat 5 tombol Kategori Baru */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: rgba(15, 23, 42, 0.90); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 12px 10px calc(12px + env(safe-area-inset-bottom)); z-index: 90; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
         .bnav-item { background: transparent; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; cursor: pointer; transition: color 0.2s ease; width: 20%; }
         .bnav-item i { font-size: 20px; transition: transform 0.2s ease; }
@@ -326,7 +322,6 @@
             body { padding-bottom: 0; }
             .form-group, #resultCard, #loadingOverlay { max-width: 650px; } 
             
-            /* Modal PC Styling */
             .modal { align-items: center; padding: 20px; }
             .modal-content { border-radius: 24px; max-width: 500px; animation: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
             .modal-content::before { display: none; }
@@ -366,150 +361,66 @@
             
             <div class="cat-page active" id="cat-page-0">
                 <ul class="feature-list">
-                    <li onclick="setPlatform('youtube')">
-                        <div class="icon-wrapper"><i class="fab fa-youtube"></i></div>
-                        <div><h4>YouTube</h4></div>
-                    </li>
-                    <li onclick="setPlatform('tiktok')">
-                        <div class="icon-wrapper"><i class="fab fa-tiktok"></i></div>
-                        <div><h4>TikTok</h4></div>
-                    </li>
-                    <li onclick="setPlatform('ig')">
-                        <div class="icon-wrapper"><i class="fab fa-instagram"></i></div>
-                        <div><h4>Instagram</h4></div>
-                    </li>
-                    <li onclick="setPlatform('facebook')">
-                        <div class="icon-wrapper"><i class="fab fa-facebook"></i></div>
-                        <div><h4>Facebook</h4></div>
-                    </li>
-                    <li onclick="setPlatform('twitter')">
-                        <div class="icon-wrapper"><i class="fa-brands fa-x-twitter"></i></div>
-                        <div><h4>Twitter (X)</h4></div>
-                    </li>
-                    <li onclick="setPlatform('terabox')">
-                        <div class="icon-wrapper"><i class="fas fa-cloud-download-alt"></i></div>
-                        <div><h4>TeraBox</h4></div>
-                    </li>
-                    <li onclick="setPlatform('pin')">
-                        <div class="icon-wrapper"><i class="fab fa-pinterest"></i></div>
-                        <div><h4>Pinterest</h4></div>
-                    </li>
-                    <li onclick="setPlatform('spotify')">
-                        <div class="icon-wrapper"><i class="fab fa-spotify"></i></div>
-                        <div><h4>Spotify</h4></div>
-                    </li>
+                    <li onclick="setPlatform('youtube')"><div class="icon-wrapper"><i class="fab fa-youtube"></i></div><div><h4>YouTube</h4></div></li>
+                    <li onclick="setPlatform('tiktok')"><div class="icon-wrapper"><i class="fab fa-tiktok"></i></div><div><h4>TikTok</h4></div></li>
+                    <li onclick="setPlatform('ig')"><div class="icon-wrapper"><i class="fab fa-instagram"></i></div><div><h4>Instagram</h4></div></li>
+                    <li onclick="setPlatform('facebook')"><div class="icon-wrapper"><i class="fab fa-facebook"></i></div><div><h4>Facebook</h4></div></li>
+                    <li onclick="setPlatform('twitter')"><div class="icon-wrapper"><i class="fa-brands fa-x-twitter"></i></div><div><h4>Twitter (X)</h4></div></li>
+                    <li onclick="setPlatform('terabox')"><div class="icon-wrapper"><i class="fas fa-cloud-download-alt"></i></div><div><h4>TeraBox</h4></div></li>
+                    <li onclick="setPlatform('pin')"><div class="icon-wrapper"><i class="fab fa-pinterest"></i></div><div><h4>Pinterest</h4></div></li>
+                    <li onclick="setPlatform('spotify')"><div class="icon-wrapper"><i class="fab fa-spotify"></i></div><div><h4>Spotify</h4></div></li>
                 </ul>
             </div>
             
             <div class="cat-page" id="cat-page-1">
                 <ul class="feature-list">
-                    <li onclick="setPlatform('qr-gen')">
-                        <div class="icon-wrapper"><i class="fas fa-qrcode"></i></div>
-                        <div><h4>QR Code</h4></div>
-                    </li>
-                    <li onclick="setPlatform('shortlink')">
-                        <div class="icon-wrapper"><i class="fas fa-link"></i></div>
-                        <div><h4>Shortlink</h4></div>
-                    </li>
-                    <li onclick="setPlatform('remove-bg')">
-                        <div class="icon-wrapper"><i class="fas fa-eraser"></i></div>
-                        <div><h4>Hapus BG</h4></div>
-                    </li>
-                    <li onclick="setPlatform('noise-reduce')">
-                        <div class="icon-wrapper"><i class="fas fa-microphone-slash"></i></div>
-                        <div><h4>Clean Audio</h4></div>
-                    </li>
-                    <li onclick="setPlatform('lirik')">
-                        <div class="icon-wrapper"><i class="fas fa-music"></i></div>
-                        <div><h4>Lirik Lagu</h4></div>
-                    </li>
-                    <li onclick="setPlatform('ss-web')">
-                        <div class="icon-wrapper"><i class="fas fa-laptop"></i></div>
-                        <div><h4>Screenshot</h4></div>
-                    </li>
-                    <li onclick="setPlatform('yt-transcript')">
-                        <div class="icon-wrapper"><i class="fas fa-file-alt"></i></div>
-                        <div><h4>Transcript</h4></div>
-                    </li>
-                    <li onclick="setPlatform('iqc')">
-                        <div class="icon-wrapper"><i class="fab fa-apple"></i></div>
-                        <div><h4>iQuote</h4></div>
-                    </li>
-                    <li onclick="setPlatform('nulis')">
-                        <div class="icon-wrapper"><i class="fas fa-pen-nib"></i></div>
-                        <div><h4>Nulis Bot</h4></div>
-                    </li>
+                    <li onclick="setPlatform('qr-gen')"><div class="icon-wrapper"><i class="fas fa-qrcode"></i></div><div><h4>QR Code</h4></div></li>
+                    <li onclick="setPlatform('shortlink')"><div class="icon-wrapper"><i class="fas fa-link"></i></div><div><h4>Shortlink</h4></div></li>
+                    <li onclick="setPlatform('remove-bg')"><div class="icon-wrapper"><i class="fas fa-eraser"></i></div><div><h4>Hapus BG</h4></div></li>
+                    <li onclick="setPlatform('noise-reduce')"><div class="icon-wrapper"><i class="fas fa-microphone-slash"></i></div><div><h4>Clean Audio</h4></div></li>
+                    <li onclick="setPlatform('lirik')"><div class="icon-wrapper"><i class="fas fa-music"></i></div><div><h4>Lirik Lagu</h4></div></li>
+                    <li onclick="setPlatform('ss-web')"><div class="icon-wrapper"><i class="fas fa-laptop"></i></div><div><h4>Screenshot</h4></div></li>
+                    <li onclick="setPlatform('yt-transcript')"><div class="icon-wrapper"><i class="fas fa-file-alt"></i></div><div><h4>Transcript</h4></div></li>
+                    <li onclick="setPlatform('iqc')"><div class="icon-wrapper"><i class="fab fa-apple"></i></div><div><h4>iQuote</h4></div></li>
+                    <li onclick="setPlatform('nulis')"><div class="icon-wrapper"><i class="fas fa-pen-nib"></i></div><div><h4>Nulis Bot</h4></div></li>
                 </ul>
             </div>
 
             <div class="cat-page" id="cat-page-2">
                 <ul class="feature-list">
-                    <li onclick="setPlatform('tts')">
-                        <div class="icon-wrapper"><i class="fas fa-volume-up"></i></div>
-                        <div><h4>Voice AI</h4></div>
-                    </li>
-                    <li onclick="setPlatform('hd-foto')">
-                        <div class="icon-wrapper"><i class="fas fa-image"></i></div>
-                        <div><h4>HD Foto</h4></div>
-                    </li>
-                    <li onclick="setPlatform('photo-editor')">
-                        <div class="icon-wrapper"><i class="fas fa-magic"></i></div>
-                        <div><h4>Edit AI</h4></div>
-                    </li>
-                    <li onclick="setPlatform('ai-detector')">
-                        <div class="icon-wrapper"><i class="fas fa-robot"></i></div>
-                        <div><h4>AI Detect</h4></div>
-                    </li>
+                    <li onclick="setPlatform('gpt4')"><div class="icon-wrapper"><i class="fas fa-comment-dots"></i></div><div><h4>GPT-4</h4></div></li>
+                    <li onclick="setPlatform('claude')"><div class="icon-wrapper"><i class="fas fa-brain"></i></div><div><h4>Claude 3</h4></div></li>
+                    <li onclick="setPlatform('gemini')"><div class="icon-wrapper"><i class="fas fa-sparkles"></i></div><div><h4>Gemini</h4></div></li>
+                    <li onclick="setPlatform('bard')"><div class="icon-wrapper"><i class="fab fa-google"></i></div><div><h4>Bard</h4></div></li>
+                    <li onclick="setPlatform('blackbox')"><div class="icon-wrapper"><i class="fas fa-cube"></i></div><div><h4>Blackbox</h4></div></li>
+                    <li onclick="setPlatform('ai-detector')"><div class="icon-wrapper"><i class="fas fa-robot"></i></div><div><h4>AI Detect</h4></div></li>
+                    <li onclick="setPlatform('ai-anime')"><div class="icon-wrapper"><i class="fas fa-paint-brush"></i></div><div><h4>Anime AI</h4></div></li>
+                    <li onclick="setPlatform('genimg')"><div class="icon-wrapper"><i class="fas fa-image"></i></div><div><h4>Gen AI</h4></div></li>
+                    <li onclick="setPlatform('ai-real')"><div class="icon-wrapper"><i class="fas fa-camera"></i></div><div><h4>Real AI</h4></div></li>
+                    <li onclick="setPlatform('waifu')"><div class="icon-wrapper"><i class="fas fa-female"></i></div><div><h4>Waifu AI</h4></div></li>
+                    <li onclick="setPlatform('hd-foto')"><div class="icon-wrapper"><i class="fas fa-expand"></i></div><div><h4>HD Foto</h4></div></li>
+                    <li onclick="setPlatform('photo-editor')"><div class="icon-wrapper"><i class="fas fa-magic"></i></div><div><h4>Edit AI</h4></div></li>
+                    <li onclick="setPlatform('tts')"><div class="icon-wrapper"><i class="fas fa-volume-up"></i></div><div><h4>Voice AI</h4></div></li>
                 </ul>
             </div>
             
             <div class="cat-page" id="cat-page-3">
                 <ul class="feature-list">
-                    <li onclick="setPlatform('roblox-stalk')">
-                        <div class="icon-wrapper"><i class="fas fa-gamepad"></i></div>
-                        <div><h4>Roblox</h4></div>
-                    </li>
-                    <li onclick="setPlatform('dc-stalk')">
-                        <div class="icon-wrapper"><i class="fab fa-discord"></i></div>
-                        <div><h4>Discord</h4></div>
-                    </li>
-                    <li onclick="setPlatform('tt-stalk')">
-                        <div class="icon-wrapper"><i class="fab fa-tiktok"></i></div>
-                        <div><h4>TikTok</h4></div>
-                    </li>
-                    <li onclick="setPlatform('tw-stalk')">
-                        <div class="icon-wrapper"><i class="fa-brands fa-x-twitter"></i></div>
-                        <div><h4>Twitter (X)</h4></div>
-                    </li>
-                    <li onclick="setPlatform('gh-stalk')">
-                        <div class="icon-wrapper"><i class="fab fa-github"></i></div>
-                        <div><h4>GitHub</h4></div>
-                    </li>
-                    <li onclick="setPlatform('ig-stalk')">
-                        <div class="icon-wrapper"><i class="fab fa-instagram"></i></div>
-                        <div><h4>Instagram</h4></div>
-                    </li>
-                    <li onclick="setPlatform('th-stalk')">
-                        <div class="icon-wrapper"><i class="fa-brands fa-threads"></i></div>
-                        <div><h4>Threads</h4></div>
-                    </li>
+                    <li onclick="setPlatform('roblox-stalk')"><div class="icon-wrapper"><i class="fas fa-gamepad"></i></div><div><h4>Roblox</h4></div></li>
+                    <li onclick="setPlatform('dc-stalk')"><div class="icon-wrapper"><i class="fab fa-discord"></i></div><div><h4>Discord</h4></div></li>
+                    <li onclick="setPlatform('tt-stalk')"><div class="icon-wrapper"><i class="fab fa-tiktok"></i></div><div><h4>TikTok</h4></div></li>
+                    <li onclick="setPlatform('tw-stalk')"><div class="icon-wrapper"><i class="fa-brands fa-x-twitter"></i></div><div><h4>Twitter (X)</h4></div></li>
+                    <li onclick="setPlatform('gh-stalk')"><div class="icon-wrapper"><i class="fab fa-github"></i></div><div><h4>GitHub</h4></div></li>
+                    <li onclick="setPlatform('ig-stalk')"><div class="icon-wrapper"><i class="fab fa-instagram"></i></div><div><h4>Instagram</h4></div></li>
+                    <li onclick="setPlatform('th-stalk')"><div class="icon-wrapper"><i class="fa-brands fa-threads"></i></div><div><h4>Threads</h4></div></li>
                 </ul>
             </div>
             
             <div class="cat-page" id="cat-page-4">
                 <ul class="feature-list">
-                    <li onclick="setPlatform('pulsa')">
-                        <div class="icon-wrapper"><i class="fas fa-mobile-alt"></i></div>
-                        <div><h4>Beli Pulsa</h4></div>
-                    </li>
-                    <li onclick="setPlatform('topup')">
-                        <div class="icon-wrapper"><i class="fas fa-wallet"></i></div>
-                        <div><h4>E-Wallet</h4></div>
-                    </li>
-                    <li onclick="setPlatform('kontak')">
-                        <div class="icon-wrapper"><i class="fas fa-id-badge"></i></div>
-                        <div><h4>Hubungi</h4></div>
-                    </li>
+                    <li onclick="setPlatform('pulsa')"><div class="icon-wrapper"><i class="fas fa-mobile-alt"></i></div><div><h4>Beli Pulsa</h4></div></li>
+                    <li onclick="setPlatform('topup')"><div class="icon-wrapper"><i class="fas fa-wallet"></i></div><div><h4>E-Wallet</h4></div></li>
+                    <li onclick="setPlatform('kontak')"><div class="icon-wrapper"><i class="fas fa-id-badge"></i></div><div><h4>Hubungi</h4></div></li>
                 </ul>
             </div>
 
@@ -630,6 +541,24 @@
         </div>
 
         <div id="resultCard">
+            <div id="aiImageResult">
+                <h3>Hasil Generate AI</h3>
+                <div class="thumbnail-container" style="display:flex; background: #fff; padding: 10px;">
+                    <img id="aiGeneratedImage" src="" style="width: 100%; max-height: 300px; object-fit: contain; display:block; border-radius: 8px;">
+                </div>
+                <div class="action-btns" id="aiImageActionBtns"></div>
+            </div>
+
+            <div id="aiChatResult">
+                <h3>Jawaban AI</h3>
+                <div class="transcript-box" id="aiChatText" style="text-align: left; font-size: 14px;"></div>
+                <div class="action-btns">
+                    <button class="btn-primary" onclick="copyAiChat()" id="copyAiChatBtn">
+                        <i class="fas fa-copy"></i> Salin Jawaban
+                    </button>
+                </div>
+            </div>
+
             <div id="qrResult">
                 <h3>QR Code Berhasil</h3>
                 <div class="thumbnail-container" style="display:flex; background: #fff; padding: 20px;">
