@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1807/1807350.png">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1807/1807350.png">
     <meta property="og:title" content="Moonlight - Super App">
-    <meta property="og:description" content="Super App dengan Gudang AI, Nonton Film/Anime, Media Downloader, dan Stalker Akun dalam satu tempat!">
+    <meta property="og:description" content="Super App with AI Tools, Movie/Anime Streaming, Media Downloader, and Account Stalker in one place!">
     <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/1807/1807350.png">
     <meta property="og:url" content="https://moonlight.cloudnestpanel.my.id/">
     <meta property="og:type" content="website">
@@ -31,13 +31,7 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        body { 
-            font-family: var(--font-family-system); background-color: var(--bg-body); 
-            background-image: url('walpeper.jpg'); background-size: cover;
-            background-position: center; background-attachment: fixed; background-repeat: no-repeat;
-            color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column;
-            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; line-height: 1.5; padding-bottom: 70px;
-        }
+        body { font-family: var(--font-family-system); background-color: var(--bg-body); background-image: url('walpeper.jpg'); background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat; color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; line-height: 1.5; padding-bottom: 70px; }
 
         #ambientBackground { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 0%, var(--ambient-glow) 0%, transparent 70%); z-index: -1; pointer-events: none; transition: background 1.5s ease-in-out; }
 
@@ -87,63 +81,16 @@
 
         .hero { flex: 1; padding: 40px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; position: relative; }
         
-        /* =======================================
-           DESAIN BERANDA (DASHBOARD) PREMIUM
-           ======================================= */
         .home-dashboard { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 20px; animation: slideUp 0.4s ease; margin-bottom: 20px; }
-        
-        /* Kartu Sapaan: Clean Dark Glass */
-        .greeting-card { 
-            background: rgba(255, 255, 255, 0.02); 
-            border: 1px solid rgba(255, 255, 255, 0.05); 
-            border-top: 2px solid var(--primary); 
-            border-radius: 20px; 
-            padding: 28px 24px; 
-            text-align: left; 
-            backdrop-filter: blur(12px); 
-            position: relative;
-            overflow: hidden;
-        }
-        /* Efek Glow Biru Super Halus di Sudut Kanan Atas */
-        .greeting-card::after {
-            content: ''; position: absolute; top: -30px; right: -30px;
-            width: 120px; height: 120px;
-            background: radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%);
-            pointer-events: none;
-        }
+        .greeting-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-top: 2px solid var(--primary); border-radius: 20px; padding: 28px 24px; text-align: left; backdrop-filter: blur(12px); position: relative; overflow: hidden; }
+        .greeting-card::after { content: ''; position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%); pointer-events: none; }
         .greeting-card h2 { margin: 0 0 6px 0; font-size: 24px; color: #fff; font-weight: 800; display: flex; align-items: center; gap: 8px; }
         .greeting-card h2 i { color: #facc15; font-size: 20px; }
         .greeting-card p { margin: 0; color: var(--text-muted); font-size: 14px; }
-        
         .section-title { text-align: left; font-size: 15px; color: #fff; font-weight: 700; margin: 10px 0 0 5px; }
-        
-        /* Tombol Pintasan: Horizontal Cards ala iOS */
         .quick-access-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-        .qa-btn { 
-            background: rgba(255, 255, 255, 0.03); 
-            border: 1px solid rgba(255, 255, 255, 0.05); 
-            border-radius: 16px; 
-            padding: 12px 16px; 
-            color: #e2e8f0; 
-            font-size: 14px; 
-            font-weight: 600; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            cursor: pointer; 
-            transition: all 0.2s cubic-bezier(0.4,0,0.2,1); 
-            text-align: left;
-            font-family: var(--font-family-system);
-        }
-        /* Kotak Ikon di dalam Tombol Pintasan */
-        .qa-btn .qa-icon { 
-            width: 38px; height: 38px; 
-            background: rgba(0, 0, 0, 0.3); 
-            border-radius: 10px; 
-            display: flex; align-items: center; justify-content: center;
-            font-size: 18px; color: var(--primary);
-            transition: 0.2s;
-        }
+        .qa-btn { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 12px 16px; color: #e2e8f0; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s cubic-bezier(0.4,0,0.2,1); text-align: left; font-family: var(--font-family-system); }
+        .qa-btn .qa-icon { width: 38px; height: 38px; background: rgba(0, 0, 0, 0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--primary); transition: 0.2s; }
         .qa-btn:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
         .qa-btn:hover .qa-icon { background: var(--primary); color: #fff; }
 
@@ -288,18 +235,19 @@
     <div id="splashScreen">
         <div class="splash-anim-container">
             <svg class="moon-svg" viewBox="-30 -30 160 160" xmlns="http://www.w3.org/2000/svg">
-                <path class="moon-line" d="M54 5 A 45 45 0 1 0 95 50 A 35 35 0 1 1 54 5 Z"></path>
+                <path class="moon-line glow" d="M54 5 A 45 45 0 1 0 95 50 A 35 35 0 1 1 54 5 Z"></path>
+                <path class="moon-line main" d="M54 5 A 45 45 0 1 0 95 50 A 35 35 0 1 1 54 5 Z"></path>
             </svg>
         </div>
         <div class="splash-text">MOONLIGHT</div>
     </div>
 
-    <div id="offlineIndicator">ANDA SEDANG OFFLINE. PERMINTAAN AKAN MASUK ANTREAN.</div>
+    <div id="offlineIndicator">YOU ARE OFFLINE. REQUESTS WILL BE QUEUED.</div>
 
     <nav class="navbar">
         <div class="logo" onclick="showHome()" style="cursor:pointer;"><i class="fas fa-moon"></i> Moonlight</div>
         <div style="display: flex; gap: 10px;">
-            <button class="nav-btn" onclick="openHistory()" title="Riwayat"><i class="fas fa-history"></i></button>
+            <button class="nav-btn" onclick="openHistory()" title="History"><i class="fas fa-history"></i></button>
             <button id="menuBtn" class="nav-btn" onclick="openCategory('current', 'bnav-all')"><i class="fas fa-bars"></i></button>
         </div>
     </nav>
@@ -308,7 +256,7 @@
         <div class="modal-content">
             <div class="cat-nav-header">
                 <button class="cat-nav-btn" onclick="prevCat()"><i class="fas fa-chevron-left"></i></button>
-                <h2 id="catTitle">Downloader Media</h2>
+                <h2 id="catTitle">Media Downloader</h2>
                 <button class="cat-nav-btn" onclick="nextCat()"><i class="fas fa-chevron-right"></i></button>
             </div>
             
@@ -327,14 +275,14 @@
             
             <div class="cat-page" id="cat-page-1">
                 <ul class="feature-list">
-                    <li onclick="setPlatform('qr-gen')"><div class="icon-wrapper"><i class="fas fa-qrcode"></i></div><div><h4>QR Code</h4></div></li>
+                    <li onclick="setPlatform('qr-gen')"><div class="icon-wrapper"><i class="fas fa-qrcode"></i></div><div><h4>Create QR</h4></div></li>
                     <li onclick="setPlatform('shortlink')"><div class="icon-wrapper"><i class="fas fa-link"></i></div><div><h4>Shortlink</h4></div></li>
-                    <li onclick="setPlatform('remove-bg')"><div class="icon-wrapper"><i class="fas fa-eraser"></i></div><div><h4>Hapus BG</h4></div></li>
+                    <li onclick="setPlatform('remove-bg')"><div class="icon-wrapper"><i class="fas fa-eraser"></i></div><div><h4>Remove BG</h4></div></li>
                     <li onclick="setPlatform('noise-reduce')"><div class="icon-wrapper"><i class="fas fa-microphone-slash"></i></div><div><h4>Clean Audio</h4></div></li>
                     <li onclick="setPlatform('ss-web')"><div class="icon-wrapper"><i class="fas fa-laptop"></i></div><div><h4>Screenshot</h4></div></li>
                     <li onclick="setPlatform('yt-transcript')"><div class="icon-wrapper"><i class="fas fa-file-alt"></i></div><div><h4>Transcript</h4></div></li>
                     <li onclick="setPlatform('iqc')"><div class="icon-wrapper"><i class="fab fa-apple"></i></div><div><h4>iQuote</h4></div></li>
-                    <li onclick="setPlatform('nulis')"><div class="icon-wrapper"><i class="fas fa-pen-nib"></i></div><div><h4>Nulis Bot</h4></div></li>
+                    <li onclick="setPlatform('nulis')"><div class="icon-wrapper"><i class="fas fa-pen-nib"></i></div><div><h4>Writing Bot</h4></div></li>
                 </ul>
             </div>
 
@@ -358,7 +306,7 @@
                     <li onclick="setPlatform('genimg')"><div class="icon-wrapper"><i class="fas fa-image"></i></div><div><h4>Gen AI</h4></div></li>
                     <li onclick="setPlatform('ai-real')"><div class="icon-wrapper"><i class="fas fa-camera"></i></div><div><h4>Real AI</h4></div></li>
                     <li onclick="setPlatform('waifu')"><div class="icon-wrapper"><i class="fas fa-female"></i></div><div><h4>Waifu AI</h4></div></li>
-                    <li onclick="setPlatform('hd-foto')"><div class="icon-wrapper"><i class="fas fa-expand"></i></div><div><h4>HD Foto</h4></div></li>
+                    <li onclick="setPlatform('hd-foto')"><div class="icon-wrapper"><i class="fas fa-expand"></i></div><div><h4>HD Photo</h4></div></li>
                     <li onclick="setPlatform('photo-editor')"><div class="icon-wrapper"><i class="fas fa-magic"></i></div><div><h4>Edit AI</h4></div></li>
                     <li onclick="setPlatform('tts')"><div class="icon-wrapper"><i class="fas fa-volume-up"></i></div><div><h4>Voice AI</h4></div></li>
                 </ul>
@@ -378,20 +326,20 @@
 
             <div class="cat-page" id="cat-page-4">
                 <ul class="feature-list">
-                    <li onclick="setPlatform('film')"><div class="icon-wrapper"><i class="fas fa-film"></i></div><div><h4>Nonton Film</h4></div></li>
-                    <li onclick="setPlatform('anime')"><div class="icon-wrapper"><i class="fas fa-tv"></i></div><div><h4>Nonton Anime</h4></div></li>
-                    <li onclick="setPlatform('donghua')"><div class="icon-wrapper"><i class="fas fa-dragon"></i></div><div><h4>Nonton Donghua</h4></div></li>
+                    <li onclick="setPlatform('film')"><div class="icon-wrapper"><i class="fas fa-film"></i></div><div><h4>Watch Movies</h4></div></li>
+                    <li onclick="setPlatform('anime')"><div class="icon-wrapper"><i class="fas fa-tv"></i></div><div><h4>Watch Anime</h4></div></li>
+                    <li onclick="setPlatform('donghua')"><div class="icon-wrapper"><i class="fas fa-dragon"></i></div><div><h4>Watch Donghua</h4></div></li>
                     <li onclick="setPlatform('anoboy')"><div class="icon-wrapper"><i class="fas fa-video"></i></div><div><h4>Anoboy</h4></div></li>
-                    <li onclick="setPlatform('cnn')"><div class="icon-wrapper"><i class="fas fa-newspaper"></i></div><div><h4>CNN Berita</h4></div></li>
-                    <li onclick="setPlatform('lirik')"><div class="icon-wrapper"><i class="fas fa-music"></i></div><div><h4>Lirik Lagu</h4></div></li>
+                    <li onclick="setPlatform('cnn')"><div class="icon-wrapper"><i class="fas fa-newspaper"></i></div><div><h4>CNN News</h4></div></li>
+                    <li onclick="setPlatform('lirik')"><div class="icon-wrapper"><i class="fas fa-music"></i></div><div><h4>Song Lyrics</h4></div></li>
                 </ul>
             </div>
             
             <div class="cat-page" id="cat-page-5">
                 <ul class="feature-list">
-                    <li onclick="setPlatform('pulsa')"><div class="icon-wrapper"><i class="fas fa-mobile-alt"></i></div><div><h4>Beli Pulsa</h4></div></li>
-                    <li onclick="setPlatform('topup')"><div class="icon-wrapper"><i class="fas fa-wallet"></i></div><div><h4>E-Wallet</h4></div></li>
-                    <li onclick="setPlatform('kontak')"><div class="icon-wrapper"><i class="fas fa-id-badge"></i></div><div><h4>Hubungi</h4></div></li>
+                    <li onclick="setPlatform('pulsa')"><div class="icon-wrapper"><i class="fas fa-mobile-alt"></i></div><div><h4>Buy Credit</h4></div></li>
+                    <li onclick="setPlatform('topup')"><div class="icon-wrapper"><i class="fas fa-wallet"></i></div><div><h4>Top-up Wallet</h4></div></li>
+                    <li onclick="setPlatform('kontak')"><div class="icon-wrapper"><i class="fas fa-id-badge"></i></div><div><h4>Contact Us</h4></div></li>
                 </ul>
             </div>
 
@@ -408,11 +356,11 @@
 
     <div id="historyModal" class="modal">
         <div class="modal-content" style="max-width: 500px;">
-            <h2 style="margin-bottom: 8px; margin-top: 10px;"><i class="fas fa-history" style="color: #60a5fa;"></i> Riwayat Terakhir</h2>
-            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Menyimpan 10 hasil sukses terakhirmu.</p>
+            <h2 style="margin-bottom: 8px; margin-top: 10px;"><i class="fas fa-history" style="color: #60a5fa;"></i> Recent History</h2>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Stores your last 10 successful requests.</p>
             <div id="historyListContainer"></div>
             <button onclick="clearHistory()" class="btn-secondary" style="width: 100%; padding: 14px; border-radius: 12px; margin-top: 16px; border: none; cursor: pointer; font-weight: 600;">
-                <i class="fas fa-trash"></i> Bersihkan Riwayat
+                <i class="fas fa-trash"></i> Clear History
             </button>
         </div>
     </div>
@@ -421,38 +369,38 @@
         
         <div id="homeDashboard" class="home-dashboard">
             <div class="greeting-card">
-                <h2 id="greetingText">Selamat Datang!</h2>
-                <p>Mau melakukan apa hari ini di Moonlight?</p>
+                <h2 id="greetingText">Welcome!</h2>
+                <p>What would you like to do today?</p>
             </div>
-            <h3 class="section-title">Pintasan Cepat</h3>
+            <h3 class="section-title">Quick Access</h3>
             <div class="quick-access-grid">
-                <button class="qa-btn" onclick="setPlatform('gpt4')"><div class="qa-icon"><i class="fas fa-robot"></i></div> Tanya AI</button>
-                <button class="qa-btn" onclick="setPlatform('film')"><div class="qa-icon"><i class="fas fa-film"></i></div> Nonton Film</button>
+                <button class="qa-btn" onclick="setPlatform('gpt4')"><div class="qa-icon"><i class="fas fa-robot"></i></div> Ask AI</button>
+                <button class="qa-btn" onclick="setPlatform('film')"><div class="qa-icon"><i class="fas fa-film"></i></div> Movies</button>
                 <button class="qa-btn" onclick="setPlatform('tiktok')"><div class="qa-icon"><i class="fab fa-tiktok"></i></div> TikTok DL</button>
-                <button class="qa-btn" onclick="setPlatform('qr-gen')"><div class="qa-icon"><i class="fas fa-qrcode"></i></div> Buat QR</button>
+                <button class="qa-btn" onclick="setPlatform('qr-gen')"><div class="qa-icon"><i class="fas fa-qrcode"></i></div> Create QR</button>
             </div>
         </div>
 
-        <h1 id="mainTitle" style="display:none;">Unduh Video TikTok</h1>
+        <h1 id="mainTitle" style="display:none;">Download TikTok Video</h1>
         
         <div class="form-group" style="display:none;">
-            <div id="urlInputContainer" class="input-wrapper"><input type="text" id="mediaUrl" placeholder="Tempel tautan video TikTok di sini..."><button class="paste-btn" onclick="pasteToInput('mediaUrl')" title="Tempel Link"><i class="fas fa-clipboard"></i></button></div>
+            <div id="urlInputContainer" class="input-wrapper"><input type="text" id="mediaUrl" placeholder="Paste the link here..."><button class="paste-btn" onclick="pasteToInput('mediaUrl')" title="Paste Link"><i class="fas fa-clipboard"></i></button></div>
             <div id="fileInputContainer" class="input-wrapper" style="display: none; padding: 12px 16px;"><input type="file" id="mediaFile" style="width: 100%; color: var(--text-main); font-family: var(--font-family-system);"></div>
             <div id="catboxHelper"></div>
             <div id="providerContainer" class="select-wrapper"><select id="pulsaProvider"></select></div>
             <div id="nominalContainer" class="select-wrapper">
-                <select id="pulsaNominal"><option value="5000">Nominal: 5.000</option><option value="10000" selected>Nominal: 10.000</option><option value="15000">Nominal: 15.000</option><option value="20000">Nominal: 20.000</option><option value="25000">Nominal: 25.000</option><option value="50000">Nominal: 50.000</option><option value="100000">Nominal: 100.000</option></select>
+                <select id="pulsaNominal"><option value="5000">Amount: 5,000</option><option value="10000" selected>Amount: 10,000</option><option value="15000">Amount: 15,000</option><option value="20000">Amount: 20,000</option><option value="25000">Amount: 25,000</option><option value="50000">Amount: 50,000</option><option value="100000">Amount: 100,000</option></select>
             </div>
-            <div id="customAmountContainer" class="input-wrapper" style="display: none;"><input type="number" id="customAmount" placeholder="Nominal (min 10000)"></div>
+            <div id="customAmountContainer" class="input-wrapper" style="display: none;"><input type="number" id="customAmount" placeholder="Amount (min 10000)"></div>
             <div id="ytFormatContainer" class="select-wrapper"><select id="ytFormat"><option value="video|720p" selected>Video (MP4) - 720p</option><option value="video|1080p">Video (MP4) - 1080p</option><option value="audio|320kbps">Audio (MP3) - 320kbps</option></select></div>
-            <div id="textInputContainer" class="text-wrapper"><textarea id="textContent" placeholder="Tempel artikel atau teks di sini..."></textarea><button class="paste-btn" onclick="pasteToInput('textContent')" title="Tempel Teks"><i class="fas fa-clipboard"></i></button></div>
-            <div id="timeInputsContainer" class="time-row"><div class="time-col"><label>Status HP</label><input type="time" id="phoneTime" value="12:00"></div><div class="time-col"><label>Jam Chat</label><input type="time" id="chatTime" value="10:15"></div></div>
+            <div id="textInputContainer" class="text-wrapper"><textarea id="textContent" placeholder="Paste article or text here..."></textarea><button class="paste-btn" onclick="pasteToInput('textContent')" title="Paste Text"><i class="fas fa-clipboard"></i></button></div>
+            <div id="timeInputsContainer" class="time-row"><div class="time-col"><label>Phone Status</label><input type="time" id="phoneTime" value="12:00"></div><div class="time-col"><label>Chat Time</label><input type="time" id="chatTime" value="10:15"></div></div>
 
             <div id="contactContainer" style="display: none; width: 100%; flex-direction: column; gap: 16px;">
                 <div class="contact-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px 24px 32px 24px; text-align: center; backdrop-filter: blur(12px); box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
-                    <img src="https://images.unsplash.com/photo-1522030299830-16b8d3d049fe?auto=format&fit=crop&w=200&q=80" alt="Profil" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 16px; border: 4px solid #1e293b; object-fit: cover;">
+                    <img src="https://images.unsplash.com/photo-1522030299830-16b8d3d049fe?auto=format&fit=crop&w=200&q=80" alt="Profile" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 16px; border: 4px solid #1e293b; object-fit: cover;">
                     <h3 style="margin: 0 0 4px 0; font-size: 24px; color: #fff; font-weight: 700;">Ren</h3>
-                    <p style="margin: 0 0 24px 0; font-size: 14px; color: var(--text-muted);">Developer & Owner Moonlight</p>
+                    <p style="margin: 0 0 24px 0; font-size: 14px; color: var(--text-muted);">Developer & Owner of Moonlight</p>
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         <a href="https://wa.me/6281249578370" target="_blank" class="btn-primary" style="background: #25D366; text-decoration: none; padding: 14px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; color: white;"><i class="fab fa-whatsapp" style="font-size: 18px;"></i> WhatsApp</a>
                         <a href="mailto:rawrrawr195@gmail.com" class="btn-secondary" style="text-decoration: none; padding: 14px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;"><i class="fas fa-envelope" style="font-size: 18px;"></i> Email</a>
@@ -460,52 +408,52 @@
                 </div>
             </div>
 
-            <button id="mainBtn" class="main-action-btn" onclick="processAction()">Download Sekarang</button>
+            <button id="mainBtn" class="main-action-btn" onclick="processAction()">Download Now</button>
         </div>
 
         <div id="loadingOverlay">
-            <div id="loadingSpinner"><i class="fas fa-circle-notch fa-spin"></i> <span id="loadingText">Memproses permintaan...</span></div>
+            <div id="loadingSpinner"><i class="fas fa-circle-notch fa-spin"></i> <span id="loadingText">Processing request...</span></div>
             <div id="miniGame">
-                <p><i class="fas fa-gamepad" style="color:var(--primary); margin-right:4px;"></i> Main bentar yuk! (Tap untuk lompat)</p>
+                <p><i class="fas fa-gamepad" style="color:var(--primary); margin-right:4px;"></i> Let's play a mini-game! (Tap to jump)</p>
                 <div id="gameArea" onmousedown="moonJump()" ontouchstart="moonJump()">
                     <div id="moonPlayer"><i class="fas fa-user-astronaut"></i></div><div id="meteorObstacle"><i class="fas fa-meteor"></i></div><div class="ground-line"></div>
                 </div>
-                <div id="gameScore">Skor: 0</div>
+                <div id="gameScore">Score: 0</div>
             </div>
         </div>
 
         <div id="resultCard">
             <div id="entertainmentResult"></div>
-            <div id="aiImageResult"><h3>Hasil Generate AI</h3><div class="thumbnail-container" style="display:flex; background: #fff; padding: 10px;"><img id="aiGeneratedImage" src="" style="width: 100%; max-height: 300px; object-fit: contain; display:block; border-radius: 8px;"></div><div class="action-btns" id="aiImageActionBtns"></div></div>
-            <div id="aiChatResult"><h3>Jawaban AI</h3><div class="transcript-box" id="aiChatText" style="text-align: left; font-size: 14px;"></div><div class="action-btns"><button class="btn-primary" onclick="copyAiChat()" id="copyAiChatBtn"><i class="fas fa-copy"></i> Salin Jawaban</button></div></div>
-            <div id="qrResult"><h3>QR Code Berhasil</h3><div class="thumbnail-container" style="display:flex; background: #fff; padding: 20px;"><img id="qrImage" src="" style="width: 100%; max-width: 220px; object-fit: contain; display:block; margin: 0 auto; border-radius: 8px;"></div><div class="action-btns" id="qrActionBtns"></div></div>
-            <div id="shortlinkResult"><h3>Tautan Dipendekkan</h3><div class="input-wrapper" style="margin-bottom: 16px;"><input type="text" id="shortlinkText" readonly style="color: #60a5fa; font-weight: bold; text-align: center;"></div><div class="action-btns"><button class="btn-primary" onclick="copyShortlink()" id="copyShortlinkBtn"><i class="fas fa-copy"></i> Salin Link</button></div></div>
-            <div id="ttsResult"><h3>Audio Text-to-Speech</h3><audio id="ttsPlayer" controls style="width: 100%; margin-bottom: 16px;"></audio><div class="action-btns" id="ttsActionBtns"></div></div>
-            <div id="downloaderResult"><div id="profileSection" class="profile"><img id="authorAvatar" src="" alt="Avatar"><div><h3 id="authorName">Nama</h3><p id="authorId">@username</p></div></div><div class="caption" id="videoCaption">Deskripsi</div><div id="thumbnailContainer" class="thumbnail-container"><img id="videoThumbnail" src="" alt="Thumbnail" class="video-thumbnail"><div class="thumbnail-fallback" id="thumbnailFallback"><i class="fas fa-image"></i><p>Preview Tidak Tersedia</p></div></div><div id="actionBtns" class="action-btns"></div></div>
-            <div id="aiResult"><div id="aiFeedbackBadge" class="ai-feedback-badge">Menganalisis...</div><div class="ai-stats-grid"><div class="ai-stat-box"><h4>Manusia</h4><h4 id="aiScoreHuman">0%</h4><div class="ai-bar-container"><div id="barHuman" class="ai-bar-human"></div></div></div><div class="ai-stat-box"><h4>AI</h4><h4 id="aiScoreFake">0%</h4><div class="ai-bar-container"><div id="barFake" class="ai-bar-fake"></div></div></div></div></div>
-            <div id="hdFotoResult"><h3>Foto HD Berhasil</h3><div class="thumbnail-container" style="display:flex;"><img id="hdImageResult" src="" class="video-thumbnail" style="display:block;"></div><div class="action-btns" id="hdActionBtns"></div></div>
-            <div id="removeBgResult"><h3>Background Terhapus</h3><div class="thumbnail-container" style="display:flex;"><img id="removeBgImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="removeBgActionBtns"></div></div>
-            <div id="audioResult"><h3>Audio Bersih</h3><audio id="audioPlayer" controls style="width: 100%; margin-bottom: 16px;"></audio><div class="action-btns" id="audioActionBtns"></div></div>
-            <div id="ssWebResult"><h3>Tangkapan Layar</h3><div class="thumbnail-container" style="display:flex;"><img id="ssWebImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="ssWebActionBtns"></div></div>
-            <div id="iqcResult"><h3>Kutipan iPhone</h3><div class="thumbnail-container" style="display:flex;"><img id="iqcImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="iqcActionBtns"></div></div>
-            <div id="nulisResult"><h3>Hasil Nulis</h3><div class="thumbnail-container" style="display:flex;"><img id="nulisImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="nulisActionBtns"></div></div>
-            <div id="photoEditorResult"><h3>Hasil Edit AI</h3><div class="thumbnail-container" style="display:flex;"><img id="photoEditorImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="photoEditorActionBtns"></div></div>
-            <div id="ytTranscriptResult"><h3>Teks Video</h3><div class="transcript-box" id="ytTranscriptText"></div><div class="action-btns"><button class="btn-primary" onclick="copyTranscript()" id="copyTranscriptBtn">Salin Teks</button></div></div>
-            <div id="lirikResult"><h3 id="lirikTitle">Hasil Lirik</h3><div id="lirikList" class="action-btns"></div><div id="lirikContentWrapper" style="display:none;"><div class="transcript-box" id="lirikText"></div><div class="action-btns"><button class="btn-primary" onclick="copyLirik()" id="copyLirikBtn">Salin Lirik</button></div></div></div>
+            <div id="aiImageResult"><h3>AI Generation Result</h3><div class="thumbnail-container" style="display:flex; background: #fff; padding: 10px;"><img id="aiGeneratedImage" src="" style="width: 100%; max-height: 300px; object-fit: contain; display:block; border-radius: 8px;"></div><div class="action-btns" id="aiImageActionBtns"></div></div>
+            <div id="aiChatResult"><h3>AI Answer</h3><div class="transcript-box" id="aiChatText" style="text-align: left; font-size: 14px;"></div><div class="action-btns"><button class="btn-primary" onclick="copyAiChat()" id="copyAiChatBtn"><i class="fas fa-copy"></i> Copy Answer</button></div></div>
+            <div id="qrResult"><h3>QR Code Generated</h3><div class="thumbnail-container" style="display:flex; background: #fff; padding: 20px;"><img id="qrImage" src="" style="width: 100%; max-width: 220px; object-fit: contain; display:block; margin: 0 auto; border-radius: 8px;"></div><div class="action-btns" id="qrActionBtns"></div></div>
+            <div id="shortlinkResult"><h3>Shortened Link</h3><div class="input-wrapper" style="margin-bottom: 16px;"><input type="text" id="shortlinkText" readonly style="color: #60a5fa; font-weight: bold; text-align: center;"></div><div class="action-btns"><button class="btn-primary" onclick="copyShortlink()" id="copyShortlinkBtn"><i class="fas fa-copy"></i> Copy Link</button></div></div>
+            <div id="ttsResult"><h3>Text-to-Speech Audio</h3><audio id="ttsPlayer" controls style="width: 100%; margin-bottom: 16px;"></audio><div class="action-btns" id="ttsActionBtns"></div></div>
+            <div id="downloaderResult"><div id="profileSection" class="profile"><img id="authorAvatar" src="" alt="Avatar"><div><h3 id="authorName">Name</h3><p id="authorId">@username</p></div></div><div class="caption" id="videoCaption">Description</div><div id="thumbnailContainer" class="thumbnail-container"><img id="videoThumbnail" src="" alt="Thumbnail" class="video-thumbnail"><div class="thumbnail-fallback" id="thumbnailFallback"><i class="fas fa-image"></i><p>Preview Unavailable</p></div></div><div id="actionBtns" class="action-btns"></div></div>
+            <div id="aiResult"><div id="aiFeedbackBadge" class="ai-feedback-badge">Analyzing...</div><div class="ai-stats-grid"><div class="ai-stat-box"><h4>Human</h4><h4 id="aiScoreHuman">0%</h4><div class="ai-bar-container"><div id="barHuman" class="ai-bar-human"></div></div></div><div class="ai-stat-box"><h4>AI</h4><h4 id="aiScoreFake">0%</h4><div class="ai-bar-container"><div id="barFake" class="ai-bar-fake"></div></div></div></div></div>
+            <div id="hdFotoResult"><h3>HD Photo Ready</h3><div class="thumbnail-container" style="display:flex;"><img id="hdImageResult" src="" class="video-thumbnail" style="display:block;"></div><div class="action-btns" id="hdActionBtns"></div></div>
+            <div id="removeBgResult"><h3>Background Removed</h3><div class="thumbnail-container" style="display:flex;"><img id="removeBgImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="removeBgActionBtns"></div></div>
+            <div id="audioResult"><h3>Audio Cleaned</h3><audio id="audioPlayer" controls style="width: 100%; margin-bottom: 16px;"></audio><div class="action-btns" id="audioActionBtns"></div></div>
+            <div id="ssWebResult"><h3>Screenshot Result</h3><div class="thumbnail-container" style="display:flex;"><img id="ssWebImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="ssWebActionBtns"></div></div>
+            <div id="iqcResult"><h3>iPhone Quote</h3><div class="thumbnail-container" style="display:flex;"><img id="iqcImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="iqcActionBtns"></div></div>
+            <div id="nulisResult"><h3>Writing Result</h3><div class="thumbnail-container" style="display:flex;"><img id="nulisImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="nulisActionBtns"></div></div>
+            <div id="photoEditorResult"><h3>AI Edit Result</h3><div class="thumbnail-container" style="display:flex;"><img id="photoEditorImage" src="" style="width: 100%; object-fit: contain; display:block;"></div><div class="action-btns" id="photoEditorActionBtns"></div></div>
+            <div id="ytTranscriptResult"><h3>Video Transcript</h3><div class="transcript-box" id="ytTranscriptText"></div><div class="action-btns"><button class="btn-primary" onclick="copyTranscript()" id="copyTranscriptBtn">Copy Text</button></div></div>
+            <div id="lirikResult"><h3 id="lirikTitle">Lyrics Result</h3><div id="lirikList" class="action-btns"></div><div id="lirikContentWrapper" style="display:none;"><div class="transcript-box" id="lirikText"></div><div class="action-btns"><button class="btn-primary" onclick="copyLirik()" id="copyLirikBtn">Copy Lyrics</button></div></div></div>
             <div id="stalkResult"><div style="text-align: center;"><img id="stalkAvatar" src="" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); margin-bottom: 12px; object-fit: cover; background: #1e293b;"><h3 id="stalkName">Name</h3><p id="stalkUsername">@username</p></div><div id="stalkStatsGrid" class="ai-stats-grid"></div><div id="stalkExtra"></div></div>
-            <div id="invoiceResult"><div class="invoice-header"><h3>Tagihan</h3><p id="invoiceId">Order ID: -</p></div><div class="invoice-details"><div class="invoice-row"><span>Tujuan</span><span id="invNumber">08xxx</span></div><div class="invoice-row"><span>Total</span><span id="invPrice" style="color:#facc15; font-weight:800;">Rp 0</span></div></div><div class="qr-container"><img id="invQrImage" src=""></div></div>
+            <div id="invoiceResult"><div class="invoice-header"><h3>Invoice</h3><p id="invoiceId">Order ID: -</p></div><div class="invoice-details"><div class="invoice-row"><span>Destination</span><span id="invNumber">08xxx</span></div><div class="invoice-row"><span>Total</span><span id="invPrice" style="color:#facc15; font-weight:800;">Rp 0</span></div></div><div class="qr-container"><img id="invQrImage" src=""></div></div>
         </div>
     </main>
 
     <div id="pipOverlay"><button class="pip-close" onclick="closePip()">&times;</button><video id="pipVideo" autoplay loop muted playsinline></video></div>
-    <div id="toast" class="toast"><div class="toast-icon"><i id="toastIcon" class="fas fa-info-circle"></i></div><div class="toast-message" id="toastMessage">Pesan</div></div>
+    <div id="toast" class="toast"><div class="toast-icon"><i id="toastIcon" class="fas fa-info-circle"></i></div><div class="toast-message" id="toastMessage">Message</div></div>
 
     <footer>&copy; Created by RendyZ</footer>
 
     <nav class="bottom-nav">
         <button id="bnav-all" class="bnav-item active" onclick="openCategory('current', 'bnav-all')"><i class="fas fa-bars"></i><span>Menu</span></button>
         <button id="bnav-dl" class="bnav-item" onclick="openCategory(0, 'bnav-dl')"><i class="fas fa-download"></i><span>Media</span></button>
-        <button id="bnav-ent" class="bnav-item" onclick="openCategory(4, 'bnav-ent')"><i class="fas fa-film"></i><span>Hiburan</span></button>
+        <button id="bnav-ent" class="bnav-item" onclick="openCategory(4, 'bnav-ent')"><i class="fas fa-film"></i><span>Entertainment</span></button>
         <button id="bnav-ai" class="bnav-item" onclick="openCategory(2, 'bnav-ai')"><i class="fas fa-robot"></i><span>AI</span></button>
         <button id="bnav-stalk" class="bnav-item" onclick="openCategory(3, 'bnav-stalk')"><i class="fas fa-search"></i><span>Stalker</span></button>
     </nav>
