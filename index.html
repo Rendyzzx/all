@@ -85,19 +85,10 @@
         
         .greeting-card {
             background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('2d7af96cf6a1753b2abb1df4e1afad1b.jpg');
-            background-size: cover;
-            background-position: center;
-            background-color: #1e293b;
-            border: 1px solid rgba(255,255,255,0.05);
-            border-left: 4px solid var(--primary);
-            border-radius: 12px;
-            padding: 24px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            text-align: left;
+            background-size: cover; background-position: center; background-color: #1e293b;
+            border: 1px solid rgba(255,255,255,0.05); border-left: 4px solid var(--primary); border-radius: 12px;
+            padding: 24px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: left;
         }
-
         .gc-badge { font-size: 11px; letter-spacing: 2px; color: #60a5fa; font-weight: 700; margin-bottom: 8px; display: block; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
         .greeting-card h2 { margin: 0 0 4px 0; font-size: 26px; color: #fff; font-weight: 800; letter-spacing: -0.5px; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
         .greeting-card p { margin: 0; color: #f1f5f9; font-size: 14px; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
@@ -113,9 +104,9 @@
         .qa-btn:hover .qa-icon { background: var(--primary); color: #fff; box-shadow: 0 0 15px var(--primary); }
         .qa-btn-all .qa-icon { color: var(--primary); background: rgba(37,99,235,0.1); }
 
-        .system-status { display: flex; align-items: center; gap: 12px; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px 16px; font-size: 12px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; backdrop-filter: blur(8px); }
-        .status-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e; animation: pulseDot 2s infinite; }
-        @keyframes pulseDot { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+        .system-status { display: flex; align-items: center; gap: 10px; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px 16px; font-size: 12px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; backdrop-filter: blur(8px); }
+        .status-moon { font-size: 13px; color: #60a5fa; filter: drop-shadow(0 0 5px #60a5fa); animation: pulseMoon 2.5s infinite ease-in-out; }
+        @keyframes pulseMoon { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.9); } }
 
         .hero h1 { font-size: clamp(24px, 5vw, 32px); margin-bottom: 32px; font-weight: 700; line-height: 1.2; letter-spacing: -0.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); display: none; }
         .form-group { width: 100%; max-width: 500px; display: none; flex-direction: column; gap: 16px; margin-bottom: 24px; }
@@ -408,7 +399,7 @@
             </div>
 
             <div class="system-status">
-                <div class="status-dot"></div>
+                <i class="fas fa-moon status-moon"></i>
                 <span id="systemUptime">UPTIME: 0D 0H 0M 0S</span>
                 <i class="fas fa-server" style="margin-left:auto; color: #64748b;"></i>
             </div>
