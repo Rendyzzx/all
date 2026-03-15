@@ -54,10 +54,16 @@ function showHome() {
 }
 
 function updateUserStats() {
-    const el = document.getElementById('userStats');
-    if(el) {
+    const detailsEl = document.getElementById('userStatsDetails');
+    const fillEl = document.getElementById('storageFill');
+    if(detailsEl && fillEl) {
         const count = historyList.length;
-        el.innerText = 'LOCAL STORAGE: ' + count + ' FILE' + (count !== 1 ? 'S' : '') + ' SAVED';
+        // Asumsi limit history adalah 10 item
+        const maxItems = 10;
+        const percentage = Math.min((count / maxItems) * 100, 100);
+        
+        detailsEl.innerText = count + ' FILE' + (count !== 1 ? 'S' : '') + ' SAVED';
+        fillEl.style.width = percentage + '%';
     }
 }
 
@@ -946,7 +952,7 @@ async function processAction(isFromQueue = false) {
                 else if (currentPlatform === 'pin') { profileSec.style.display = 'none'; captionText.style.display = 'none'; thumbCon.style.display = 'none'; actionBtns.innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Pinterest.jpg')"><i class="fas fa-download"></i> Download Media</button>`; saveToHistory(`Pinterest Media`, data.url); }
             }
         } else {
-            if (['anime', 'anoboy', 'donghua', 'cnn', 'film'].includes(currentPlatform)) renderEntList([], currentPlatform);
+            if (['anime', 'anoboy', 'donghua', 'film'].includes(currentPlatform)) renderEntList([], currentPlatform);
             else showToast(json.message || json.msg || "Failed to process data from server.", "error");
         }
     } catch (error) { console.error(error); showToast("System or connection error occurred.", "error"); } 
