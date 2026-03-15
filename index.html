@@ -35,13 +35,18 @@
 
         #ambientBackground { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 0%, var(--ambient-glow) 0%, transparent 70%); z-index: -1; pointer-events: none; transition: background 1.5s ease-in-out; }
 
+        /* SPLASH SCREEN DIPERBAIKI: Tanpa kotak patah-patah */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s; }
-        .splash-anim-container { width: 140px; height: 140px; position: relative; animation: floatSmooth 4s ease-in-out infinite; }
-        .moon-svg { width: 100%; height: 100%; transform: rotate(-15deg); }
+        .splash-anim-container { width: 140px; height: 140px; position: relative; animation: floatSmooth 4s ease-in-out infinite; display: flex; align-items: center; justify-content: center; }
+        .moon-glow { position: absolute; width: 80px; height: 80px; background: rgba(96, 165, 250, 0.6); border-radius: 50%; filter: blur(30px); opacity: 0; animation: fadeInGlow 2s forwards; }
+        .moon-svg { width: 100px; height: 100px; transform: rotate(-15deg); position: relative; z-index: 2; }
         .moon-line { fill: transparent; stroke: #f8fafc; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 260; stroke-dashoffset: 260; animation: drawMoon 2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-        @keyframes drawMoon { 0% { stroke-dashoffset: 260; fill: transparent; filter: drop-shadow(0 0 0px transparent); } 40% { fill: transparent; } 100% { stroke-dashoffset: 0; fill: #f8fafc; filter: drop-shadow(0 0 25px rgba(96, 165, 250, 0.9)); } }
+        
+        @keyframes drawMoon { 0% { stroke-dashoffset: 260; fill: transparent; } 40% { fill: transparent; } 100% { stroke-dashoffset: 0; fill: #f8fafc; } }
+        @keyframes fadeInGlow { 0%, 50% { opacity: 0; } 100% { opacity: 1; } }
         @keyframes floatSmooth { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-        .splash-text { font-size: 24px; font-weight: 800; color: #f8fafc; letter-spacing: 8px; margin-right: -8px; margin-top: 10px; text-transform: uppercase; opacity: 0; transform: translateY(20px) scale(0.95); animation: fadeUpText 1s cubic-bezier(0.25, 1, 0.5, 1) 0.8s forwards; }
+        
+        .splash-text { font-size: 24px; font-weight: 800; color: #f8fafc; letter-spacing: 8px; margin-right: -8px; margin-top: 15px; text-transform: uppercase; opacity: 0; transform: translateY(20px) scale(0.95); animation: fadeUpText 1s cubic-bezier(0.25, 1, 0.5, 1) 0.8s forwards; position: relative; z-index: 2; }
         @keyframes fadeUpText { to { opacity: 1; transform: translateY(0) scale(1); } }
         .splash-hidden { opacity: 0 !important; visibility: hidden !important; transform: scale(1.1); }
 
@@ -102,15 +107,16 @@
         .qa-btn .qa-icon { width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #fff; transition: 0.2s; }
         .qa-btn:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); transform: translateY(-2px); color: #fff; }
         .qa-btn:hover .qa-icon { background: var(--primary); color: #fff; box-shadow: 0 0 15px var(--primary); transform: scale(1.05); }
+        .qa-btn-all .qa-icon { color: var(--primary); background: rgba(37,99,235,0.1); }
 
-        /* GRAPH PANEL ESTETIK */
+        /* GRAFIK STORAGE BARU */
         .system-status-graph {
             display: flex; flex-direction: column; background: rgba(15, 23, 42, 0.6);
             border: 1px solid var(--border-color); border-radius: 12px; padding: 16px 20px;
             backdrop-filter: blur(8px); gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .graph-header { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #e2e8f0; font-weight: 700; letter-spacing: 1px; width: 100%; }
-        .static-moon { color: #22d3ee; font-size: 14px; filter: drop-shadow(0 0 5px rgba(34,211,238,0.6)); }
+        .static-moon { color: #60a5fa; font-size: 16px; filter: drop-shadow(0 0 5px rgba(96,165,250,0.6)); }
         .graph-box { width: 100%; height: 60px; position: relative; margin-top: 5px; }
         .graph-box svg { width: 100%; height: 100%; overflow: visible; }
         .fill-path { fill: url(#graphGradient); }
@@ -257,9 +263,9 @@
 
     <div id="splashScreen">
         <div class="splash-anim-container">
+            <div class="moon-glow"></div>
             <svg class="moon-svg" viewBox="-30 -30 160 160" xmlns="http://www.w3.org/2000/svg">
-                <path class="moon-line glow" d="M54 5 A 45 45 0 1 0 95 50 A 35 35 0 1 1 54 5 Z"></path>
-                <path class="moon-line main" d="M54 5 A 45 45 0 1 0 95 50 A 35 35 0 1 1 54 5 Z"></path>
+                <path class="moon-line" d="M54 5 A 45 45 0 1 0 95 50 A 35 35 0 1 1 54 5 Z"></path>
             </svg>
         </div>
         <div class="splash-text">MOONLIGHT</div>
@@ -404,7 +410,7 @@
                 <button class="qa-btn" onclick="setPlatform('gpt4')"><div class="qa-icon"><i class="fas fa-robot"></i></div> Ask AI</button>
                 <button class="qa-btn" onclick="setPlatform('film')"><div class="qa-icon"><i class="fas fa-film"></i></div> Movies</button>
                 <button class="qa-btn" onclick="setPlatform('tiktok')"><div class="qa-icon"><i class="fab fa-tiktok"></i></div> TikTok DL</button>
-                <button class="qa-btn" onclick="setPlatform('remove-bg')"><div class="qa-icon"><i class="fas fa-eraser"></i></div> Remove BG</button>
+                <button class="qa-btn qa-btn-all" onclick="openCategory('current', 'bnav-all')"><div class="qa-icon"><i class="fas fa-th-large"></i></div> All Menus</button>
             </div>
 
             <div class="system-status-graph">
