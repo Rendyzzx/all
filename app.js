@@ -946,7 +946,7 @@ async function processAction(isFromQueue = false) {
                 else if (currentPlatform === 'pin') { profileSec.style.display = 'none'; captionText.style.display = 'none'; thumbCon.style.display = 'none'; actionBtns.innerHTML = `<button class="btn-primary" onclick="forceDownload('${data.url}', 'Pinterest.jpg')"><i class="fas fa-download"></i> Download Media</button>`; saveToHistory(`Pinterest Media`, data.url); }
             }
         } else {
-            if (['anime', 'anoboy', 'donghua', 'film'].includes(currentPlatform)) renderEntList([], currentPlatform);
+            if (['anime', 'anoboy', 'donghua', 'cnn', 'film'].includes(currentPlatform)) renderEntList([], currentPlatform);
             else showToast(json.message || json.msg || "Failed to process data from server.", "error");
         }
     } catch (error) { console.error(error); showToast("System or connection error occurred.", "error"); } 
