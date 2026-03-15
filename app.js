@@ -55,15 +55,9 @@ function showHome() {
 
 function updateUserStats() {
     const detailsEl = document.getElementById('userStatsDetails');
-    const fillEl = document.getElementById('storageFill');
-    if(detailsEl && fillEl) {
+    if(detailsEl) {
         const count = historyList.length;
-        // Asumsi limit history adalah 10 item
-        const maxItems = 10;
-        const percentage = Math.min((count / maxItems) * 100, 100);
-        
-        detailsEl.innerText = count + ' FILE' + (count !== 1 ? 'S' : '') + ' SAVED';
-        fillEl.style.width = percentage + '%';
+        detailsEl.innerText = 'STORAGE: ' + count + ' FILE' + (count !== 1 ? 'S' : '') + ' SAVED';
     }
 }
 
