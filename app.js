@@ -36,11 +36,17 @@ function showHome() {
     const dateEl = document.getElementById('currentDate');
     if(dateEl) dateEl.innerText = dateStr;
 
-    document.getElementById('homeDashboard').style.display = 'flex';
-    document.getElementById('mainTitle').style.display = 'none';
-    document.querySelector('.form-group').style.display = 'none';
-    document.getElementById('resultCard').style.display = 'none';
-    document.getElementById('loadingOverlay').style.display = 'none';
+    // Trigger Slide Transition to Home
+    const homeView = document.getElementById('homeView');
+    const featureView = document.getElementById('featureView');
+    if(homeView) homeView.className = 'view-panel active';
+    if(featureView) featureView.className = 'view-panel hidden-right';
+    
+    // Clear out feature view states
+    const resultCard = document.getElementById('resultCard');
+    if(resultCard) resultCard.style.display = 'none';
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    if(loadingOverlay) loadingOverlay.style.display = 'none';
     
     document.documentElement.style.setProperty('--primary', '#2563eb');
     document.documentElement.style.setProperty('--primary-hover', '#1d4ed8');
@@ -201,9 +207,13 @@ function setPlatform(platform) {
     currentPlatform = platform;
     applyDynamicTheme(platform);
 
-    document.getElementById('homeDashboard').style.display = 'none';
+    // Trigger Slide Transition to Feature
+    const homeView = document.getElementById('homeView');
+    const featureView = document.getElementById('featureView');
+    if(homeView) homeView.className = 'view-panel hidden-left';
+    if(featureView) featureView.className = 'view-panel active';
+
     const title = document.getElementById('mainTitle');
-    title.style.display = 'block';
     const formGroup = document.querySelector('.form-group');
     formGroup.style.display = 'flex';
 
@@ -307,11 +317,6 @@ function setPlatform(platform) {
     const textContentInput = document.getElementById('textContent'); if (textContentInput) textContentInput.value = '';
     const mediaFileInput = document.getElementById('mediaFile'); if (mediaFileInput) mediaFileInput.value = '';
     const customAmountInput = document.getElementById('customAmount'); if (customAmountInput) customAmountInput.value = '';
-    
-    if (formGroup && title) {
-        formGroup.style.animation = 'none'; title.style.animation = 'none';
-        setTimeout(() => { formGroup.style.animation = ''; title.style.animation = ''; }, 10);
-    }
 
     if (typeof FITUR !== 'undefined' && btn && platform !== 'kontak') {
         if (FITUR[platform] === false) {
@@ -609,7 +614,7 @@ async function fetchEntDetails(url, type) {
 
 function renderEntDetails(data, type) {
     let container = document.getElementById('entertainmentResult');
-    let html = `<button onclick="document.getElementById('mainBtn').click()" style="background:transparent; border:none; color:var(--primary); font-size:14px; margin-bottom:16px; cursor:pointer; display:flex; align-items:center; gap:6px; font-weight:600;"><i class="fas fa-arrow-left"></i> Back</button>`;
+    let html = `<button onclick="showHome()" style="background:transparent; border:none; color:var(--primary); font-size:14px; margin-bottom:16px; cursor:pointer; display:flex; align-items:center; gap:6px; font-weight:600;"><i class="fas fa-arrow-left"></i> Back to Home</button>`;
     
     if (type === 'cnn') {
         html += `<img src="${data.thumbnail}" style="width:100%; border-radius:12px; margin-bottom:16px;"><h3 style="margin-bottom:8px; font-size:18px; text-align:left; color:#fff;">${data.title}</h3><p style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">By: ${data.author} | ${data.posted_at}</p><div style="font-size:14px; line-height:1.6; color:#cbd5e1; white-space:pre-wrap; background:#1e293b; padding:16px; border-radius:12px; margin-bottom:16px;">${data.content}</div><a href="${data.source}" target="_blank" class="btn-primary" style="margin-top:16px; text-align:center; display:block; text-decoration:none;"><i class="fas fa-external-link-alt"></i> Read Original Source</a>`;
