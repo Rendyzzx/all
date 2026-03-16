@@ -35,7 +35,6 @@
 
         #ambientBackground { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 0%, var(--ambient-glow) 0%, transparent 70%); z-index: -2; pointer-events: none; transition: background 1.5s ease-in-out; }
 
-        /* SPLASH SCREEN OPTIMIZED */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease, transform 0.6s ease, visibility 0.6s; }
         .splash-anim-container { width: 140px; height: 140px; position: relative; display: flex; align-items: center; justify-content: center; }
         .moon-svg { width: 100px; height: 100px; transform: rotate(-15deg); position: relative; z-index: 2; overflow: visible; }
@@ -83,7 +82,6 @@
 
         .hero { flex: 1; padding: 40px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; position: relative; overflow-x: hidden; width: 100%; }
         
-        /* TRANSISI NATIVE IOS OPTIMIZED */
         .view-container { position: relative; width: 100%; max-width: 500px; display: flex; justify-content: center; }
         .view-panel { width: 100%; transition: transform 0.35s ease-out, opacity 0.2s ease; display: flex; flex-direction: column; align-items: center; }
         .view-panel.active { transform: translateX(0); opacity: 1; pointer-events: auto; position: relative; z-index: 2; }
@@ -118,7 +116,6 @@
         .qa-btn:hover .qa-icon { background: var(--primary); color: #fff; }
         .qa-btn-all .qa-icon { color: var(--primary); background: rgba(37,99,235,0.15); }
 
-        /* GRAFIK STORAGE BARU */
         .system-status-graph {
             display: flex; flex-direction: column; background: rgba(15, 23, 42, 0.6);
             border: 1px solid var(--border-color); border-radius: 12px; padding: 16px 20px;
@@ -165,8 +162,8 @@
         #miniGame { display: none; background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; text-align: center; overflow: hidden; position: relative; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); backdrop-filter: blur(4px); }
         #miniGame p { font-size: 13px; color: #cbd5e1; margin-bottom: 12px; font-weight: 600; }
         #gameArea { width: 100%; height: 120px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; position: relative; overflow: hidden; margin-bottom: 12px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
-        #moonPlayer { width: 32px; height: 32px; position: absolute; top: 78px; left: 30px; font-size: 28px; color: #f8fafc; display: flex; align-items: center; justify-content: center; z-index: 2; }
-        #meteorObstacle { width: 24px; height: 24px; position: absolute; top: 86px; left: 100%; font-size: 24px; color: #ef4444; display: flex; align-items: center; justify-content: center; z-index: 1; }
+        #moonPlayer { width: 32px; height: 32px; position: absolute; top: 78px; left: 30px; font-size: 28px; color: #f8fafc; display: flex; align-items: center; justify-content: center; z-index: 2; filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
+        #meteorObstacle { width: 24px; height: 24px; position: absolute; top: 86px; left: 100%; font-size: 24px; color: #ef4444; display: flex; align-items: center; justify-content: center; z-index: 1; filter: drop-shadow(0 0 5px rgba(239,68,68,0.5)); }
         .ground-line { position: absolute; bottom: 8px; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.1); }
         @keyframes obstacleMove { 0% { left: 100%; transform: rotate(0deg); } 100% { left: -40px; transform: rotate(-360deg); } }
         @keyframes jumpAnim { 0% { top: 78px; } 40% { top: 10px; } 50% { top: 10px; } 60% { top: 10px; } 100% { top: 78px; } }
@@ -176,7 +173,7 @@
         #resultCard { display: none; width: 100%; margin-top: 16px; background: rgba(15, 23, 42, 0.75); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; text-align: left; box-shadow: 0 8px 20px rgba(0,0,0,0.2); animation: slideUp 0.3s ease; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        #downloaderResult, #aiResult, #hdFotoResult, #ssWebResult, #iqcResult, #nulisResult, #removeBgResult, #audioResult, #ytTranscriptResult, #lirikResult, #invoiceResult, #photoEditorResult, #contactContainer, #stalkResult, #qrResult, #shortlinkResult, #ttsResult, #aiImageResult, #aiChatResult, #entertainmentResult { display: none; }
+        #downloaderResult, #aiResult, #hdFotoResult, #ssWebResult, #iqcResult, #nulisResult, #removeBgResult, #audioResult, #ytTranscriptResult, #lirikResult, #invoiceResult, #photoEditorResult, #contactContainer, #donasiContainer, #stalkResult, #qrResult, #shortlinkResult, #ttsResult, #aiImageResult, #aiChatResult, #entertainmentResult { display: none; }
         
         .thumbnail-container { width: 100%; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 20px; overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 180px; position: relative; }
         .video-thumbnail { width: 100%; max-height: 300px; object-fit: contain; display: none; }
@@ -377,6 +374,7 @@
                     <li onclick="setPlatform('pulsa')"><div class="icon-wrapper"><i class="fas fa-mobile-alt"></i></div><div><h4>Buy Credit</h4></div></li>
                     <li onclick="setPlatform('topup')"><div class="icon-wrapper"><i class="fas fa-wallet"></i></div><div><h4>Top-up Wallet</h4></div></li>
                     <li onclick="setPlatform('kontak')"><div class="icon-wrapper"><i class="fas fa-id-badge"></i></div><div><h4>Contact Us</h4></div></li>
+                    <li onclick="setPlatform('donasi')"><div class="icon-wrapper"><i class="fas fa-hand-holding-heart"></i></div><div><h4>Donation</h4></div></li>
                 </ul>
             </div>
 
@@ -467,8 +465,8 @@
                     <div id="textInputContainer" class="text-wrapper"><textarea id="textContent" placeholder="Paste article or text here..."></textarea><button class="paste-btn" onclick="pasteToInput('textContent')" title="Paste Text"><i class="fas fa-clipboard"></i></button></div>
                     <div id="timeInputsContainer" class="time-row"><div class="time-col"><label>Phone Status</label><input type="time" id="phoneTime" value="12:00"></div><div class="time-col"><label>Chat Time</label><input type="time" id="chatTime" value="10:15"></div></div>
 
-                    <div id="contactContainer" style="display: none; width: 100%; flex-direction: column; gap: 16px;">
-                        <div class="contact-card" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px 24px 32px 24px; text-align: center; backdrop-filter: blur(12px); box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                    <div id="contactContainer" style="display: none; width: 100%; flex-direction: column; gap: 16px; align-items: center;">
+                        <div class="contact-card" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px 24px 32px 24px; text-align: center; backdrop-filter: blur(12px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%;">
                             <img src="https://images.unsplash.com/photo-1522030299830-16b8d3d049fe?auto=format&fit=crop&w=200&q=80" alt="Profile" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 16px; border: 4px solid #1e293b; object-fit: cover;">
                             <h3 style="margin: 0 0 4px 0; font-size: 24px; color: #fff; font-weight: 700;">Ren</h3>
                             <p style="margin: 0 0 24px 0; font-size: 14px; color: var(--text-muted);">Developer & Owner of Moonlight</p>
@@ -476,6 +474,17 @@
                                 <a href="https://wa.me/6281249578370" target="_blank" class="btn-primary" style="background: #25D366; text-decoration: none; padding: 14px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; color: white;"><i class="fab fa-whatsapp" style="font-size: 18px;"></i> WhatsApp</a>
                                 <a href="mailto:rawrrawr195@gmail.com" class="btn-secondary" style="text-decoration: none; padding: 14px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;"><i class="fas fa-envelope" style="font-size: 18px;"></i> Email</a>
                             </div>
+                        </div>
+                    </div>
+                    
+                    <div id="donasiContainer" style="display: none; width: 100%; flex-direction: column; gap: 16px; align-items: center;">
+                        <div class="contact-card" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 20px; padding: 24px; text-align: center; backdrop-filter: blur(12px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 320px;">
+                            <h3 style="margin: 0 0 8px 0; font-size: 20px; color: #fff; font-weight: 700;"><i class="fas fa-qrcode" style="color: var(--primary);"></i> Scan QRIS</h3>
+                            <p style="margin: 0 0 16px 0; font-size: 13px; color: var(--text-muted);">Dukung developer untuk terus mengembangkan Moonlight.</p>
+                            <div style="background: #fff; padding: 16px; border-radius: 12px; margin-bottom: 16px;">
+                                <img src="QRIS.png" alt="QRIS Donation" style="width: 100%; height: auto; display: block; border-radius: 8px;">
+                            </div>
+                            <button class="btn-primary" style="width: 100%;" onclick="forceDownload('QRIS.png', 'QRIS_Moonlight.png')"><i class="fas fa-download"></i> Simpan QRIS</button>
                         </div>
                     </div>
 
