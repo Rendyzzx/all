@@ -36,13 +36,11 @@ function showHome() {
     const dateEl = document.getElementById('currentDate');
     if(dateEl) dateEl.innerText = dateStr;
 
-    // Trigger Slide Transition to Home
     const homeView = document.getElementById('homeView');
     const featureView = document.getElementById('featureView');
     if(homeView) homeView.className = 'view-panel active';
     if(featureView) featureView.className = 'view-panel hidden-right';
     
-    // Clear out feature view states
     const resultCard = document.getElementById('resultCard');
     if(resultCard) resultCard.style.display = 'none';
     const loadingOverlay = document.getElementById('loadingOverlay');
@@ -61,9 +59,14 @@ function showHome() {
 
 function updateUserStats() {
     const detailsEl = document.getElementById('userStatsDetails');
-    if(detailsEl) {
+    const fillEl = document.getElementById('storageFill');
+    if(detailsEl && fillEl) {
         const count = historyList.length;
-        detailsEl.innerText = 'STORAGE: ' + count + ' FILE' + (count !== 1 ? 'S' : '') + ' SAVED';
+        const maxItems = 10;
+        const percentage = Math.min((count / maxItems) * 100, 100);
+        
+        detailsEl.innerText = count + ' FILE' + (count !== 1 ? 'S' : '') + ' SAVED';
+        fillEl.style.width = percentage + '%';
     }
 }
 
@@ -196,6 +199,7 @@ function applyDynamicTheme(platform) {
     else if (['pulsa', 'topup', 'roblox-stalk'].includes(platform)) { primary = '#10b981'; hover = '#059669'; } 
     else if (['nulis', 'iqc', 'ss-web', 'dc-stalk', 'gh-stalk'].includes(platform)) { primary = '#f59e0b'; hover = '#d97706'; } 
     else if (['anime', 'anoboy', 'donghua', 'cnn', 'film'].includes(platform)) { primary = '#ef4444'; hover = '#dc2626'; }
+    else if (['donasi'].includes(platform)) { primary = '#ec4899'; hover = '#be185d'; }
 
     root.style.setProperty('--primary', primary);
     root.style.setProperty('--primary-hover', hover);
@@ -207,7 +211,6 @@ function setPlatform(platform) {
     currentPlatform = platform;
     applyDynamicTheme(platform);
 
-    // Trigger Slide Transition to Feature
     const homeView = document.getElementById('homeView');
     const featureView = document.getElementById('featureView');
     if(homeView) homeView.className = 'view-panel hidden-left';
@@ -227,9 +230,10 @@ function setPlatform(platform) {
     const timeInputsCont = document.getElementById('timeInputsContainer');
     const catboxHelper = document.getElementById('catboxHelper');
     const contactCont = document.getElementById('contactContainer');
+    const donasiCont = document.getElementById('donasiContainer');
     const btn = document.getElementById('mainBtn');
     
-    [urlCont, textCont, fileCont, nominalCont, customAmountCont, providerCont, ytFormatCont, timeInputsCont, catboxHelper, contactCont].forEach(el => {
+    [urlCont, textCont, fileCont, nominalCont, customAmountCont, providerCont, ytFormatCont, timeInputsCont, catboxHelper, contactCont, donasiCont].forEach(el => {
         if (el) el.style.display = 'none';
     });
     
@@ -239,6 +243,8 @@ function setPlatform(platform) {
 
     if (platform === 'kontak') { 
         title.innerHTML = "Contact Owner"; contactCont.style.display = 'flex'; btn.style.display = 'none'; 
+    } else if (platform === 'donasi') {
+        title.innerHTML = "Support Moonlight"; donasiCont.style.display = 'flex'; btn.style.display = 'none';
     } else if (platform === 'pulsa') { 
         title.innerHTML = "Top Up Mobile Credit"; document.getElementById('mediaUrl').placeholder = "Enter Phone Number (0812...)"; 
         document.getElementById('pulsaProvider').innerHTML = `<option value="pulsa-axis">AXIS</option><option value="pulsa-indosat">INDOSAT (IM3)</option><option value="pulsa-telkomsel">TELKOMSEL</option><option value="pulsa-tri">TRI (3)</option><option value="pulsa-xl">XL AXIATA</option>`;
@@ -614,7 +620,7 @@ async function fetchEntDetails(url, type) {
 
 function renderEntDetails(data, type) {
     let container = document.getElementById('entertainmentResult');
-    let html = `<button onclick="showHome()" style="background:transparent; border:none; color:var(--primary); font-size:14px; margin-bottom:16px; cursor:pointer; display:flex; align-items:center; gap:6px; font-weight:600;"><i class="fas fa-arrow-left"></i> Back to Home</button>`;
+    let html = `<button onclick="document.getElementById('mainBtn').click()" style="background:transparent; border:none; color:var(--primary); font-size:14px; margin-bottom:16px; cursor:pointer; display:flex; align-items:center; gap:6px; font-weight:600;"><i class="fas fa-arrow-left"></i> Back</button>`;
     
     if (type === 'cnn') {
         html += `<img src="${data.thumbnail}" style="width:100%; border-radius:12px; margin-bottom:16px;"><h3 style="margin-bottom:8px; font-size:18px; text-align:left; color:#fff;">${data.title}</h3><p style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">By: ${data.author} | ${data.posted_at}</p><div style="font-size:14px; line-height:1.6; color:#cbd5e1; white-space:pre-wrap; background:#1e293b; padding:16px; border-radius:12px; margin-bottom:16px;">${data.content}</div><a href="${data.source}" target="_blank" class="btn-primary" style="margin-top:16px; text-align:center; display:block; text-decoration:none;"><i class="fas fa-external-link-alt"></i> Read Original Source</a>`;
