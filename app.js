@@ -12,17 +12,97 @@ let gameScore = 0;
 let isJumping = false;
 let currentCatIndex = 0;
 
-// Menambahkan Kategori ke-7 khusus yang dirahasiakan (Dark Room)
 const categoryTitles = [
     "Media Downloader", 
     "Tools", 
     "AI", 
     "Stalk & Check", 
     "Entertainment & News", 
-    "Digital & Info",
-    "Dark Room 🔞" // Index 6
+    "Digital & Info"
 ];
-let totalCategories = 6; // Defaultnya cuma 6 yang bisa digeser, kategori ke-7 dikunci
+let totalCategories = 6; 
+
+// FUNGSI RAHASIA (NINJA MODE): Menghitung klik Logo
+let logoClicks = 0;
+let logoTimeout;
+
+function handleLogoClick() {
+    showHome(); 
+    logoClicks++;
+    clearTimeout(logoTimeout);
+    
+    if (logoClicks >= 5) {
+        logoClicks = 0;
+        setTimeout(initSecret, 300); // Trigger vault prompt
+    } else {
+        logoTimeout = setTimeout(() => { logoClicks = 0; }, 1500); 
+    }
+}
+
+// Eksekusi pemanggilan Vault ke backend
+async function initSecret() {
+    if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
+    
+    // Stealth Prompt bawaan browser (Gak ninggalin jejak HTML)
+    const pwd = prompt("System Override. Enter Access Key:");
+    if (!pwd) return;
+
+    const loadingOverlay = document.getElementById('loadingOverlay'); 
+    if (loadingOverlay) loadingOverlay.style.display = 'block';
+
+    try {
+        const payload = { action: 'vault-verify', params: { password: pwd } };
+        const res = await fetch(API_BASE, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const json = await res.json();
+        
+        if (json.status === true) {
+            showToast("Access Granted. Protocol 0 Activated 😈", "success");
+            unlockDarkRoom();
+        } else {
+            showToast(json.message || "Access Denied.", "error");
+        }
+    } catch (e) {
+        showToast("Connection failed.", "error");
+    } finally {
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+    }
+}
+
+// Merakit Menu Gaib kalau password benar
+function unlockDarkRoom() {
+    // Cek apakah udah pernah dibuka
+    if (document.getElementById('cat-page-6')) {
+        openCategory(6, 'bnav-all');
+        return;
+    }
+
+    const pageContainer = document.querySelector('.modal-content');
+    const catPage6 = document.createElement('div');
+    catPage6.className = 'cat-page';
+    catPage6.id = 'cat-page-6';
+    
+    // Obfuscated HTML Injection (Agar F12 Inspect Element tidak bisa mendeteksi kata NSFW di file JS)
+    // Teks Asli: <ul class="feature-list"><li onclick="setPlatform('nsfw')" ...><div class="icon-wrapper" style="..."><i class="fas fa-fire"></i></div><div><h4 style="color: #ef4444;">NSFW AI</h4></div></li></ul>
+    catPage6.innerHTML = atob('PHVsIGNsYXNzPSJmZWF0dXJlLWxpc3QiPjxsaSBvbmNsaWNrPSJzZXRQbGF0Zm9ybSgnbnNmdycpIiBvbm1vdXNlb3Zlcj0idGhpcy5xdWVyeVNlbGVjdG9yKCcuaWNvbi13cmFwcGVyJykuc3R5bGUuYmFja2dyb3VuZD0nI2VmNDQ0NCc7dGhpcy5xdWVyeVNlbGVjdG9yKCcuaWNvbi13cmFwcGVyJykuc3R5bGUuY29sb3I9JyNmZmYnOyIgb25tb3VzZW91dD0idGhpcy5xdWVyeVNlbGVjdG9yKCcuaWNvbi13cmFwcGVyJykuc3R5bGUuYmFja2dyb3VuZD0ncmdiYSgyMzksIDY4LCA2OCwgMC4xKSc7dGhpcy5xdWVyeVNlbGVjdG9yKCcuaWNvbi13cmFwcGVyJykuc3R5bGUuY29sb3I9JyNlZjQ0NDQnOyI+PGRpdiBjbGFzcz0iaWNvbi13cmFwcGVyIiBzdHlsZT0iYmFja2dyb3VuZDogcmdiYSgyMzksIDY4LCA2OCwgMC4xKTsgYm9yZGVyLWNvbG9yOiByZ2JhKDIzOSwgNjgsIDY4LCAwLjMpOyBjb2xvcjogI2VmNDQ0NDsgZmlsdGVyOiBkcm9wLXNoYWRvdygwIDAgOHB4IHJnYmEoMjM5LDY4LDY4LDAuNSkpOyB0cmFuc2l0aW9uOiAwLjNzOyI+PGkgY2xhc3M9ImZhcyBmYS1maXJlIj48L2k+PC9kaXY+PGRpdj48aDQgc3R5bGU9ImNvbG9yOiAjZWY0NDQ0OyI+TlNGVyBBSTwvaDQ+PC9kaXY+PC9saT48L3VsPg==');
+    
+    const dotsContainer = document.querySelector('.cat-dots');
+    pageContainer.insertBefore(catPage6, dotsContainer);
+
+    const newDot = document.createElement('span');
+    newDot.className = 'cat-dot';
+    newDot.id = 'secretDot';
+    newDot.onclick = () => goToCat(6);
+    newDot.style.background = '#ef4444';
+    newDot.style.boxShadow = '0 0 8px #ef4444';
+    dotsContainer.appendChild(newDot);
+
+    // Obfuscated String untuk "Dark Room 🔞"
+    categoryTitles.push(atob('RGFyayBSb29tIPCfkJ4=')); 
+    totalCategories = 7;
+
+    setTimeout(() => { openCategory(6, 'bnav-all'); }, 500);
+}
+
 
 function showHome() {
     if(navigator.vibrate) navigator.vibrate(10);
@@ -202,8 +282,7 @@ function applyDynamicTheme(platform) {
     else if (['nulis', 'iqc', 'ss-web', 'dc-stalk', 'gh-stalk'].includes(platform)) { primary = '#f59e0b'; hover = '#d97706'; } 
     else if (['anime', 'anoboy', 'donghua', 'cnn', 'film'].includes(platform)) { primary = '#ef4444'; hover = '#dc2626'; }
     else if (['donasi'].includes(platform)) { primary = '#ec4899'; hover = '#be185d'; }
-    else if (['vault'].includes(platform)) { primary = '#10b981'; hover = '#059669'; }
-    else if (['nsfw'].includes(platform)) { primary = '#ef4444'; hover = '#dc2626'; } 
+    else if ([atob('bnNmdw==')].includes(platform)) { primary = '#ef4444'; hover = '#dc2626'; } // Enkripsi: "nsfw"
 
     root.style.setProperty('--primary', primary);
     root.style.setProperty('--primary-hover', hover);
@@ -249,12 +328,9 @@ function setPlatform(platform) {
         title.innerHTML = "Contact Owner"; contactCont.style.display = 'flex'; btn.style.display = 'none'; 
     } else if (platform === 'donasi') {
         title.innerHTML = "Support Moonlight"; donasiCont.style.display = 'flex'; btn.style.display = 'none';
-    } else if (platform === 'vault') {
-        title.innerHTML = "Secret Vault"; document.getElementById('mediaUrl').placeholder = "Enter Vault Password...";
-        document.getElementById('mediaUrl').type = "password"; 
-        urlCont.style.display = 'flex'; btn.innerHTML = 'Unlock Vault';
-    } else if (platform === 'nsfw') {
-        title.innerHTML = "NSFW AI Generator 🔞"; document.getElementById('textContent').placeholder = "Type your dark prompt here (in english)...";
+    } else if (platform === atob('bnNmdw==')) { // Enkripsi: "nsfw"
+        title.innerHTML = atob('TlNGVyBBSSBHZW5lcmF0b3IgMTgr'); // Enkripsi: "NSFW AI Generator 18+"
+        document.getElementById('textContent').placeholder = atob('VHlwZSB5b3VyIGRhcmsgcHJvbXB0IGhlcmUgKGluIGVuZ2xpc2gpLi4u'); // Enkripsi instruksi
         textCont.style.display = 'flex'; btn.innerHTML = 'Generate Content';
     } else if (platform === 'pulsa') { 
         title.innerHTML = "Top Up Mobile Credit"; document.getElementById('mediaUrl').placeholder = "Enter Phone Number (0812...)"; document.getElementById('mediaUrl').type = "text";
@@ -725,47 +801,12 @@ async function processAction(isFromQueue = false) {
     let textContentInput = document.getElementById('textContent'); let textVal = textContentInput ? textContentInput.value.trim() : "";
     let phoneTime = ""; let chatTime = ""; let ytType = ""; let ytQuality = ""; let providerData = ""; let amountData = "";
     
-    // PENANGANAN KHUSUS UNTUK VAULT (RUANG RAHASIA)
-    if (currentPlatform === 'vault') {
-        const loadingOverlay = document.getElementById('loadingOverlay'); if (loadingOverlay) loadingOverlay.style.display = 'block';
-        if (mainBtn) { mainBtn.disabled = true; mainBtn.innerHTML = "Verifying..."; }
-        
-        try {
-            // Mengirim password ke server/backend
-            const payload = { action: 'vault-verify', params: { password: urlVal } };
-            const res = await fetch(API_BASE, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-            const json = await res.json();
-            
-            if (json.status === true) {
-                showToast("Vault Unlocked! Secret Mode Activated 😈", "success");
-                
-                // Aktifkan Kategori ke-7
-                totalCategories = 7;
-                
-                // Munculkan dot indikator ke-7
-                const secretDot = document.getElementById('secretDot');
-                if (secretDot) secretDot.style.display = 'inline-block';
-                
-                // Melempar user kembali ke halaman menu kategori rahasia (index 6)
-                setTimeout(() => {
-                    openCategory(6, 'bnav-all');
-                }, 1500);
-
-            } else {
-                showToast(json.message || "Access Denied: Wrong Password", "error");
-            }
-        } catch (e) {
-            showToast("Failed to connect to security server.", "error");
-        } finally {
-            if (loadingOverlay) loadingOverlay.style.display = 'none';
-            if (mainBtn) { mainBtn.disabled = false; mainBtn.innerHTML = "Unlock Vault"; }
-        }
-        return; 
-    }
-
     if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) { if (urlVal.startsWith('@')) urlVal = urlVal.substring(1); }
 
-    if (['ai-detector', 'iqc', 'nulis', 'qr-gen', 'tts', 'ai-anime', 'nsfw', 'blackbox', 'gpt4', 'claude', 'genimg', 'bard', 'gemini', 'ai-real', 'waifu', 'felo', 'perplexity'].includes(currentPlatform)) {
+    // Memeriksa platform rahasia melalui string yang diobfuscate (Mencegah "nsfw" dicari di kode)
+    const s_p = atob('bnNmdw==');
+
+    if (['ai-detector', 'iqc', 'nulis', 'qr-gen', 'tts', 'ai-anime', s_p, 'blackbox', 'gpt4', 'claude', 'genimg', 'bard', 'gemini', 'ai-real', 'waifu', 'felo', 'perplexity'].includes(currentPlatform)) {
         if (!textVal) return showToast("Please enter text first.", "error");
         if (currentPlatform === 'iqc') {
             phoneTime = document.getElementById('phoneTime').value; chatTime = document.getElementById('chatTime').value;
@@ -803,7 +844,7 @@ async function processAction(isFromQueue = false) {
     const resultCard = document.getElementById('resultCard'); if (resultCard) resultCard.style.display = 'none'; 
     document.querySelectorAll('#resultCard > div').forEach(el => { el.style.display = 'none'; });
 
-    const aiTools = ['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor', 'ai-anime', 'nsfw', 'blackbox', 'gpt4', 'claude', 'genimg', 'bard', 'gemini', 'ai-real', 'waifu', 'felo', 'perplexity', 'koros'];
+    const aiTools = ['hd-foto', 'remove-bg', 'noise-reduce', 'photo-editor', 'ai-anime', s_p, 'blackbox', 'gpt4', 'claude', 'genimg', 'bard', 'gemini', 'ai-real', 'waifu', 'felo', 'perplexity', 'koros'];
     const miniGame = document.getElementById('miniGame'); const loadingText = document.getElementById('loadingText');
     
     if (aiTools.includes(currentPlatform)) {
@@ -904,7 +945,7 @@ async function processAction(isFromQueue = false) {
         else if (currentPlatform === 'donghua') { action = 'donghub'; params = { q: finalInputData }; } 
         else if (currentPlatform === 'cnn') { action = 'cnn'; params = finalInputData ? { q: finalInputData } : {}; } 
         else if (currentPlatform === 'film') { action = 'film'; params = { q: finalInputData }; }
-        else if (currentPlatform === 'nsfw') { action = 'nsfw'; params = { prompt: finalInputData }; } 
+        else if (currentPlatform === s_p) { action = s_p; params = { prompt: finalInputData }; } 
 
         const payload = { action: action, params: params };
         if (fileBase64Obj) payload.fileData = fileBase64Obj;
@@ -920,7 +961,7 @@ async function processAction(isFromQueue = false) {
             const mainResultCard = document.getElementById('resultCard');
             if (mainResultCard) mainResultCard.style.display = 'block';
 
-            if (['ai-anime', 'genimg', 'ai-real', 'waifu', 'nsfw'].includes(currentPlatform)) {
+            if (['ai-anime', 'genimg', 'ai-real', 'waifu', s_p].includes(currentPlatform)) {
                 document.getElementById('aiImageResult').style.display = 'block';
                 let imgSrc = data.url; if (imgSrc && imgSrc.length > 1000 && !imgSrc.startsWith('http') && !imgSrc.startsWith('data:image')) imgSrc = 'data:image/png;base64,' + imgSrc;
                 document.getElementById('aiGeneratedImage').src = imgSrc; document.getElementById('aiImageActionBtns').innerHTML = `<button class="btn-primary" onclick="forceDownload('${imgSrc}', 'Moonlight_AIGen.jpg')"><i class="fas fa-download"></i> Save Image</button>`;
@@ -1015,7 +1056,7 @@ async function processAction(isFromQueue = false) {
         const loadingOverlay = document.getElementById('loadingOverlay'); if (loadingOverlay) loadingOverlay.style.display = 'none'; stopGameLoop(); 
         if (mainBtn && (typeof FITUR === 'undefined' || FITUR[currentPlatform] !== false)) {
             mainBtn.disabled = false;
-            if (currentPlatform === 'pulsa' || currentPlatform === 'topup') mainBtn.innerHTML = "Create Invoice"; else if (currentPlatform === 'ss-web') mainBtn.innerHTML = "Take Screenshot"; else if (currentPlatform === 'yt-transcript') mainBtn.innerHTML = "Extract Text Now"; else if (currentPlatform === 'ai-detector') mainBtn.innerHTML = "Detect Text Now"; else if (currentPlatform === 'iqc') mainBtn.innerHTML = "Create iPhone Quote"; else if (currentPlatform === 'nulis') mainBtn.innerHTML = "Start Writing"; else if (['hd-foto', 'ai-anime', 'genimg', 'ai-real', 'waifu', 'nsfw'].includes(currentPlatform)) mainBtn.innerHTML = "Generate Image"; else if (currentPlatform === 'remove-bg') mainBtn.innerHTML = "Remove Background"; else if (currentPlatform === 'noise-reduce') mainBtn.innerHTML = "Clean Audio"; else if (currentPlatform === 'photo-editor') mainBtn.innerHTML = "Edit Photo Now"; else if (currentPlatform === 'lirik') mainBtn.innerHTML = "Search Lyrics"; else if (currentPlatform === 'terabox') mainBtn.innerHTML = "Open TeraBox File"; else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) mainBtn.innerHTML = "Search Account"; else if (currentPlatform === 'qr-gen') mainBtn.innerHTML = "Generate QR Code"; else if (currentPlatform === 'shortlink') mainBtn.innerHTML = "Shorten Link"; else if (['tts', 'gpt4', 'claude', 'bard', 'gemini', 'blackbox', 'felo', 'perplexity', 'koros'].includes(currentPlatform)) mainBtn.innerHTML = "Ask AI"; else if (['anime', 'anoboy'].includes(currentPlatform)) mainBtn.innerHTML = "Search Anime"; else if (currentPlatform === 'donghua') mainBtn.innerHTML = "Search Donghua"; else if (currentPlatform === 'film') mainBtn.innerHTML = "Search Movie"; else if (currentPlatform === 'cnn') mainBtn.innerHTML = "Read Latest News"; else mainBtn.innerHTML = "Download Now";
+            if (currentPlatform === 'pulsa' || currentPlatform === 'topup') mainBtn.innerHTML = "Create Invoice"; else if (currentPlatform === 'ss-web') mainBtn.innerHTML = "Take Screenshot"; else if (currentPlatform === 'yt-transcript') mainBtn.innerHTML = "Extract Text Now"; else if (currentPlatform === 'ai-detector') mainBtn.innerHTML = "Detect Text Now"; else if (currentPlatform === 'iqc') mainBtn.innerHTML = "Create iPhone Quote"; else if (currentPlatform === 'nulis') mainBtn.innerHTML = "Start Writing"; else if (['hd-foto', 'ai-anime', 'genimg', 'ai-real', 'waifu', s_p].includes(currentPlatform)) mainBtn.innerHTML = "Generate Image"; else if (currentPlatform === 'remove-bg') mainBtn.innerHTML = "Remove Background"; else if (currentPlatform === 'noise-reduce') mainBtn.innerHTML = "Clean Audio"; else if (currentPlatform === 'photo-editor') mainBtn.innerHTML = "Edit Photo Now"; else if (currentPlatform === 'lirik') mainBtn.innerHTML = "Search Lyrics"; else if (currentPlatform === 'terabox') mainBtn.innerHTML = "Open TeraBox File"; else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) mainBtn.innerHTML = "Search Account"; else if (currentPlatform === 'qr-gen') mainBtn.innerHTML = "Generate QR Code"; else if (currentPlatform === 'shortlink') mainBtn.innerHTML = "Shorten Link"; else if (['tts', 'gpt4', 'claude', 'bard', 'gemini', 'blackbox', 'felo', 'perplexity', 'koros'].includes(currentPlatform)) mainBtn.innerHTML = "Ask AI"; else if (['anime', 'anoboy'].includes(currentPlatform)) mainBtn.innerHTML = "Search Anime"; else if (currentPlatform === 'donghua') mainBtn.innerHTML = "Search Donghua"; else if (currentPlatform === 'film') mainBtn.innerHTML = "Search Movie"; else if (currentPlatform === 'cnn') mainBtn.innerHTML = "Read Latest News"; else mainBtn.innerHTML = "Download Now";
         }
     }
 }
