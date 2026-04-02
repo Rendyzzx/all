@@ -22,7 +22,6 @@ const categoryTitles = [
 ];
 let totalCategories = 6; 
 
-// FUNGSI RAHASIA (NINJA MODE): Menghitung klik Logo
 let logoClicks = 0;
 let logoTimeout;
 
@@ -39,11 +38,11 @@ function handleLogoClick() {
     }
 }
 
-// Eksekusi pemanggilan Vault ke backend
+
 async function initSecret() {
     if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
     
-    // Stealth Prompt bawaan browser (Gak ninggalin jejak HTML)
+    
     const pwd = prompt("System Override. Enter Access Key:");
     if (!pwd) return;
 
