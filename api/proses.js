@@ -29,6 +29,32 @@ export default async function handler(req, res) {
         }
     }
 
+    // ACTION KHUSUS: Verifikasi Secret Vault
+    if (action === 'vault-verify') {
+        try {
+            const passwordInput = params?.password || '';
+            
+            // Server mengambil data password langsung dari Github (Aman 100% dari Inspect Element user)
+            const response = await fetch('https://raw.githubusercontent.com/Rendyzzx/Proxy/main/Hoshino.txt');
+            if (!response.ok) {
+                return res.status(500).json({ status: false, message: 'Gagal mengambil data keamanan dari server.' });
+            }
+            const realPassword = await response.text();
+            
+            // Membandingkan password dari user dengan password dari Github
+            if (passwordInput === realPassword.trim()) {
+                return res.status(200).json({ status: true, message: "Vault Unlocked" });
+            } else {
+                // Return 200 OK tapi status false agar Front-End tahu password salah
+                return res.status(200).json({ status: false, message: "Access Denied: Wrong Password" });
+            }
+        } catch (error) {
+            console.error("Vault Error:", error);
+            return res.status(500).json({ status: false, message: "System error checking vault security." });
+        }
+    }
+
+    // Pengecekan API Key untuk fitur utama (Neoxr)
     if (!apiKey) {
         return res.status(500).json({ status: false, message: 'Sistem Error: API Key belum diatur di Vercel.' });
     }
