@@ -65,7 +65,7 @@ function updateUserStats() {
         const maxItems = 10;
         const percentage = Math.min((count / maxItems) * 100, 100);
         
-        detailsEl.innerText = count + ' FILE' + (count !== 1 ? 'S' : '') + ' SAVED';
+        detailsEl.innerText = 'STORAGE: ' + count + ' FILE' + (count !== 1 ? 'S' : '') + ' SAVED';
         fillEl.style.width = percentage + '%';
     }
 }
@@ -200,6 +200,7 @@ function applyDynamicTheme(platform) {
     else if (['nulis', 'iqc', 'ss-web', 'dc-stalk', 'gh-stalk'].includes(platform)) { primary = '#f59e0b'; hover = '#d97706'; } 
     else if (['anime', 'anoboy', 'donghua', 'cnn', 'film'].includes(platform)) { primary = '#ef4444'; hover = '#dc2626'; }
     else if (['donasi'].includes(platform)) { primary = '#ec4899'; hover = '#be185d'; }
+    else if (['vault'].includes(platform)) { primary = '#10b981'; hover = '#059669'; }
 
     root.style.setProperty('--primary', primary);
     root.style.setProperty('--primary-hover', hover);
@@ -245,36 +246,40 @@ function setPlatform(platform) {
         title.innerHTML = "Contact Owner"; contactCont.style.display = 'flex'; btn.style.display = 'none'; 
     } else if (platform === 'donasi') {
         title.innerHTML = "Support Moonlight"; donasiCont.style.display = 'flex'; btn.style.display = 'none';
+    } else if (platform === 'vault') {
+        title.innerHTML = "Secret Vault"; document.getElementById('mediaUrl').placeholder = "Enter Vault Password...";
+        document.getElementById('mediaUrl').type = "password"; 
+        urlCont.style.display = 'flex'; btn.innerHTML = 'Unlock Vault';
     } else if (platform === 'pulsa') { 
-        title.innerHTML = "Top Up Mobile Credit"; document.getElementById('mediaUrl').placeholder = "Enter Phone Number (0812...)"; 
+        title.innerHTML = "Top Up Mobile Credit"; document.getElementById('mediaUrl').placeholder = "Enter Phone Number (0812...)"; document.getElementById('mediaUrl').type = "text";
         document.getElementById('pulsaProvider').innerHTML = `<option value="pulsa-axis">AXIS</option><option value="pulsa-indosat">INDOSAT (IM3)</option><option value="pulsa-telkomsel">TELKOMSEL</option><option value="pulsa-tri">TRI (3)</option><option value="pulsa-xl">XL AXIATA</option>`;
         urlCont.style.display = 'flex'; providerCont.style.display = 'flex'; nominalCont.style.display = 'flex'; btn.innerHTML = 'Create Invoice'; 
     } else if (platform === 'topup') { 
-        title.innerHTML = "E-Wallet Top Up"; document.getElementById('mediaUrl').placeholder = "Enter Account Number (0812...)"; 
+        title.innerHTML = "E-Wallet Top Up"; document.getElementById('mediaUrl').placeholder = "Enter Account Number (0812...)"; document.getElementById('mediaUrl').type = "text";
         document.getElementById('pulsaProvider').innerHTML = `<option value="topup-dana">DANA</option><option value="topup-gopay">GOPAY</option><option value="topup-ovo">OVO</option><option value="topup-shopeepay">SHOPEEPAY</option>`;
         urlCont.style.display = 'flex'; providerCont.style.display = 'flex'; customAmountCont.style.display = 'flex'; btn.innerHTML = 'Create Invoice'; 
     } else if (platform === 'youtube') { 
-        title.innerHTML = "Download YouTube"; document.getElementById('mediaUrl').placeholder = "Paste the YouTube video link here..."; 
+        title.innerHTML = "Download YouTube"; document.getElementById('mediaUrl').placeholder = "Paste the YouTube video link here..."; document.getElementById('mediaUrl').type = "text";
         urlCont.style.display = 'flex'; ytFormatCont.style.display = 'flex'; btn.innerHTML = 'Download Now'; 
     } else if (['tiktok', 'ig', 'facebook', 'twitter', 'terabox', 'pin', 'spotify'].includes(platform)) {
         let pName = platform.charAt(0).toUpperCase() + platform.slice(1);
         if (platform === 'ig') pName = "Instagram"; if (platform === 'pin') pName = "Pinterest";
-        title.innerHTML = `Download ${pName}`; document.getElementById('mediaUrl').placeholder = `Paste the ${pName} link here...`;
+        title.innerHTML = `Download ${pName}`; document.getElementById('mediaUrl').placeholder = `Paste the ${pName} link here...`; document.getElementById('mediaUrl').type = "text";
         urlCont.style.display = 'flex'; btn.innerHTML = 'Download Now';
     } else if (platform === 'lirik') { 
-        title.innerHTML = "Song Lyrics Search"; document.getElementById('mediaUrl').placeholder = "Type song title (e.g., Perfect)..."; 
+        title.innerHTML = "Song Lyrics Search"; document.getElementById('mediaUrl').placeholder = "Type song title (e.g., Perfect)..."; document.getElementById('mediaUrl').type = "text";
         urlCont.style.display = 'flex'; btn.innerHTML = 'Search Lyrics'; 
     } else if (platform === 'ss-web') { 
-        title.innerHTML = "Website Screenshot"; document.getElementById('mediaUrl').placeholder = "Enter URL (https://...)"; 
+        title.innerHTML = "Website Screenshot"; document.getElementById('mediaUrl').placeholder = "Enter URL (https://...)"; document.getElementById('mediaUrl').type = "text";
         urlCont.style.display = 'flex'; btn.innerHTML = 'Take Screenshot'; 
     } else if (platform === 'yt-transcript') { 
-        title.innerHTML = "YouTube Transcript"; document.getElementById('mediaUrl').placeholder = "Paste the YouTube video link here..."; 
+        title.innerHTML = "YouTube Transcript"; document.getElementById('mediaUrl').placeholder = "Paste the YouTube video link here..."; document.getElementById('mediaUrl').type = "text";
         urlCont.style.display = 'flex'; btn.innerHTML = 'Extract Text Now'; 
     } else if (platform === 'qr-gen') { 
         title.innerHTML = "Create QR Code"; document.getElementById('textContent').placeholder = "Type link or secret text here..."; 
         textCont.style.display = 'flex'; btn.innerHTML = 'Generate QR Code'; 
     } else if (platform === 'shortlink') { 
-        title.innerHTML = "URL Shortener"; document.getElementById('mediaUrl').placeholder = "Paste a long link to shorten..."; 
+        title.innerHTML = "URL Shortener"; document.getElementById('mediaUrl').placeholder = "Paste a long link to shorten..."; document.getElementById('mediaUrl').type = "text";
         urlCont.style.display = 'flex'; btn.innerHTML = 'Shorten Link'; 
     } else if (platform === 'tts') { 
         title.innerHTML = "Text to Speech AI"; document.getElementById('textContent').placeholder = "Type text to speak (Max 200 chars)..."; 
@@ -287,7 +292,7 @@ function setPlatform(platform) {
         textCont.style.display = 'flex'; btn.innerHTML = 'Ask AI'; 
     } else if (platform === 'koros') { 
         title.innerHTML = "Koros Vision AI"; fileCont.style.display = 'flex'; document.getElementById('mediaFile').accept = "image/*";
-        urlCont.style.display = 'flex'; document.getElementById('mediaUrl').placeholder = "Type a question about this image...";
+        urlCont.style.display = 'flex'; document.getElementById('mediaUrl').placeholder = "Type a question about this image..."; document.getElementById('mediaUrl').type = "text";
         catboxHelper.innerHTML = `<i class="fas fa-info-circle"></i> Select a photo and ask AI something.`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Ask AI'; 
     } else if (platform === 'ai-detector') { 
         title.innerHTML = "AI Text Detector"; document.getElementById('textContent').placeholder = "Paste article or text here..."; 
@@ -304,18 +309,18 @@ function setPlatform(platform) {
         catboxHelper.innerHTML = `<i class="fas fa-info-circle"></i> Select file from device. (Max 4MB)`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Process AI'; 
     } else if (platform === 'photo-editor') { 
         title.innerHTML = "Photo Editor AI"; fileCont.style.display = 'flex'; document.getElementById('mediaFile').accept = "image/*";
-        urlCont.style.display = 'flex'; document.getElementById('mediaUrl').placeholder = "Type edit command...";
+        urlCont.style.display = 'flex'; document.getElementById('mediaUrl').placeholder = "Type edit command..."; document.getElementById('mediaUrl').type = "text";
         catboxHelper.innerHTML = `<i class="fas fa-info-circle"></i> Select a photo, then type a command. (Max 4MB)`; catboxHelper.style.display = 'block'; btn.innerHTML = 'Edit Photo Now'; 
     } else if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(platform)) {
-        title.innerHTML = "Account Search"; document.getElementById('mediaUrl').placeholder = "Enter username or ID...";
+        title.innerHTML = "Account Search"; document.getElementById('mediaUrl').placeholder = "Enter username or ID..."; document.getElementById('mediaUrl').type = "text";
         urlCont.style.display = 'flex'; btn.innerHTML = 'Search Account';
     } else if (['anime', 'anoboy', 'donghua', 'film'].includes(platform)) {
         let pName = platform === 'donghua' ? 'Donghua' : (platform === 'anime' ? 'Anime' : (platform === 'film' ? 'Movie' : 'Anoboy'));
         title.innerHTML = `Watch ${pName}`;
-        document.getElementById('mediaUrl').placeholder = `Type ${platform === 'donghua' ? 'donghua' : (platform === 'film' ? 'movie' : 'anime')} title...`;
+        document.getElementById('mediaUrl').placeholder = `Type ${platform === 'donghua' ? 'donghua' : (platform === 'film' ? 'movie' : 'anime')} title...`; document.getElementById('mediaUrl').type = "text";
         urlCont.style.display = 'flex'; btn.innerHTML = `Search ${pName}`;
     } else if (platform === 'cnn') {
-        title.innerHTML = "CNN Indonesia News"; document.getElementById('mediaUrl').placeholder = "Type search topic (optional)...";
+        title.innerHTML = "CNN Indonesia News"; document.getElementById('mediaUrl').placeholder = "Type search topic (optional)..."; document.getElementById('mediaUrl').type = "text";
         urlCont.style.display = 'flex'; btn.innerHTML = 'Read Latest News';
     }
 
@@ -324,7 +329,7 @@ function setPlatform(platform) {
     const mediaFileInput = document.getElementById('mediaFile'); if (mediaFileInput) mediaFileInput.value = '';
     const customAmountInput = document.getElementById('customAmount'); if (customAmountInput) customAmountInput.value = '';
 
-    if (typeof FITUR !== 'undefined' && btn && platform !== 'kontak') {
+    if (typeof FITUR !== 'undefined' && btn && platform !== 'kontak' && platform !== 'donasi') {
         if (FITUR[platform] === false) {
             btn.innerHTML = '<i class="fas fa-tools"></i> Under Maintenance';
             btn.disabled = true; btn.style.background = '#475569'; btn.style.color = '#94a3b8';
@@ -714,6 +719,42 @@ async function processAction(isFromQueue = false) {
     let textContentInput = document.getElementById('textContent'); let textVal = textContentInput ? textContentInput.value.trim() : "";
     let phoneTime = ""; let chatTime = ""; let ytType = ""; let ytQuality = ""; let providerData = ""; let amountData = "";
     
+    // PENANGANAN KHUSUS UNTUK VAULT (RUANG RAHASIA) MELALUI BACKEND API
+    if (currentPlatform === 'vault') {
+        const loadingOverlay = document.getElementById('loadingOverlay'); if (loadingOverlay) loadingOverlay.style.display = 'block';
+        if (mainBtn) { mainBtn.disabled = true; mainBtn.innerHTML = "Verifying..."; }
+        
+        try {
+            // Mengirim password ke server/backend kita sendiri, BUKAN memanggil URL Github di client
+            const payload = { action: 'vault-verify', params: { password: urlVal } };
+            const res = await fetch(API_BASE, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            const json = await res.json();
+            
+            if (json.status === true) {
+                showToast("Access Granted!", "success");
+                const resultCard = document.getElementById('resultCard');
+                if (resultCard) resultCard.style.display = 'block';
+                document.querySelectorAll('#resultCard > div').forEach(el => { el.style.display = 'none'; });
+                
+                const entRes = document.getElementById('entertainmentResult');
+                entRes.innerHTML = `<div style="text-align:center; padding:30px 10px;">
+                    <i class="fas fa-unlock-alt" style="font-size:40px; color:#10b981; margin-bottom:15px;"></i>
+                    <h3 style="color:#fff; font-size:20px; margin-bottom:10px;">Vault Unlocked</h3>
+                    <p style="color:var(--text-muted); font-size:14px;">Selamat datang di ruang rahasia Moonlight. Anda berhasil membuka brankas!</p>
+                </div>`;
+                entRes.style.display = 'block';
+            } else {
+                showToast(json.message || "Access Denied: Wrong Password", "error");
+            }
+        } catch (e) {
+            showToast("Failed to connect to security server.", "error");
+        } finally {
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
+            if (mainBtn) { mainBtn.disabled = false; mainBtn.innerHTML = "Unlock Vault"; }
+        }
+        return; // Mencegah kode melanjutkan proses ke API biasa
+    }
+
     if (['roblox-stalk', 'dc-stalk', 'tt-stalk', 'tw-stalk', 'gh-stalk', 'ig-stalk', 'th-stalk'].includes(currentPlatform)) { if (urlVal.startsWith('@')) urlVal = urlVal.substring(1); }
 
     if (['ai-detector', 'iqc', 'nulis', 'qr-gen', 'tts', 'ai-anime', 'blackbox', 'gpt4', 'claude', 'genimg', 'bard', 'gemini', 'ai-real', 'waifu', 'felo', 'perplexity'].includes(currentPlatform)) {
