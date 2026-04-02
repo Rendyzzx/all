@@ -35,7 +35,6 @@
 
         #ambientBackground { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 0%, var(--ambient-glow) 0%, transparent 70%); z-index: -2; pointer-events: none; transition: background 1.5s ease-in-out; }
 
-        /* SPLASH SCREEN OPTIMIZED */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease, transform 0.6s ease, visibility 0.6s; }
         .splash-anim-container { width: 140px; height: 140px; position: relative; display: flex; align-items: center; justify-content: center; }
         .moon-svg { width: 100px; height: 100px; transform: rotate(-15deg); position: relative; z-index: 2; overflow: visible; }
@@ -51,8 +50,8 @@
         .nav-btn { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); border-radius: 10px; width: 42px; height: 42px; font-size: 18px; cursor: pointer; transition: all 0.2s ease; display: flex; justify-content: center; align-items: center; }
         .nav-btn:hover { background: rgba(255, 255, 255, 0.1); }
         .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
-        .logo { font-size: 20px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; }
-        .logo:hover { opacity: 0.8; }
+        .logo { font-size: 20px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;}
+        .logo:active { opacity: 0.5; }
         .logo i { color: #60a5fa; }
 
         #offlineIndicator { display: none; background: #ef4444; color: white; text-align: center; padding: 8px; font-size: 12px; font-weight: 700; position: sticky; top: 74px; z-index: 99; animation: slideDown 0.3s ease; }
@@ -80,11 +79,6 @@
         .icon-wrapper { width: 54px; height: 54px; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--text-muted); transition: all 0.2s ease; }
         .feature-list li:hover .icon-wrapper { background: var(--primary); color: #fff; transform: scale(1.05); border-color: transparent; }
         .feature-list li h4 { margin: 0; font-size: 11px; font-weight: 500; color: #cbd5e1; line-height: 1.3; }
-
-        /* KHUSUS EFEK SECRET BUTTON */
-        .secret-feature .icon-wrapper { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: #ef4444; filter: drop-shadow(0 0 8px rgba(239,68,68,0.5)); animation: pulseSecret 2s infinite alternate; }
-        @keyframes pulseSecret { from { filter: drop-shadow(0 0 5px rgba(239,68,68,0.5)); } to { filter: drop-shadow(0 0 15px rgba(239,68,68,0.9)); } }
-        .secret-feature:hover .icon-wrapper { background: #ef4444; color: #fff; }
 
         .hero { flex: 1; padding: 40px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; position: relative; overflow-x: hidden; width: 100%; }
         
@@ -285,7 +279,7 @@
     <div id="offlineIndicator">YOU ARE OFFLINE. REQUESTS WILL BE QUEUED.</div>
 
     <nav class="navbar">
-        <div class="logo" onclick="showHome()" style="cursor:pointer;"><i class="fas fa-moon"></i> Moonlight</div>
+        <div class="logo" onclick="handleLogoClick()" style="cursor:pointer;"><i class="fas fa-moon"></i> Moonlight</div>
         <div style="display: flex; gap: 10px;">
             <button class="nav-btn" onclick="openHistory()" title="History"><i class="fas fa-history"></i></button>
             <button id="menuBtn" class="nav-btn" onclick="openCategory('current', 'bnav-all')"><i class="fas fa-bars"></i></button>
@@ -381,16 +375,6 @@
                     <li onclick="setPlatform('topup')"><div class="icon-wrapper"><i class="fas fa-wallet"></i></div><div><h4>Top-up Wallet</h4></div></li>
                     <li onclick="setPlatform('kontak')"><div class="icon-wrapper"><i class="fas fa-id-badge"></i></div><div><h4>Contact Us</h4></div></li>
                     <li onclick="setPlatform('donasi')"><div class="icon-wrapper"><i class="fas fa-hand-holding-heart"></i></div><div><h4>Donation</h4></div></li>
-                    <li onclick="setPlatform('vault')"><div class="icon-wrapper"><i class="fas fa-user-secret"></i></div><div><h4>Secret Vault</h4></div></li>
-                </ul>
-            </div>
-
-            <div class="cat-page" id="cat-page-6">
-                <ul class="feature-list">
-                    <li class="secret-feature" onclick="setPlatform('nsfw')">
-                        <div class="icon-wrapper"><i class="fas fa-fire"></i></div>
-                        <div><h4 style="color: #ef4444;">NSFW AI</h4></div>
-                    </li>
                 </ul>
             </div>
 
@@ -401,7 +385,6 @@
                 <span class="cat-dot" onclick="goToCat(3)"></span>
                 <span class="cat-dot" onclick="goToCat(4)"></span>
                 <span class="cat-dot" onclick="goToCat(5)"></span>
-                <span class="cat-dot" id="secretDot" onclick="goToCat(6)" style="display: none;"></span>
             </div>
         </div>
     </div>
