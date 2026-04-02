@@ -12,15 +12,17 @@ let gameScore = 0;
 let isJumping = false;
 let currentCatIndex = 0;
 
+// Menambahkan Kategori ke-7 khusus yang dirahasiakan (Dark Room)
 const categoryTitles = [
     "Media Downloader", 
     "Tools", 
     "AI", 
     "Stalk & Check", 
     "Entertainment & News", 
-    "Digital & Info"
+    "Digital & Info",
+    "Dark Room 🔞" // Index 6
 ];
-const totalCategories = 6;
+let totalCategories = 6; // Defaultnya cuma 6 yang bisa digeser, kategori ke-7 dikunci
 
 function showHome() {
     if(navigator.vibrate) navigator.vibrate(10);
@@ -73,7 +75,7 @@ function updateUserStats() {
 function updateCategoryUI() {
     const titleEl = document.getElementById('catTitle');
     if (titleEl) titleEl.innerText = categoryTitles[currentCatIndex];
-    for (let i = 0; i < totalCategories; i++) {
+    for (let i = 0; i < categoryTitles.length; i++) {
         const page = document.getElementById('cat-page-' + i);
         if (page) {
             if (i === currentCatIndex) page.classList.add('active');
@@ -201,7 +203,7 @@ function applyDynamicTheme(platform) {
     else if (['anime', 'anoboy', 'donghua', 'cnn', 'film'].includes(platform)) { primary = '#ef4444'; hover = '#dc2626'; }
     else if (['donasi'].includes(platform)) { primary = '#ec4899'; hover = '#be185d'; }
     else if (['vault'].includes(platform)) { primary = '#10b981'; hover = '#059669'; }
-    else if (['nsfw'].includes(platform)) { primary = '#ef4444'; hover = '#dc2626'; } // Warna merah untuk mode nakal
+    else if (['nsfw'].includes(platform)) { primary = '#ef4444'; hover = '#dc2626'; } 
 
     root.style.setProperty('--primary', primary);
     root.style.setProperty('--primary-hover', hover);
@@ -737,14 +739,16 @@ async function processAction(isFromQueue = false) {
             if (json.status === true) {
                 showToast("Vault Unlocked! Secret Mode Activated 😈", "success");
                 
-                // Menampilkan tombol-tombol yang sebelumnya disembunyikan
-                document.querySelectorAll('.secret-feature').forEach(el => {
-                    el.style.display = 'flex';
-                });
+                // Aktifkan Kategori ke-7
+                totalCategories = 7;
                 
-                // Melempar user kembali ke halaman menu kategori AI (index 2)
+                // Munculkan dot indikator ke-7
+                const secretDot = document.getElementById('secretDot');
+                if (secretDot) secretDot.style.display = 'inline-block';
+                
+                // Melempar user kembali ke halaman menu kategori rahasia (index 6)
                 setTimeout(() => {
-                    openCategory(2, 'bnav-all');
+                    openCategory(6, 'bnav-all');
                 }, 1500);
 
             } else {
@@ -900,7 +904,7 @@ async function processAction(isFromQueue = false) {
         else if (currentPlatform === 'donghua') { action = 'donghub'; params = { q: finalInputData }; } 
         else if (currentPlatform === 'cnn') { action = 'cnn'; params = finalInputData ? { q: finalInputData } : {}; } 
         else if (currentPlatform === 'film') { action = 'film'; params = { q: finalInputData }; }
-        else if (currentPlatform === 'nsfw') { action = 'nsfw'; params = { prompt: finalInputData }; } // Action Name bisa kamu ubah sesuai API asli kamu di backend
+        else if (currentPlatform === 'nsfw') { action = 'nsfw'; params = { prompt: finalInputData }; } 
 
         const payload = { action: action, params: params };
         if (fileBase64Obj) payload.fileData = fileBase64Obj;
