@@ -35,11 +35,14 @@
 
         #ambientBackground { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 0%, var(--ambient-glow) 0%, transparent 70%); z-index: -2; pointer-events: none; transition: background 1.5s ease-in-out; }
 
+        /* SPLASH SCREEN OPTIMIZED */
         #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease, transform 0.6s ease, visibility 0.6s; }
         .splash-anim-container { width: 140px; height: 140px; position: relative; display: flex; align-items: center; justify-content: center; }
         .moon-svg { width: 100px; height: 100px; transform: rotate(-15deg); position: relative; z-index: 2; overflow: visible; }
         .moon-line { fill: transparent; stroke: #f8fafc; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 260; stroke-dashoffset: 260; animation: drawMoon 1.5s ease-out forwards; }
+        
         @keyframes drawMoon { 0% { stroke-dashoffset: 260; fill: transparent; filter: drop-shadow(0 0 0px transparent); } 40% { fill: transparent; } 100% { stroke-dashoffset: 0; fill: #f8fafc; filter: drop-shadow(0 0 20px rgba(96, 165, 250, 0.5)); } }
+        
         .splash-text { font-size: 24px; font-weight: 800; color: #f8fafc; letter-spacing: 8px; margin-right: -8px; margin-top: 15px; text-transform: uppercase; opacity: 0; transform: translateY(20px); animation: fadeUpText 0.8s ease-out 0.8s forwards; position: relative; z-index: 2; }
         @keyframes fadeUpText { to { opacity: 1; transform: translateY(0); } }
         .splash-hidden { opacity: 0 !important; visibility: hidden !important; transform: scale(1.05); }
@@ -346,7 +349,6 @@
                     <li onclick="setPlatform('hd-foto')"><div class="icon-wrapper"><i class="fas fa-expand"></i></div><div><h4>HD Photo</h4></div></li>
                     <li onclick="setPlatform('photo-editor')"><div class="icon-wrapper"><i class="fas fa-magic"></i></div><div><h4>Edit AI</h4></div></li>
                     <li onclick="setPlatform('tts')"><div class="icon-wrapper"><i class="fas fa-volume-up"></i></div><div><h4>Voice AI</h4></div></li>
-                    <li class="secret-feature" style="display: none;" onclick="setPlatform('nsfw')"><div class="icon-wrapper"><i class="fas fa-fire"></i></div><div><h4 style="color: #ef4444;">NSFW AI</h4></div></li>
                 </ul>
             </div>
             
@@ -383,6 +385,15 @@
                 </ul>
             </div>
 
+            <div class="cat-page" id="cat-page-6">
+                <ul class="feature-list">
+                    <li class="secret-feature" onclick="setPlatform('nsfw')">
+                        <div class="icon-wrapper"><i class="fas fa-fire"></i></div>
+                        <div><h4 style="color: #ef4444;">NSFW AI</h4></div>
+                    </li>
+                </ul>
+            </div>
+
             <div class="cat-dots">
                 <span class="cat-dot active" onclick="goToCat(0)"></span>
                 <span class="cat-dot" onclick="goToCat(1)"></span>
@@ -390,6 +401,7 @@
                 <span class="cat-dot" onclick="goToCat(3)"></span>
                 <span class="cat-dot" onclick="goToCat(4)"></span>
                 <span class="cat-dot" onclick="goToCat(5)"></span>
+                <span class="cat-dot" id="secretDot" onclick="goToCat(6)" style="display: none;"></span>
             </div>
         </div>
     </div>
